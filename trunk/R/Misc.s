@@ -154,3 +154,26 @@ dirps2pdf <- function() {
   }
   invisible()
 }                       
+
+publishPdf <- function(reports, title, server, path) {
+
+  ## E.g. publishPdf(c(report='Closed Meeting Report',
+  ##                   Oreport='Open Meeting Report'),'My Project',
+  ##                 'myserver.edu', '/home/www/html/myproject')
+
+  f <- tempfile()
+  rn <- paste(names(reports),'pdf',sep='.')
+  info <- file.info(rn)[,c('size','mtime')]
+  cat('<html><body bgcolor=white>',
+      paste('<h2>', title, '</h2>', sep=''),
+      sep='\n', file=f)
+  i <- with(info, data.frame(Bytes=size, 'Date Created'=mtime,
+                             Description=reports,
+                             row.names=row.names(info), check.names=FALSE))
+  z <- html(i, file=f, append=TRUE, link=rn, linkCol='Name',
+            linkType='href')
+  system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
+  for(i in 1:length(rn))
+    system(paste('scp -p ', rn[i], ' ', server, ':', path, sep=''))
+  invisible()
+}
