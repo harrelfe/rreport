@@ -58,7 +58,9 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
   }
 
   lb <- paste('accrual',panel,'sitefreq',sep='-')
-  startPlot(lb, h=if(ns > 25)6 else if(ns > 15) 5 else 4,
+  startPlot(lb,
+            h=if(ns > 40) 8.5 else if(ns > 25)6 else
+            if(ns > 15) 5 else 4,
             trellis=TRUE)
   print(Dotplot(sites ~ n, xlab='Number of Subjects', ylab='Site'))
   endPlot()
