@@ -1,6 +1,7 @@
 ## $Id$
 mixedvarReport <- function(data, vars, panel, treat,
                            longPanel=panel, test=TRUE, exclude1=TRUE,
+                           npct=c('numerator','both','denominator','none'),
                            cdf=FALSE, Ohist=TRUE,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
@@ -8,6 +9,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            pl=TRUE, size=NULL, h=5, w=6,
                            clearPlots=FALSE, ...) {
 
+  npct <- match.arg(npct)
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
@@ -23,7 +25,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE, exclude1=exclude1,
+        append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
         caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(pl) {
     if(any(d$type == 1)) {
@@ -100,7 +102,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     form <- as.formula(paste('~', paste(vars,collapse='+')))
     d <- summary(form, data=data, method='reverse', continuous=continuous)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE, exclude1=exclude1,
+        append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
         caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
