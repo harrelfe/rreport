@@ -155,17 +155,18 @@ dirps2pdf <- function() {
   invisible()
 }                       
 
-publishPdf <- function(reports, minutes, title, server, path,
+publishPdf <- function(reports, minutes=NULL, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
                        hardcopies=TRUE, verbose=TRUE,
                        mailer=c('kmail','mail'), extra=NULL) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
-  ##                   Oreport='Open Meeting Report'),'My Project',
-  ##                 'myserver.edu', '/home/www/html/myproject')
+  ##                   Oreport='Open Meeting Report'),title='My Project',
+  ##                 server='myserver.edu', path='/home/www/html/myproject')
   ## Be sure to put something like export REPLYTO=foo@place.edu in ~/.bashrc
-
+  ## if using mailer='mail'
+  
   mailer <- match.arg(mailer)
   nl <- ifelse(mailer=='kmail','\n','\\n')
   
@@ -191,13 +192,10 @@ publishPdf <- function(reports, minutes, title, server, path,
     url <- url[length(url)]
     url <- paste('http://', server, '/', url, sep='')
     cmd <-
-      paste('The ',if(length(reports) > 1)
-            'open and closed meeting reports have ' else
-            'open meeting report has ',
-            'been placed or updated on a secure web page.',nl,
-            if(length(minutes))
-             paste(nl, paste(minutes,collapse=' and '),
-                   'have also been placed there.',nl,nl),
+      paste(if(length(c(reports,minutes)) ==1) 'The following document has' else
+            'The following documents have',
+            ' been placed or updated on a secure web page:',nl,nl,
+            paste(c(reports,minutes), collapse=nl), nl, nl,
             'Point your browser to ', url, nl,
             'and use the username ', uid,
             ' and the password that will be in the next note.',nl,nl,
