@@ -6,6 +6,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7, continuous=10,
+                           keyloc=list(x=.8, y=.02),
                            pl=TRUE, size=NULL, h=5, w=6,
                            clearPlots=FALSE, ...) {
 
@@ -33,7 +34,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       pn <- paste(panel, 'cat', sep='-')
       startPlot(pn, h=h, w=w)
       plot(d, which='cat', main='', ...)
-      Key(.8, .02)  #.075)
+      Key(keyloc)
       endPlot()
       cp()
       putFig(panel, pn,
