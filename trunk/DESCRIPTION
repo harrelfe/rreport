@@ -1,0 +1,15 @@
+Package: rreport
+Version: 0.0-1
+Date: 2003-08-03
+Title: Research Reporting Package
+Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
+Maintainer: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
+Depends: R (>= 1.6), grid (>= 0.5-1), lattice (>= 0.4-0), Hmisc (>= 2.0-9)
+Description: The rreport package contains many functions useful for
+	monitoring and reporting the results of clinical trials and other
+	experiments in which treatments are compared.  LaTeX is
+	used to typeset the resulting reports.  The Hmisc package is used
+	by rreport for high-level graphics and for LaTeX table construction.
+License: GPL version 2 or newer
+URL: http://biostat.mc.vanderbilt.edu,
+	http://biostat.mc.vanderbilt.edu/twiki/pub/Main/StatReport/summary.pdf
