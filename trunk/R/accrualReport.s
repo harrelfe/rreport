@@ -67,15 +67,15 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
   if(length(ce$codes))
     lcap <- paste(lcap,
                   '.\nLetters in parentheses indicate groups of sites ',
-                  'having the same number of subjects, defined below.\n',
+                  'having the same number of subjects, defined elsewhere.\n',
                   sep='')
 
   putFig('accrual', lb, paste('Numbers of subjects',panel,'by site'), lcap)
   if(length(ce$codes))
     cat('\nCodes used in Figure~\\ref{fig:', lb, '} are as follows:',
-        '{\\smaller[2]',
+        '{\\smaller[3]',
         paste(paste(ce$codes,':',
-                    '\\texttt{',ce$defs,'}',sep=''),collapse='; '),
+                    '\\texttt{\\textbf{',ce$defs,'}}',sep=''),collapse='; '),
         '.}\n\n', sep='', file='accrual.tex', append=TRUE)
        
 
