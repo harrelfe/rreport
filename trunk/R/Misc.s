@@ -157,11 +157,12 @@ dirps2pdf <- function() {
 
 publishPdf <- function(reports, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
-                       to=NULL, cc=NULL) {
+                       to=NULL, cc=NULL, bcc=NULL, sig=NULL, verbose=TRUE) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
   ##                   Oreport='Open Meeting Report'),'My Project',
   ##                 'myserver.edu', '/home/www/html/myproject')
+  ## Be sure to put something like export REPLYTO=foo@place.edu in ~/.bashrc
 
   if(copy) {
     f <- tempfile()
@@ -184,23 +185,31 @@ publishPdf <- function(reports, title, server, path,
     url <- url[length(url)]
     url <- paste('http://', server, '/', url, sep='')
     cmd <-
-      paste('The',if(length(reports) > 1)
-            'open and closed meeting reports have' else
-            'closed meeting report has',
+      paste('The ',if(length(reports) > 1)
+            'open and closed meeting reports have ' else
+            'closed meeting report has ',
             'been placed or updated on a secure web page.\\n',
-            'Point your browser to', url,
-            '\\nand use the username', uid,
-            'and the password that will be in the next note.\\n\\n',
-            'Please confirm your ability to open the pdf files within 24 hours by replying to this message.',
-            'I will bring final hard copies to the meeting.')
-    if(length(cc)) cc <- paste(' -c', cc)
-    cmd <- paste('echo -e "', cmd, '" | mailto ', to, cc, ' -s "',
-                 title, ' Reports"', sep='')
+            'Point your browser to ', url,
+            '\\nand use the username ', uid,
+            ' and the password that will be in the next note.\\n\\n',
+            'Please confirm your ability to open the pdf files within 24 hours by replying to this message.\\n\\n',
+            'I will bring final hard copies to the meeting.', sep='')
+    if(length(sig)) {
+      sig <- paste(sig, collapse='\\n')
+      cmd <- paste(cmd, '\\n----------\\n', sig, sep='')
+    }
+    to <- paste(to, collapse=' ')
+    if(length(cc))  cc  <- paste(paste(' -c', cc), collapse='')
+    if(length(bcc)) bcc <- paste(paste(' -b', bcc),collapse='')
+    cmd <- paste('echo -e "', cmd, '" | mail -s "',
+                 title, ' Reports"', cc, bcc, ' ', to, sep='')
     system(cmd)
+    if(verbose) cat('\n\nMail command sent:\n', cmd, '\n')
     if(length(passwd)) {
-      cmd <- paste('echo ', passwd, ' | mailto ', to, cc,
-                   ' -s "Additional information"', sep='')
+      cmd <- paste('echo ', passwd, ' | mail -s "Additional information"',
+                   cc, bcc, ' ', to, sep='')
       system(cmd)
+      if(verbose) cat('\n\nMail command sent:\n', cmd, '\n')
     }
   }
   invisible()
