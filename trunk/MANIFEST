@@ -1,40 +1,46 @@
 .:
-CVS
-DESCRIPTION
-man
-MANIFEST
-R
+total 16
+drwxr-xr-x    2 jhorner  jhorner      4096 Apr 22 11:14 CVS
+-rw-r--r--    1 jhorner  jhorner       742 Feb 25 09:45 DESCRIPTION
+drwxr-xr-x    3 jhorner  jhorner      4096 Apr 22 11:12 man
+-rw-r--r--    1 jhorner  jhorner         0 Apr 22 11:21 MANIFEST
+drwxr-xr-x    3 jhorner  jhorner      4096 Apr 22 11:12 R
 
 ./CVS:
-Entries
-Repository
-Root
+total 12
+-rw-r--r--    1 jhorner  jhorner       107 Apr 22 11:14 Entries
+-rw-r--r--    1 jhorner  jhorner         8 Apr 22 11:12 Repository
+-rw-r--r--    1 jhorner  jhorner        15 Apr 22 11:12 Root
 
 ./man:
-CVS
+total 4
+drwxr-xr-x    2 jhorner  jhorner      4096 Apr 22 11:12 CVS
 
 ./man/CVS:
-Entries
-Repository
-Root
+total 12
+-rw-r--r--    1 jhorner  jhorner         2 Apr 22 11:12 Entries
+-rw-r--r--    1 jhorner  jhorner        12 Apr 22 11:12 Repository
+-rw-r--r--    1 jhorner  jhorner        15 Apr 22 11:12 Root
 
 ./R:
-accrualReport.s
-aeReport.s
-baselineReport.s
-completenessReport.s
-complianceReport.s
-CVS
-dropoutReport.s
-First.lib.s
-labReport.s
-Misc.s
-mockTable.s
-repVarclus.s
-subjectList.s
-survReport.s
+total 76
+-rw-r--r--    1 jhorner  jhorner      3237 Apr 14 20:49 accrualReport.s
+-rw-r--r--    1 jhorner  jhorner      7706 Apr 14 20:49 aeReport.s
+-rw-r--r--    1 jhorner  jhorner      5763 Apr 14 20:49 baselineReport.s
+-rw-r--r--    1 jhorner  jhorner      3128 Apr 14 20:49 completenessReport.s
+-rw-r--r--    1 jhorner  jhorner       608 Apr 14 20:49 complianceReport.s
+drwxr-xr-x    2 jhorner  jhorner      4096 Apr 22 11:12 CVS
+-rw-r--r--    1 jhorner  jhorner      1306 Apr 14 20:49 dropoutReport.s
+-rw-r--r--    1 jhorner  jhorner       406 Apr 14 20:49 First.lib.s
+-rw-r--r--    1 jhorner  jhorner      5147 Apr 14 20:49 labReport.s
+-rw-r--r--    1 jhorner  jhorner      4870 Apr 14 20:49 Misc.s
+-rw-r--r--    1 jhorner  jhorner      7163 Apr 14 20:49 mockTable.s
+-rw-r--r--    1 jhorner  jhorner      1886 Apr 14 20:49 repVarclus.s
+-rw-r--r--    1 jhorner  jhorner       690 Apr 14 20:49 subjectList.s
+-rw-r--r--    1 jhorner  jhorner      1391 Apr 14 20:49 survReport.s
 
 ./R/CVS:
-Entries
-Repository
-Root
+total 12
+-rw-r--r--    1 jhorner  jhorner       601 Apr 22 11:12 Entries
+-rw-r--r--    1 jhorner  jhorner        10 Apr 22 11:12 Repository
+-rw-r--r--    1 jhorner  jhorner        15 Apr 22 11:12 Root
