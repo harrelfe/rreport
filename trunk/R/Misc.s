@@ -54,7 +54,7 @@ putFig <- function(panel, name, caption=NULL, longcaption=NULL,
 
   if(gtype=='interactive') return(invisible())
   
-  file <- paste(translate(panel,'.','-'),'tex',sep='.')
+  file <- paste('gentex/',translate(panel,'.','-'),'.tex',sep='')
   name <- translate(name, '.', '-')
   suffix <- paste('.',gtype,sep='')
 
@@ -117,17 +117,19 @@ makeTreatKey <- function(tlevels, append=FALSE) {
   cat('\\def\\treatkey{',tlevels[1],
       ':\\rule[.05in]{.25in}{.5pt}; ',
       tlevels[2],':\\textcolor[gray]{0.7}{\\rule[.05in]{.25in}{1.25pt}}.}\n',
-      sep='', file='params.tex', append=append)
+      sep='', file='gentex/params.tex', append=append)
   invisible()
 }
 
 ## Save various constants in LaTeX variable definitions in file params.tex
 putparams <- function(...) {
   x <- list(...)
-  if(!length(x)) cat('% $Id$\n', file='params.tex') else {
+  if(!length(x))
+    cat('% $Id$\n',
+        file='gentex/params.tex') else {
     for(n in names(x))
       cat('\\def\\',n,'{',format(x[[n]]),'}\n',
-          sep='', file='params.tex', append=TRUE)
+          sep='', file='gentex/params.tex', append=TRUE)
   }
   invisible()
 }
