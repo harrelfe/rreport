@@ -13,7 +13,9 @@ subjectList <- function(data, panel, caption=NULL,
       lab <- ifelse(lab=='', names(data), lab)
     }
   }
-
+  for(i in 1:length(data))
+    if(inherits(data[[i]],'POSIXct'))
+      data[[i]] <- format(data[[i]], format='%Y-%m-%d')
   w <- latex(data, title=panel, colheads=lab,
              longtable=longtable, size=size, caption=caption,
              landscape=landscape, rowname=NULL)
