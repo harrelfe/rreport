@@ -76,7 +76,7 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
         '{\\smaller[3]',
         paste(paste('\\textbf{',ce$codes,'}:',
                     '\\texttt{',ce$defs,'}',sep=''),collapse='; '),
-        '.}\n\n', sep='', file='accrual.tex', append=TRUE)
+        '.}\n\n', sep='', file='gentex/accrual.tex', append=TRUE)
        
 
   if(length(Entry)) {
@@ -84,8 +84,8 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
     startPlot(lb, h=3)
     ecdf(Entry, what='f', ylab='Cumumlative Number of Subjects',
          xlab=label(Entry), ylim=c(0,max(length(Entry),targetN)),
-         xlim=as.POSIXct(dateRange))
-    lines(as.POSIXct(dateRange), c(0,targetN), col='gray', lwd=3)
+         xlim=as.Date(dateRange))
+    lines(as.Date(dateRange), c(0,targetN), col='gray', lwd=3)
     endPlot()
     putFig('accrual', lb, paste('Subjects',panel,'over time'),
            paste('Subjects',panel,
