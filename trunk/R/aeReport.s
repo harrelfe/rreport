@@ -234,7 +234,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
                caption=paste('Frequencies of',longPanel,'and Treatment'),
                extracolheads=if(length(Ntreat))
                 paste('N',c(Ntreat,sum(Ntreat)),sep='='),
-               ctable=TRUE, size=size,
+               ctable=!longtable, size=size,
                longtable=longtable, lines.page=lines.page)
   
   if(plotprop) {
