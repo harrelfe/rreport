@@ -2,7 +2,7 @@
 baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                            bpPrototype=TRUE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
-                           Majorvars=NULL,
+                           Majorvars=NULL, cexMajor=.7,
                            ...) {
  
   vars  <- unlist(vars)
@@ -131,7 +131,8 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
     rw <- 1; cl <- 1
     for(j in 1:nv) {
       x <- data[[Majorvars[j]]]
-      p <- bwplot(Major ~ x, xlab=label(x), panel=panel.bpplot)
+      p <- bwplot(Major ~ x, xlab=label(x), panel=panel.bpplot,
+                  scales=list(cex=c(cexMajor,1)))
       print(p, split=c(cl,rw,mf[2],mf[1]),more=j < nv)
       cl <- cl + 1
       if(cl > mf[2]) {
