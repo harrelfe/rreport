@@ -59,7 +59,7 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
 
   lb <- paste('accrual',panel,'sitefreq',sep='-')
   startPlot(lb,
-            h=if(ns > 40) 7.5 else if(ns > 25)6 else
+            h=if(ns > 40) 7 else if(ns > 25)6 else
             if(ns > 15) 5 else 4,
             trellis=FALSE)
   dotchart2(-sort(-n), 
