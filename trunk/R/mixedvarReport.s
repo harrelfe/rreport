@@ -1,6 +1,6 @@
 ## $Id$
 mixedvarReport <- function(data, vars, panel, treat,
-                           longPanel=panel,
+                           longPanel=panel, test=TRUE, exclude1=TRUE,
                            cdf=FALSE, Ohist=TRUE,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
@@ -18,12 +18,12 @@ mixedvarReport <- function(data, vars, panel, treat,
           append=TRUE)
 
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
-  d <- summary(form, data=data, method='reverse', test=TRUE, continuous=continuous)
+  d <- summary(form, data=data, method='reverse', test=test, continuous=continuous)
   lp <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE,
+        append=append, middle.bold=TRUE, exclude1=exclude1,
         caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(pl) {
     if(any(d$type == 1)) {
@@ -100,7 +100,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     form <- as.formula(paste('~', paste(vars,collapse='+')))
     d <- summary(form, data=data, method='reverse', continuous=continuous)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE,
+        append=append, middle.bold=TRUE, exclude1=exclude1,
         caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
