@@ -5,8 +5,9 @@ mixedvarReport <- function(data, vars, panel, treat,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7, continuous=10,
-                           pl=TRUE, size=NULL, ...) {
- 
+                           pl=TRUE, size=NULL, h=5, w=6, ...) {
+
+  ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
 
@@ -21,7 +22,7 @@ mixedvarReport <- function(data, vars, panel, treat,
   if(pl) {
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
-      startPlot(pn, h=5, w=6) # was h=5 w=6
+      startPlot(pn, h=h, w=w)
       plot(d, which='cat', main='', ...)
       Key(.8, .02)  #.075)
       endPlot()
@@ -92,7 +93,7 @@ mixedvarReport <- function(data, vars, panel, treat,
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
-    startPlot(pn, h=5, w=6) # was h=5 w=6
+    startPlot(pn, h=h, w=w)
     plot(d, which='cat', main='', ...)
     endPlot()
     putFig(panel, pn,
