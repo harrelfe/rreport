@@ -36,7 +36,7 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                    'interpret the following plots'))
     }
   
-    startPlot('baseline-cont%d', h=5)
+    startPlot('baseline-cont%d', h=6, w=6)
     np <- plot(d, which='con', conType='bp')
     endPlot()
     for(i in 1:np)
@@ -52,7 +52,8 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                    sep=''))
   
     if(cdf) {
-      startPlot('baseline-ecdf%d', h=5)
+      startPlot('baseline-ecdf%d', h=6, w=6)
+      mfrowSet(length(vars))
       np <- ecdf(data[vars], group=Treat,
                  lwd=c(1,2), col=gray(c(0,.7)), q=.5,
                  label.curves=FALSE)
@@ -90,7 +91,8 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
   }
   if(any(d$type == 2)) {
     if(cdf) {
-      startPlot('Obaseline-ecdf%d', h=5)
+      startPlot('Obaseline-ecdf%d', h=6, w=6)
+      mfrowSet(length(vars))
       np <- ecdf(data[vars], lwd=1, q=(1:3)/4)
       endPlot()
       for(i in 1:np)
@@ -105,7 +107,8 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                      sep=''))
     }
     if(Ohist) {
-      startPlot('Obaseline-hist%d', h=5)
+      startPlot('Obaseline-hist%d', h=6, w=6)
+      mfrowSet(length(vars))
 #    omf <- mfrowSet(nv)
 #    on.exit(par(mfrow=omf))
 #    mf <- par('mfrow')
@@ -122,6 +125,7 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
   nm <- length(unique(Major))
   if(nv) {
     startPlot('Obaseline-bw-major',
+#              h=if(nv > 7) 7 else if(nm > 7) 6 else 5, w=6)
               h=if(nv > 10) 7 else if(nm > 7) 6 else if(nv > 4) 5 else 4)
     mf <- mfrowSet(nv, trellis=TRUE)
     rw <- 1; cl <- 1

@@ -1,3 +1,4 @@
+## $Id$
 labReport <- function(data, vars, panel, treat, time, times,
                       longPanel=panel, h=6.5, w=6.5,
                       diffs=FALSE, cdf=FALSE, tables=TRUE,

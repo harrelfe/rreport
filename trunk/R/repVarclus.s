@@ -1,3 +1,4 @@
+## $Id$
 repVarclus <- function(data, time, times=sort(unique(time)),
                        nmin=10) {
 

@@ -1,3 +1,4 @@
+## $Id$
 accrualReport <- function(Site, Entry=NULL, panel='randomized',
                           dateRange, targetN,
                           Major=rep('', length(Site)),
@@ -27,7 +28,7 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
                  casefold(MajorLabel))
     putFig('accrual',lb,
            lcap,
-           paste(lcap, '. Numbers to right of chart show the number of sites within each',
+           paste(lcap, '. Numbers to right of chart show the number of sites within each ',
                  casefold(MajorLabel),'.', sep=''),
            append=append)
 

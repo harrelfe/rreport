@@ -1,3 +1,4 @@
+## $Id$
 survReport <- function(etime, event, treat,
                        ylabel='Survival Probability',
                        conf=c('bars','bands','none'),

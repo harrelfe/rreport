@@ -1,3 +1,4 @@
+## $Id$
 dropoutReport <- function(d.dropout, dropout, treat,
                           time.inc=NULL, ylim=c(0,1)) {
   require('survival')

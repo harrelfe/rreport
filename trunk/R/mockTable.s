@@ -1,3 +1,4 @@
+## $Id$
 mockTable <- function(control, append=TRUE) {
   
   w <- scan(control$datafile, what=list(''), sep='\n')[[1]]

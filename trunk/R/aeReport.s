@@ -1,3 +1,4 @@
+## $Id$
 aeReport <- function(data, vars, treat, time,
                      times=sort(unique(time)),
                      id=NULL, plotprop=FALSE, plotkm=TRUE, etimedata=NULL,

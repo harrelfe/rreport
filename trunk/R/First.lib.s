@@ -1,3 +1,4 @@
+## $Id$
 .noGenenerics <- TRUE  # faster loading as new methods not used
 
 .First.lib <- function(lib, pkg, verbose=TRUE) {

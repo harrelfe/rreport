@@ -1,3 +1,4 @@
+## $Id$
 completenessReport <- function(data, vars, 
                                panel, Time, times,
                                longPanel=panel, frac=0.95,

@@ -1,3 +1,4 @@
+## $Id$
 complianceReport <- function(comply, treat, time, times=NULL) {
   if(!is.numeric(comply))
     comply <-  1*(comply %in% c('Y','Yes','yes','YES'))

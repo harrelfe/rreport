@@ -1,3 +1,4 @@
+## $Id$
 subjectList <- function(data, panel, caption=NULL,
                         vname=c('labels','names'),
                         colheads=NULL,

@@ -1,3 +1,4 @@
+## $Id$
 ## For 2 strata estimates the std. error. of the difference in two K-M
 ## estimates at each value of times, and plots half-width of CL for
 ## difference, centered at midpoint of survival estimates
@@ -39,8 +40,7 @@ mfrowSet <- function(n, trellis=FALSE, small=FALSE) {
       if(n <= 25) c(5,5) else if(n <= 30) c(5,6) else
       if(n <= 36) c(6,6) else if(n <= 42) c(6,7) else c(6,8)
     } else {
-      mf <-
-        mf <- if(n <= 4)c(2,2) else if(n <= 6)c(2,3) else 
+      mf <- if(n <= 4)c(2,2) else if(n <= 6)c(2,3) else 
       if(n <= 9)c(3,3) else c(4,3)
       if(n > 12 & n <= 16) mf <- c(4,4)
     }
