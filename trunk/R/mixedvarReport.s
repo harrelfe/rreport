@@ -32,6 +32,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       plot(d, which='cat', main='', ...)
       Key(.8, .02)  #.075)
       endPlot()
+      cp()
       putFig(panel, pn,
              paste('Distribution of categorical',longPanel,'variables'),
              paste('Distribution of categorical',longPanel,'variables.',
@@ -107,6 +108,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     startPlot(pn, h=h, w=w)
     plot(d, which='cat', main='', ...)
     endPlot()
+    cp()
     putFig(panel, pn,
            paste('Distribution of categorical', longPanel, 'variables'),
            paste('Distribution of categorical', longPanel, 'variables.',
