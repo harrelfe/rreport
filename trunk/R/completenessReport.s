@@ -60,10 +60,7 @@ completenessReport <- function(data, vars,
         lcap <- paste(lcap,
                       'Letters in parentheses indicate groups of variables ',
                       'having the same number of values measured, ',
-                      'defined as follows: ',
-                      paste(paste(ce$codes,':',
-                            '\\texttt{',ce$defs,'}',sep=''),collapse='; '),
-                      '.\n', sep='')
+                      'defined below.\n', sep='')
       if(!compFullCaptionDone) {
         lcap <- paste(lcap,
                       'Variables are sorted by the average number of',
@@ -77,6 +74,12 @@ completenessReport <- function(data, vars,
     putFig('completeness', fn,
            paste('Completeness of',longPanel,'variables'),
            lcap, append=append)
+    if(length(ce$codes))
+      cat('\nCodes used in Figure~\\ref{fig:',fn,'} are as follows:',
+          '{\\smaller[2]',
+          paste(paste(ce$codes,':',
+                      '\\texttt{',ce$defs,'}',sep=''),collapse='; '),
+          '.}\n\n', sep='', file=paste(fn,'tex',sep='.'), append=TRUE)
 
   } else cat('For the',length(vars),longPanel,
              'variables, the number of subjects having values entered',
