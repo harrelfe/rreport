@@ -124,10 +124,11 @@ labReport <- function(data, vars, panel, treat, time, times,
             ##   Key(.79,1)
       endPlot()
       putFig(panel, fn,
-             paste('Cumulative distribution of',label(v),
+             paste('Cumulative distribution of',
+                   latexTranslate(label(v)),
                    if(length(trlev) > 1) 'by treatment over time'),
              paste('Empirical cumulative distribution function of',
-                   label(v),
+                   latexTranslate(label(v)),
                    if(length(trlev) > 1) 'by treatment over time. \\protect\\treatkey'))
     }
   }
