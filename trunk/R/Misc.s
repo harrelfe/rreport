@@ -58,6 +58,9 @@ putFig <- function(panel, name, caption=NULL, longcaption=NULL,
   name <- translate(name, '.', '-')
   suffix <- paste('.',gtype,sep='')
 
+  ## if(length(caption)) caption <- latexTranslate(caption)
+  ## if(length(longcaption)) longcaption <- latexTranslate(longcaption)
+
   cat('\\begin{figure}[hbp!]',
       '\\leavevmode\\centerline{\\includegraphics{',name,suffix,'}}\n',
       if(length(longcaption)) paste('\\caption[',caption,']{',
