@@ -155,7 +155,7 @@ dirps2pdf <- function() {
   invisible()
 }                       
 
-publishPdf <- function(reports, title, server, path,
+publishPdf <- function(reports, minutes, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
                        hardcopies=TRUE, verbose=TRUE,
@@ -171,15 +171,16 @@ publishPdf <- function(reports, title, server, path,
   
   if(copy) {
     f <- tempfile()
-    rn <- paste(names(reports),'pdf',sep='.')
+    rn <- paste(names(c(reports,minutes)),'pdf',sep='.')
     info <- file.info(rn)[,c('size','mtime')]
     cat('<html><body bgcolor=white>',
         paste('<h2>', title, '</h2>', sep=''),
         sep='\n', file=f)
     i <- with(info, data.frame(Bytes=size, 'Date Created'=mtime,
-                               Description=reports,
-                               row.names=row.names(info), check.names=FALSE))
-    z <- html(i, file=f, append=TRUE, link=rn, linkCol='Name',
+                               Description=c(reports,minutes),
+                               row.names=basename(row.names(info)),
+                               check.names=FALSE))
+    z <- html(i, file=f, append=TRUE, link=basename(rn), linkCol='Name',
               linkType='href')
     system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
     for(i in 1:length(rn))
@@ -194,6 +195,9 @@ publishPdf <- function(reports, title, server, path,
             'open and closed meeting reports have ' else
             'open meeting report has ',
             'been placed or updated on a secure web page.',nl,
+            if(length(minutes))
+             paste(nl, paste(minutes,collapse=' and '),
+                   'have also been placed there.',nl,nl),
             'Point your browser to ', url, nl,
             'and use the username ', uid,
             ' and the password that will be in the next note.',nl,nl,
