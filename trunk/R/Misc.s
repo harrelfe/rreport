@@ -124,7 +124,7 @@ makeTreatKey <- function(tlevels, append=FALSE) {
 ## Save various constants in LaTeX variable definitions in file params.tex
 putparams <- function(...) {
   x <- list(...)
-  if(!length(x)) cat('', file='params.tex') else {
+  if(!length(x)) cat('% $Id$\n', file='params.tex') else {
     for(n in names(x))
       cat('\\def\\',n,'{',format(x[[n]]),'}\n',
           sep='', file='params.tex', append=TRUE)
