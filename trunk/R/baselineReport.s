@@ -1,4 +1,4 @@
-## $Author$ $Id$
+## $Id$
 baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                            bpPrototype=TRUE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
