@@ -2,7 +2,7 @@
 mixedvarReport <- function(data, vars, panel, treat,
                            longPanel=panel,
                            cdf=FALSE, Ohist=TRUE,
-                           bpPrototype=TRUE, digits=3, append=FALSE,
+                           bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7,
                            ...) {
@@ -12,12 +12,12 @@ mixedvarReport <- function(data, vars, panel, treat,
 
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
   d <- summary(form, data=data, method='reverse', test=TRUE)
-  lp <-  paste(toupper(substring(longPanel),1,1),
+  lp <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
         file=paste(panel, 'tex', sep='.'),
         append=append, middle.bold=TRUE,
-        caption=paste(longPanel,'variables', where='hbp!', ctable=TRUE)
+        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE)
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
     startPlot(pn, h=5, w=6) # was h=5 w=6
@@ -25,7 +25,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     Key(.8, .02)  #.075)
     endPlot()
     putFig(panel, pn,
-           paste('Distribution of categorical',longPanel,'variables',
+           paste('Distribution of categorical',longPanel,'variables'),
            paste('Distribution of categorical',longPanel,'variables.',
                  'Proportions on the $x$-axis indicate the',
                  'treatment-specific proportion of subjects in',
@@ -50,8 +50,8 @@ mixedvarReport <- function(data, vars, panel, treat,
       putFig(panel, paste(pn, i, sep=''),
              paste('Box-percentile plots for continuous',longPanel,'variables',
                    if(i>1) '(continued)' else ''),
-             paste('Box-percentile plots for continuous',longPanel,
-                   'variables',
+             paste('Box-percentile plots for continuous ',longPanel,
+                   ' variables',
                    if(i>1) ' (continued)' else
                    paste('.  $x$-axes are scaled to the $0.025$ and',
                          '$0.975$ quantiles when data are pooled',
@@ -73,7 +73,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                      'continuous', longPanel, 'variables',
                      if(i>1)'(continued)' else ''),
                paste('Empirical cumulative distribution plots for ',
-                     'continuous', longPanel,'variables',
+                     'continuous ', longPanel,' variables',
                      if(i>1)' (continued)' else 
                      paste('. Reference lines are drawn at',
                            'treatment-specific median values.',
@@ -81,42 +81,46 @@ mixedvarReport <- function(data, vars, panel, treat,
                      sep=''))
     }
   }
-    #### GOT TO HERE
-  form <- as.formula(paste('~', paste(vars,collapse='+')))
-  d <- summary(form, data=data, method='reverse')
-  latex(d, digits=digits, file='Obaseline.tex',
+
+    panel <- paste('O', panel, sep='')
+    form <- as.formula(paste('~', paste(vars,collapse='+')))
+    d <- summary(form, data=data, method='reverse')
+    latex(d, digits=digits, file=paste(panel, 'tex', sep='.'),
         append=append, middle.bold=TRUE,
-        caption='Baseline Variables', where='hbp!', ctable=TRUE)
+        caption=longPanel, where='hbp!', ctable=TRUE)
   if(any(d$type == 1)) {
-    startPlot('Obaselinecat', h=5, w=6) # was h=5 w=6
+    pn <- paste(panel, 'cat', sep='-')
+    startPlot(pn, h=5, w=6) # was h=5 w=6
     plot(d, which='cat', main='', ...)
     endPlot()
-    putFig('Obaseline', 'Obaselinecat',
-           'Distribution of categorical baseline variables',
-           paste('Distribution of categorical baseline variables.',
+    putFig(panel, pn,
+           paste('Distribution of categorical', longPanel, 'variables'),
+           paste('Distribution of categorical', longPanel, 'variables.',
                  'Proportions on the $x$-axis indicate the',
                  'proportion of subjects in',
                  'the category shown on the $y$-axis.'))
   }
   if(any(d$type == 2)) {
     if(cdf) {
-      startPlot('Obaseline-ecdf%d', h=6, w=6)
+      pn <- paste(panel, 'ecdf', sep='-')
+      startPlot(paste(pn, '%d', sep=''), h=6, w=6)
       mfrowSet(length(vars))
       np <- ecdf(data[vars], lwd=1, q=(1:3)/4)
       endPlot()
       for(i in 1:np)
-        putFig('Obaseline', paste('Obaseline-ecdf',i,sep=''),
+        putFig(panel, paste(pn, i, sep=''),
                paste('Cumulative distribution plots for continuous',
-                     'baseline variables',
+                     longPanel, 'variables',
                      if(i>1)'(continued)' else ''),
                paste('Empirical cumulative distribution plots for ',
-                     'continuous baseline variables',
+                     'continuous ', longPanel, ' variables',
                      if(i>1)' (continued)' else 
                      '. Reference lines are drawn at quartiles.',
                      sep=''))
     }
     if(Ohist) {
-      startPlot('Obaseline-hist%d', h=6, w=6)
+      pn <- paste(panel, 'hist', sep='-')
+      startPlot(paste(pn, '%d', sep=''), h=6, w=6)
       mfrowSet(length(vars))
 #    omf <- mfrowSet(nv)
 #    on.exit(par(mfrow=omf))
@@ -124,8 +128,8 @@ mixedvarReport <- function(data, vars, panel, treat,
       np <- hist.data.frame(data[vars])
       endPlot()
       for(i in 1:np)
-        putFig('Obaseline', paste('Obaseline-hist',i,sep=''),
-               paste('Histograms of baseline variables',
+        putFig(panel, paste(pn, i, sep=''),
+               paste('Histograms of', longPanel, 'variables',
                      if(i>1)'(continued)' else ''))
     }
   }
@@ -133,15 +137,15 @@ mixedvarReport <- function(data, vars, panel, treat,
   nv <- length(Majorvars)
   nm <- length(unique(Major))
   if(nv) {
-    startPlot('Obaseline-bw-major',
-#              h=if(nv > 7) 7 else if(nm > 7) 6 else 5, w=6)
+    pn <- paste(panel, 'bw-major', sep='-')
+    startPlot(pn,
               h=if(nv > 10) 7 else if(nm > 7) 6 else if(nv > 4) 5 else 4)
     mf <- mfrowSet(nv, trellis=TRUE)
     rw <- 1; cl <- 1
     for(j in 1:nv) {
       x <- data[[Majorvars[j]]]
       p <- bwplot(Major ~ x, xlab=label(x), panel=panel.bpplot,
-                  scales=list(cex=c(cexMajor,1)))
+                  scales=list(cex=c(cexMajor,1)), means=FALSE)
       print(p, split=c(cl,rw,mf[2],mf[1]),more=j < nv)
       cl <- cl + 1
       if(cl > mf[2]) {
@@ -150,9 +154,10 @@ mixedvarReport <- function(data, vars, panel, treat,
       }
     }
     endPlot()
-    lcap <- paste('Box-percentile plots of selected baseline variables stratified by',
+    lcap <- paste('Box-percentile plots of selected', longPanel,
+                  'variables stratified by',
                   MajorLabel)
-    putFig('Obaseline','Obaseline-bw-major', lcap)
+    putFig(panel, pn, lcap)
     
   }
   invisible()
