@@ -4,7 +4,7 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7,
                            ...) {
- 
+# mixedvarReport(..., panel='baseline', longPanel='baseline variables')
   vars  <- unlist(vars)
   Treat <- data[[treat]]
 
