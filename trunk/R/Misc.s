@@ -157,7 +157,8 @@ dirps2pdf <- function() {
 
 publishPdf <- function(reports, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
-                       to=NULL, cc=NULL, bcc=NULL, sig=NULL, verbose=TRUE) {
+                       to=NULL, cc=NULL, bcc=NULL, sig=NULL,
+                       hardcopies=TRUE, verbose=TRUE) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
   ##                   Oreport='Open Meeting Report'),'My Project',
@@ -193,7 +194,8 @@ publishPdf <- function(reports, title, server, path,
             '\\nand use the username ', uid,
             ' and the password that will be in the next note.\\n\\n',
             'Please confirm your ability to open the pdf files within 24 hours by replying to this message.\\n\\n',
-            'I will bring final hard copies to the meeting.', sep='')
+            if(hardcopies)'I will bring final hard copies to the meeting.',
+            sep='')
     if(length(sig)) {
       sig <- paste(sig, collapse='\\n')
       cmd <- paste(cmd, '\\n----------\\n', sig, sep='')
