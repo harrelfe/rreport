@@ -158,13 +158,17 @@ dirps2pdf <- function() {
 publishPdf <- function(reports, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
-                       hardcopies=TRUE, verbose=TRUE) {
+                       hardcopies=TRUE, verbose=TRUE,
+                       mailer=c('kmail','mail'), extra=NULL) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
   ##                   Oreport='Open Meeting Report'),'My Project',
   ##                 'myserver.edu', '/home/www/html/myproject')
   ## Be sure to put something like export REPLYTO=foo@place.edu in ~/.bashrc
 
+  mailer <- match.arg(mailer)
+  nl <- ifelse(mailer=='kmail','\n','\\n')
+  
   if(copy) {
     f <- tempfile()
     rn <- paste(names(reports),'pdf',sep='.')
@@ -189,26 +193,41 @@ publishPdf <- function(reports, title, server, path,
       paste('The ',if(length(reports) > 1)
             'open and closed meeting reports have ' else
             'open meeting report has ',
-            'been placed or updated on a secure web page.\\n',
-            'Point your browser to ', url,
-            '\\nand use the username ', uid,
-            ' and the password that will be in the next note.\\n\\n',
-            'Please confirm your ability to open the pdf files within 24 hours by replying to this message.\\n\\n',
+            'been placed or updated on a secure web page.',nl,
+            'Point your browser to ', url, nl,
+            'and use the username ', uid,
+            ' and the password that will be in the next note.',nl,nl,
+            'Please confirm your ability to open the pdf files within 24 hours by replying to this message.',nl,nl,
             if(hardcopies)'I will bring final hard copies to the meeting.',
+            if(length(extra)) paste(nl,nl, extra,sep=''),
             sep='')
     if(length(sig)) {
-      sig <- paste(sig, collapse='\\n')
-      cmd <- paste(cmd, '\\n----------\\n', sig, sep='')
+      sig <- paste(sig, collapse=nl)
+      cmd <- paste(cmd, nl, '----------', nl, sig, sep='')
     }
-    to <- paste(to, collapse=' ')
-    if(length(cc))  cc  <- paste(paste(' -c', cc), collapse='')
-    if(length(bcc)) bcc <- paste(paste(' -b', bcc),collapse='')
-    cmd <- paste('echo -e "', cmd, '" | mail -s "',
-                 title, ' Reports"', cc, bcc, ' ', to, sep='')
+    if(mailer=='kmail') {
+      tf <- tempfile()
+      cat(cmd, file=tf)
+      to <- paste('"', paste(to, collapse=','), '"', sep='')
+      if(length(cc)) cc <- paste(' -c "', paste(cc, collapse=','),'"',sep='')
+      if(length(bcc)) bcc <- paste(' -b "', paste(bcc, collapse=','),'"',sep='')
+    } else {
+      to <- paste(to, collapse=' ')
+      if(length(cc))  cc  <- paste(paste(' -c', cc), collapse='')
+      if(length(bcc)) bcc <- paste(paste(' -b', bcc),collapse='')
+    }
+    cmd <- if(mailer=='kmail') paste('kmail -s "', title, '"', cc,
+                bcc, ' --msg ', tf, ' ', to, sep='') else
+      paste('echo -e "', cmd, '" | mail -s "',
+            title, ' Reports"', cc, bcc, ' ', to, sep='')
     system(cmd)
     if(verbose) cat('\n\nMail command sent:\n', cmd, '\n')
+    prn(passwd)
     if(length(passwd)) {
-      cmd <- paste('echo ', passwd, ' | mail -s "Additional information"',
+      cmd <- if(mailer=='kmail')
+       paste('kmail -s "Additional information"', cc, bcc,
+             ' --body "', passwd, '" ', to, sep='') else
+       paste('echo ', passwd, ' | mail -s "Additional information"',
                    cc, bcc, ' ', to, sep='')
       system(cmd)
       if(verbose) cat('\n\nMail command sent:\n', cmd, '\n')
