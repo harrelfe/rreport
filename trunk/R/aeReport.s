@@ -207,7 +207,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
                        typeLabel=label(type),
                        plotprop =FALSE, Ntreat=NULL,
                        omitZeros=TRUE,
-                       ylim=c(0,1), h=5, w=5, digits=3, append=FALSE) {
+                       ylim=c(0,1), h=5, w=5, digits=3, size=NULL, append=FALSE) {
 
   longPanel <- paste(longPanel,'by',typeLabel)
   nt <- length(levels(treat))
@@ -221,7 +221,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
   w <- latex(tab, file=paste('gentex/',pan,'.tex',sep=''),
              title=pan, append=append, rowlabel=typeLabel,
              caption=paste('Frequencies of',longPanel),
-             ctable=TRUE)
+             ctable=TRUE, size=size)
   
   tab <- table(type, treat)
   tab <- cbind(tab, Total=rowSums(tab))
@@ -232,7 +232,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
                caption=paste('Frequencies of',longPanel,'and Treatment'),
                extracolheads=if(length(Ntreat))
                 paste('N',c(Ntreat,sum(Ntreat)),sep='='),
-               ctable=TRUE)
+               ctable=TRUE, size=size)
   
   if(plotprop) {
     startPlot(pan, h=h, w=w)
