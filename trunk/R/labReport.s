@@ -2,7 +2,7 @@
 labReport <- function(data, vars, panel, treat, time, times,
                       longPanel=panel, h=6.5, w=6.5,
                       diffs=FALSE, cdf=FALSE, tables=TRUE,
-                      digits=3, append=FALSE, clearPlots=FALSE) {
+                      digits=3, append=FALSE, clearPlots=FALSE, open=TRUE) {
 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
@@ -152,6 +152,6 @@ labReport <- function(data, vars, panel, treat, time, times,
   }
 }
   makerep(Treat, panel)
-  makerep(rep('', length(Treat)), paste('O',panel,sep=''))
+  if(open) makerep(rep('', length(Treat)), paste('O',panel,sep=''))
   invisible()
 }
