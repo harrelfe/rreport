@@ -187,7 +187,7 @@ publishPdf <- function(reports, title, server, path,
     cmd <-
       paste('The ',if(length(reports) > 1)
             'open and closed meeting reports have ' else
-            'closed meeting report has ',
+            'open meeting report has ',
             'been placed or updated on a secure web page.\\n',
             'Point your browser to ', url,
             '\\nand use the username ', uid,
