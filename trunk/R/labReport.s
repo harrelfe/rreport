@@ -68,7 +68,7 @@ labReport <- function(data, vars, panel, treat, time, times,
         midpt  <- mean(z$y[s])
         clhalf <- 1.96*sqrt(sum(z$variance[s]))
         lines(c(tim,tim), c(midpt-clhalf/2, midpt+clhalf/2),
-              lwd=0.5, col=gray(0.7))
+              col=gray(0.3))
       }
     }
   }
@@ -90,7 +90,7 @@ labReport <- function(data, vars, panel, treat, time, times,
            if(npage == 1)
            paste(cap,
                  '. Outer lines are $25^{th}$ (lower line)',
-                 ' and $75^{th}$ (upper line)) percentiles.',
+                 ' and $75^{th}$ (upper line) percentiles.',
                  ' Thicker middle lines depict medians.',
                  ' $y$-axis is scaled to the pooled $5^{th}$',
                  ' and $95^{th}$ quantiles.',
