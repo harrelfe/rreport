@@ -222,7 +222,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
   w <- latex(tab, file=paste('gentex/',pan,'.tex',sep=''),
              title=pan, append=append, rowlabel=typeLabel,
              caption=paste('Frequencies of',longPanel),
-             ctable=TRUE, size=size,
+             ctable=!longtable, size=size,
              longtable=longtable, lines.page=lines.page)
   
   tab <- table(type, treat)
