@@ -202,3 +202,45 @@ aeReport <- function(data, vars, treat, time,
              prtest='P', digits=digits, where='hbp!',
              insert.bottom=FALSE, ctable=TRUE)
 }
+
+freqReport <- function(type, panel, treat, longPanel=panel,
+                       typeLabel=label(type),
+                       plotprop =FALSE, Ntreat=NULL,
+                       omitZeros=TRUE,
+                       ylim=c(0,1), h=5, w=5, digits=3, append=FALSE) {
+
+  longPanel <- paste(longPanel,'by',typeLabel)
+  nt <- length(levels(treat))
+  if(any(is.na(type)))
+     type <- ifelse(is.na(type),'Unspecified',as.character(type))
+
+  tab <- table(type)
+  if(omitZeros) tab <- tab[tab > 0]
+  tab <- as.matrix(tab)
+  pan <- paste('O', panel, sep='')
+  w <- latex(tab, title=pan, append=append, rowlabel=typeLabel,
+             caption=paste('Frequencies of',longPanel),
+             ctable=TRUE)
+  
+  tab <- table(type, treat)
+  tab <- cbind(tab, Total=rowSums(tab))
+  if(omitZeros) tab <- tab[tab[,'Total'] > 0,]
+  pan <- panel
+  w   <- latex(tab, title=pan, append=append, rowlabel=typeLabel,
+               caption=paste('Frequencies of',longPanel,'and Treatment'),
+               extracolheads=if(length(Ntreat))
+                paste('N',c(Ntreat,sum(Ntreat)),sep='='),
+               ctable=TRUE)
+  
+  if(plotprop) {
+    startPlot(pan, h=h, w=w)
+    ## add plotting code here!
+    endPlot()
+    cap <- paste('Frequencies and proportions of',longPanel)
+    putFig(pan, name, cap,
+           paste(cap,
+                 '. Denominators of proportions are assumed to be constants.',
+                 sep=''))
+  }
+
+}
