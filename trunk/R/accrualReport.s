@@ -74,8 +74,8 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
   if(length(ce$codes))
     cat('\nCodes used in Figure~\\ref{fig:', lb, '} are as follows:',
         '{\\smaller[3]',
-        paste(paste(ce$codes,':',
-                    '\\texttt{\\textbf{',ce$defs,'}}',sep=''),collapse='; '),
+        paste(paste('\\textbf{',ce$codes,'}:',
+                    '\\texttt{',ce$defs,'}',sep=''),collapse='; '),
         '.}\n\n', sep='', file='accrual.tex', append=TRUE)
        
 

@@ -77,7 +77,7 @@ completenessReport <- function(data, vars,
     if(length(ce$codes))
       cat('\nCodes used in Figure~\\ref{fig:',fn,'} are as follows:',
           '{\\smaller[3]',
-          paste(paste(ce$codes,':',
+          paste(paste('\\textbf{',ce$codes,'}:',
                       '\\texttt{\\textbf{',ce$defs,'}}',sep=''),collapse='; '),
           '.}\n\n', sep='', file=paste(fn,'tex',sep='.'), append=TRUE)
 

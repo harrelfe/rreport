@@ -87,7 +87,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     d <- summary(form, data=data, method='reverse')
     latex(d, digits=digits, file=paste(panel, 'tex', sep='.'),
         append=append, middle.bold=TRUE,
-        caption=longPanel, where='hbp!', ctable=TRUE)
+        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE)
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
     startPlot(pn, h=5, w=6) # was h=5 w=6
