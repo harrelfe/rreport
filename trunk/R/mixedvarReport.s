@@ -5,7 +5,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7, continuous=10,
-                           pl=TRUE, ...) {
+                           pl=TRUE, size=NULL, ...) {
  
   vars  <- unlist(vars)
   Treat <- data[[treat]]
@@ -17,7 +17,7 @@ mixedvarReport <- function(data, vars, panel, treat,
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE,
-        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE)
+        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(pl) {
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
@@ -88,7 +88,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     d <- summary(form, data=data, method='reverse', continuous=continuous)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE,
-        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE)
+        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
