@@ -59,10 +59,12 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
 
   lb <- paste('accrual',panel,'sitefreq',sep='-')
   startPlot(lb,
-            h=if(ns > 40) 8.5 else if(ns > 25)6 else
+            h=if(ns > 40) 7.5 else if(ns > 25)6 else
             if(ns > 15) 5 else 4,
-            trellis=TRUE)
-  print(Dotplot(sites ~ n, xlab='Number of Subjects', ylab='Site'))
+            trellis=FALSE)
+  dotchart2(-sort(-n), 
+            xlab='Number of Subjects', ylab='Site',
+            cex.labels=if(ns > 40) .7 else 1)
   endPlot()
 
   lcap <- paste('Number of subjects',panel,'by center')
