@@ -155,25 +155,53 @@ dirps2pdf <- function() {
   invisible()
 }                       
 
-publishPdf <- function(reports, title, server, path) {
+publishPdf <- function(reports, title, server, path,
+                       copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
+                       to=NULL, cc=NULL) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
   ##                   Oreport='Open Meeting Report'),'My Project',
   ##                 'myserver.edu', '/home/www/html/myproject')
 
-  f <- tempfile()
-  rn <- paste(names(reports),'pdf',sep='.')
-  info <- file.info(rn)[,c('size','mtime')]
-  cat('<html><body bgcolor=white>',
-      paste('<h2>', title, '</h2>', sep=''),
-      sep='\n', file=f)
-  i <- with(info, data.frame(Bytes=size, 'Date Created'=mtime,
-                             Description=reports,
-                             row.names=row.names(info), check.names=FALSE))
-  z <- html(i, file=f, append=TRUE, link=rn, linkCol='Name',
-            linkType='href')
-  system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
-  for(i in 1:length(rn))
-    system(paste('scp -p ', rn[i], ' ', server, ':', path, sep=''))
+  if(copy) {
+    f <- tempfile()
+    rn <- paste(names(reports),'pdf',sep='.')
+    info <- file.info(rn)[,c('size','mtime')]
+    cat('<html><body bgcolor=white>',
+        paste('<h2>', title, '</h2>', sep=''),
+        sep='\n', file=f)
+    i <- with(info, data.frame(Bytes=size, 'Date Created'=mtime,
+                               Description=reports,
+                               row.names=row.names(info), check.names=FALSE))
+    z <- html(i, file=f, append=TRUE, link=rn, linkCol='Name',
+              linkType='href')
+    system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
+    for(i in 1:length(rn))
+      system(paste('scp -p ', rn[i], ' ', server, ':', path, sep=''))
+  }
+  if(email) {
+    url <- strsplit(path, '/')[[1]]
+    url <- url[length(url)]
+    url <- paste('http://', server, '/', url, sep='')
+    cmd <-
+      paste('The',if(length(reports)==1)
+            'open and closed meeting reports have' else
+            'closed meeting report has',
+            'been placed or updated on a secure web page.\\n',
+            'Point your browser to', url,
+            '\\nand use the username', uid,
+            'and the password that will be in the next note.\\n\\n',
+            'Please confirm your ability to open the pdf files within 24 hours by replying to this message.',
+            'I will bring final hard copies to the meeting.')
+    if(length(cc)) cc <- paste(' -c', cc)
+    cmd <- paste('echo -e "', cmd, '" | mailto ', to, cc, ' -s "',
+                 title, ' Reports"', sep='')
+    system(cmd)
+    if(length(passwd)) {
+      cmd <- paste('echo ', passwd, ' | mailto ', to, cc,
+                   ' -s "Additional information"', sep='')
+      system(cmd)
+    }
+  }
   invisible()
 }
