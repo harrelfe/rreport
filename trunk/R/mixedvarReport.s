@@ -5,11 +5,17 @@ mixedvarReport <- function(data, vars, panel, treat,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7, continuous=10,
-                           pl=TRUE, size=NULL, h=5, w=6, ...) {
+                           pl=TRUE, size=NULL, h=5, w=6,
+                           clearPlots=FALSE, ...) {
 
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
+
+  cp <- function()
+    if(clearPlots)
+      cat('\\clearpage\n', file=paste('gentex/',panel,'.tex',sep=''),
+          append=TRUE)
 
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
   d <- summary(form, data=data, method='reverse', test=TRUE, continuous=continuous)
@@ -32,6 +38,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                    'Proportions on the $x$-axis indicate the',
                    'treatment-specific proportion of subjects in',
                    'the category shown on the $y$-axis.'))
+      cp()
     }
     if(any(d$type == 2) || length(Major)) {
       if(bpPrototype) {
@@ -48,7 +55,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       startPlot(paste(pn,'%d',sep=''), h=6, w=6)
       np <- plot(d, which='con', conType='bp')
       endPlot()
-      for(i in 1:np)
+      for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste('Box-percentile plots for continuous',longPanel,'variables',
                      if(i>1) '(continued)' else ''),
@@ -59,6 +66,8 @@ mixedvarReport <- function(data, vars, panel, treat,
                            '$0.975$ quantiles when data are pooled',
                            'over treatments.'),
                      sep=''))
+        cp()
+      }
   
       if(cdf) {
         pn <- paste(panel, 'ecdf', sep='-')
@@ -68,7 +77,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                    lwd=c(1,2), col=gray(c(0,.7)), q=.5,
                    label.curves=FALSE)
         endPlot()
-        for(i in 1:np)
+        for(i in 1:np) {
           putFig(panel, paste(pn, i, sep=''),
                  paste('Cumulative distribution plots for',
                        'continuous', longPanel, 'variables',
@@ -80,6 +89,8 @@ mixedvarReport <- function(data, vars, panel, treat,
                              'treatment-specific median values.',
                              '\\protect\\treatkey'),
                        sep=''))
+          cp()
+        }
       }
     }
   }
@@ -102,6 +113,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                  'Proportions on the $x$-axis indicate the',
                  'proportion of subjects in',
                  'the category shown on the $y$-axis.'))
+    cp()
   }
   if(any(d$type == 2)) {
     if(cdf) {
@@ -110,7 +122,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       mfrowSet(length(vars))
       np <- ecdf(data[vars], lwd=1, q=(1:3)/4)
       endPlot()
-      for(i in 1:np)
+      for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste('Cumulative distribution plots for continuous',
                      longPanel, 'variables',
@@ -120,6 +132,8 @@ mixedvarReport <- function(data, vars, panel, treat,
                      if(i>1)' (continued)' else 
                      '. Reference lines are drawn at quartiles.',
                      sep=''))
+        cp()
+      }
     }
     if(Ohist) {
       pn <- paste(panel, 'hist', sep='-')
@@ -130,10 +144,12 @@ mixedvarReport <- function(data, vars, panel, treat,
 #    mf <- par('mfrow')
       np <- hist.data.frame(data[vars])
       endPlot()
-      for(i in 1:np)
+      for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste('Histograms of', longPanel, 'variables',
                      if(i>1)'(continued)' else ''))
+        cp()
+      }
     }
   }
 
@@ -161,6 +177,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                   'variables stratified by',
                   MajorLabel)
     putFig(panel, pn, lcap)
+    cp()
     
   }
   invisible()
