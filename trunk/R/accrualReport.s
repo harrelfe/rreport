@@ -16,7 +16,7 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
     sitesPerMajor <- sapply(s, function(x) length(unique(x)))
 
     lb <- paste('accrual',panel,'majorfreq',sep='-')
-    startPlot(lb, h=4, trellis=FALSE)
+    startPlot(lb, h=6, trellis=FALSE)
 #    print(Dotplot(maj ~ n, xlab='Number of Subjects',
 #                  ylab=MajorLabel))
     mm <- -sort(-n)
@@ -58,7 +58,7 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
   }
 
   lb <- paste('accrual',panel,'sitefreq',sep='-')
-  startPlot(lb, h=if(ns > 25)5 else if(ns > 15) 4 else 3,
+  startPlot(lb, h=if(ns > 25)6 else if(ns > 15) 5 else 4,
             trellis=TRUE)
   print(Dotplot(sites ~ n, xlab='Number of Subjects', ylab='Site'))
   endPlot()
