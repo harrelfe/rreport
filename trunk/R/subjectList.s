@@ -13,10 +13,18 @@ subjectList <- function(data, panel, caption=NULL,
       lab <- ifelse(lab=='', names(data), lab)
     }
   }
-  for(i in 1:length(data))
-    if(inherits(data[[i]],'POSIXct'))
-      data[[i]] <- format(data[[i]], format='%Y-%m-%d')
-  w <- latex(data, title=panel, colheads=lab,
+  ## For chron date-time variables remove surrounding ( ) and seconds
+  for(i in 1:length(data)) {
+    x <- data[[i]]
+    if(all(c('chron','dates','times') %in% class(x))) {
+      x <- format(x)
+      x <- substring(x, 2, nchar(x)-4)
+      data[[i]] <- x
+    }
+  }
+    
+  w <- latex(data, file=paste('gentex/',panel,'.tex',sep=''),
+             title=panel, colheads=lab,
              longtable=longtable, size=size, caption=caption,
              landscape=landscape, rowname=NULL)
   invisible()
