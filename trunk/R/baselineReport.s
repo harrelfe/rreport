@@ -3,7 +3,7 @@ baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL,
                            ...) {
-
+ 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
 
