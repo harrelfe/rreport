@@ -1,3 +1,5 @@
+# Author:$Author$  Date:$Date$
+# File: $Id$       Revision:$Revision$
 baselineReport <- function(data, vars, treat, cdf=FALSE, Ohist=TRUE,
                            bpPrototype=TRUE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
