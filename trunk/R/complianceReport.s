@@ -10,8 +10,8 @@ complianceReport <- function(comply, treat, time, times=NULL) {
   }
   Compliance <- comply
   latex(summary(Compliance ~ time+stratify(treat)), 
-        file='compliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
+        file='gentex/compliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
   latex(summary(Compliance ~ time),
-        file='Ocompliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
+        file='gentex/Ocompliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
   invisible()
 }

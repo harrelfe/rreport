@@ -132,7 +132,7 @@ labReport <- function(data, vars, panel, treat, time, times,
   for(x in times) {
     s <- summary(form, data=data[Time==x,], method='reverse',
                  test=TRUE)
-    w <- latex(s, file=paste(panel,'tex',sep='.'), append=TRUE,
+    w <- latex(s, file=paste('gentex/',panel,'.tex',sep=''), append=TRUE,
                middle.bold=TRUE, title='',
                caption=paste(longPanel,'Data at',label(Time),x),
                prtest='P', digits=digits, where='hbp!', ctable=TRUE)

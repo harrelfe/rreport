@@ -27,7 +27,7 @@ rangeCheck <- function(data, checks, panel, longPanel=panel,
   }
   if(length(Lab)) {
     names(Count) <- Lab
-    latex(Count, title=panel,
+    latex(Count, title=panel, file=paste('gentex/',panel,'.tex',sep=''),
           colheads=c('Error','Frequency'),
           caption=paste('Frequencies of out of range values in',
             longPanel),

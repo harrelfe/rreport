@@ -174,7 +174,7 @@ aeReport <- function(data, vars, treat, time,
   for(x in times.tables) {
     s <- summary(form, data=data[Time==x,], method='reverse',
                  test=TRUE)
-    w <- latex(s, file='ae.tex', append=TRUE,
+    w <- latex(s, file='gentex/ae.tex', append=TRUE,
                middle.bold=TRUE, title='',
                caption=paste('Adverse Events at',label(Time),x),
                prtest='P', digits=digits, where='hbp!',
@@ -196,7 +196,7 @@ aeReport <- function(data, vars, treat, time,
   dimnames(m) <- dm
   v <- matrix2dataFrame(m, at)
   s <- summary(form, data=v, method='reverse', test=TRUE)
-  w <- latex(s, file='ae.tex', append=TRUE,
+  w <- latex(s, file='gentex/ae.tex', append=TRUE,
              middle.bold=TRUE, title='',
              caption='Adverse Events at Any Time',
              prtest='P', digits=digits, where='hbp!',
@@ -218,7 +218,8 @@ freqReport <- function(type, panel, treat, longPanel=panel,
   if(omitZeros) tab <- tab[tab > 0]
   tab <- as.matrix(tab)
   pan <- paste('O', panel, sep='')
-  w <- latex(tab, title=pan, append=append, rowlabel=typeLabel,
+  w <- latex(tab, file=paste('gentex/',pan,'.tex',sep=''),
+             title=pan, append=append, rowlabel=typeLabel,
              caption=paste('Frequencies of',longPanel),
              ctable=TRUE)
   
@@ -226,7 +227,8 @@ freqReport <- function(type, panel, treat, longPanel=panel,
   tab <- cbind(tab, Total=rowSums(tab))
   if(omitZeros) tab <- tab[tab[,'Total'] > 0,]
   pan <- panel
-  w   <- latex(tab, title=pan, append=append, rowlabel=typeLabel,
+  w   <- latex(tab, file=paste('gentex/',pan,'.tex',sep=''),
+               title=pan, append=append, rowlabel=typeLabel,
                caption=paste('Frequencies of',longPanel,'and Treatment'),
                extracolheads=if(length(Ntreat))
                 paste('N',c(Ntreat,sum(Ntreat)),sep='='),
