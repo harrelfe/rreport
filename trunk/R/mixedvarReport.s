@@ -20,7 +20,8 @@ mixedvarReport <- function(data, vars, panel, treat,
           append=TRUE)
 
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
-  d <- summary(form, data=data, method='reverse', test=test, continuous=continuous)
+  d <- summary(form, data=data, method='reverse',
+               test=test, continuous=continuous)
   lp <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
