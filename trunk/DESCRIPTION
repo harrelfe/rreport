@@ -3,7 +3,7 @@ Version: 0.0-1
 Date: 2003-08-03
 Title: Research Reporting Package
 Author: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
-Maintainer: Frank E Harrell Jr <f.harrell@vanderbilt.edu>
+Maintainer: Charles Dupont <charles.dupont@vanderbilt.edu>
 Depends: R (>= 1.6), grid (>= 0.5-1), lattice (>= 0.4-0), Hmisc (>= 2.0-9)
 Description: The rreport package contains many functions useful for
 	monitoring and reporting the results of clinical trials and other
