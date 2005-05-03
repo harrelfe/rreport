@@ -2,7 +2,7 @@
 listTable <- function(fileName,
                        longtable=TRUE, landscape=FALSE,
                        caption = "", fontSize="small",
-                       zebra=FALSE, dataframe, zebraPattern=NULL, by=NULL,
+                       dataframe, zebraPattern="none", by=dataframe[[1]], orderGroups=FALSE,
                        colNames = names(dataframe),
                        vars =names(dataframe), fixedColVars=c(), fixedColWdths=c(),
                        markVar="", markVarVal=""){
@@ -11,7 +11,7 @@ listTable <- function(fileName,
       
   fontSizes <- c("tiny","scriptsize","footnotesize","small",
                  "normalsize","large","Large","LARGE","huge","Huge")
-  zebraPatterns <- c("plain", "group", "plaingroup")
+  zebraPatterns <- c("none", "plain", "group", "plaingroup")
   #NOTE: pattern "plaingroup" is recommended only for large groups (more than 4 objects in a group)
 
   #!!! not to remove: adjusted pallet white&gray
@@ -90,7 +90,7 @@ listTable <- function(fileName,
 
   processBeginCommand <- function(beginCom=c(), outFile,
                                   caption = "", fontSize="small", colNames = c(),
-                                  zebra=FALSE, dataframe, zebraPattern,
+                                  dataframe, zebraPattern,
                                   fixedColVars=c(), fixedColWdths=c(),
                                   markVar="", markVarVal=""){
     
@@ -129,49 +129,54 @@ listTable <- function(fileName,
       }
       cat(" {",paste(colFormat, collapse=""),"}", sep="", file=outFile)
     }
-    hline <- function(outFile){
-      cat("\\hline\n", file=outFile)
+    hline <- function(outFile, number=1){
+      cat(paste(rep("\\hline",number),collapse=""),"\n", file=outFile)
     }
 
-    processColsHead <- function(colNames, longtable, outFile){
-      headStyle <- "\\bfseries"
-      colNum <- length(colNames)
-      hline(outFile)
-      hline(outFile)
-      cat(headStyle, colNames[1], file=outFile)
-      for (i in 2:length(colNames)){
-        cat("&", headStyle, colNames[i], file=outFile)
+    processColsHead <- function(colNames, longtable, caption="", outFile){
+      processColNames <- function(colNames, style, outFile){
+        hline(outFile,2)
+        cat(style, colNames[1], file=outFile)
+        for (i in 2:length(colNames)){
+          cat("&", style, colNames[i], file=outFile)
+        }
+        cat("\\\\\n", file=outFile)
+        hline(outFile)
       }
-      cat("\\\\\n", file=outFile)
-      hline(outFile)
+      headStyle <- "\\bfseries"
+      otherStyle <- "\\bfseries\\em"
+      colNum <- length(colNames)
+      processColNames(colNames, headStyle, outFile)
       hline(outFile)
       if (longtable){
+        cat("\\endfirsthead\n", file=outFile)
+        cat("\\caption[]{",caption,"{",otherStyle," (continued)}} \\\\\n", file=outFile)
+        processColNames(colNames, headStyle, outFile)
         cat("\\endhead\n", file=outFile)
         hline(outFile)
-        cat("\\multicolumn{",colNum,"}{r}{\\itshape Continued on next page}\\\\\n",
+        cat("\\multicolumn{",colNum,"}{r}{",otherStyle," Continued on next page}\\\\\n",
             sep="", file=outFile)
         cat("\\endfoot\n", file=outFile)
         hline(outFile)
-        cat("\\multicolumn{",colNum,"}{r}{\\itshape The end}\\\\\n",
+        cat("\\multicolumn{",colNum,"}{r}{",otherStyle," The end}\\\\\n",
             sep="", file=outFile)
         cat("\\endlastfoot\n", file=outFile)
       }
     }
-    processRows <- function(data, zebra, zebraPattern, outFile, markVar, markVarVal){
+    processRows <- function(data, zebraPattern, outFile, markVar, markVarVal){
       #internal constants and functions definitions
           
-      processRow <- function(row, zebra, color, outFile, markVarIndex){
-        if (zebra==TRUE){
+      processRow <- function(row, color, outFile, markVarIndex){
+        if (!is.na(color)){
           cat("\\rowcolor{",color,"}\n",sep="", file=outFile)
         }
         cat(row[[1]], file=outFile)
         for (i in c(2:length(row))){
           if (i==markVarIndex){
-            markVarStr <- "\\color{red}\\bfseries\\itshape"
+            cat(" &", "\\color{red}{\\bfseries\\em ", row[[i]],"}", file=outFile)
           }else{
-            markVarStr <- ""
+            cat(" &", row[[i]], file=outFile)
           }
-          cat(" &", markVarStr, row[[i]], file=outFile)
         }
         cat("\\\\\n", file=outFile)
       }
@@ -183,12 +188,12 @@ listTable <- function(fileName,
         for (i in c(1:length(data[[1]]))){
           if (!is.na(markVarIndex)){
             if (data[i,markVarIndex]==markVarVal){
-              processRow(data[i,], zebra, zebraPattern[i], outFile, markVarIndex)
+              processRow(data[i,], zebraPattern[i], outFile, markVarIndex)
             }else{
-              processRow(data[i,], zebra, zebraPattern[i], outFile, -1)
+              processRow(data[i,], zebraPattern[i], outFile, -1)
             }
           }else{
-            processRow(data[i,], zebra, zebraPattern[i], outFile, -1)
+            processRow(data[i,], zebraPattern[i], outFile, -1)
           }
         }
       }
@@ -204,27 +209,27 @@ listTable <- function(fileName,
       }
       if (beginCom[1] == "tabular"){
         processColsFormat(data=dataframe, fixedColVars, fixedColWdths, outFile)
-        processColsHead(colNames = colNames, beginCom[1] == "longtable", outFile)
-        processRows(data=dataframe, zebra=zebra, zebraPattern=zebraPattern, outFile,
+        processColsHead(colNames = colNames, beginCom[1] == "longtable", outFile=outFile)
+        processRows(data=dataframe, zebraPattern=zebraPattern, outFile,
                     markVar, markVarVal)
       }
       if (beginCom[1] == "longtable"){
         processColsFormat(data=dataframe, fixedColVars, fixedColWdths, outFile)
         latexCaption(caption, beginCom[1] == "longtable",outFile)
-        processColsHead(colNames = colNames, beginCom[1] == "longtable", outFile)
-        processRows(data=dataframe, zebra=zebra, zebraPattern=zebraPattern, outFile,
+        processColsHead(colNames = colNames, beginCom[1] == "longtable", caption, outFile)
+        processRows(data=dataframe, zebraPattern=zebraPattern, outFile,
                     markVar, markVarVal)
       }
       processBeginCommand(beginCom[2:(length(beginCom)+1)], outFile,
                           caption, fontSize, colNames,
-                          zebra, dataframe, zebraPattern,
+                          dataframe, zebraPattern,
                           fixedColVars, fixedColWdths,
                           markVar, markVarVal)
       commandEnd(beginCom[1], outFile)
     }
   }
 
-  makePattern <- function(zebra, zebraPattern, by){
+  makePattern <- function(zebraPattern, by){
     #internal constants and functions definitions
         
     plain <- function(col1, col2, len){
@@ -250,7 +255,7 @@ listTable <- function(fileName,
     }
     
   #beginning of the function makePattern
-    if (zebra){
+    if (zebraPattern != "none"){
       if (!(zebraPattern %in% zebraPatterns)) stop("Error: Illigal Zebra Pattern\n")
       if (zebraPattern=="plain"){
         pattern <- plain("lightwhite","middlegray",length(by))
@@ -267,7 +272,7 @@ listTable <- function(fileName,
       }
       pattern
     }else{
-      NULL
+      rep(NA, length(by))
     }
   }
 
@@ -281,17 +286,23 @@ listTable <- function(fileName,
   }
     
 #beginning of the function listTable
-  outFile <- file(paste("gentex/",fileName,sep=""), open="wt")
+  outFile <- file(fileName, open="wt")
   on.exit(close(outFile))
   dataframe <- dataframe[,vars]
   for (n in names(dataframe)){
     dataframe[[n]] <- as.character(as.character(dataframe[[n]]))
     dataframe[[n]] <- sapply(X = dataframe[[n]], FUN=latexTextMode)
   }
-  if (zebra && (zebraPattern=="group")){
+  if (orderGroups){
     dataframe <- dataframe[order(dataframe[[by]]),]
   }
-  pattern <- makePattern(zebra, zebraPattern, dataframe[[by]])
+  if ((zebraPattern %in% c("group","plaingroup")) && 
+       !all(dataframe[[by]]==dataframe[[by]][order(dataframe[[by]])])){
+    cat("\nWARNING: It is recommended to order the data by", by, "\n",
+        "         when argument 'zebraPattern' is set to 'group' or 'plaingroup'.\n",
+        "         It can be done by setting argument 'orderGroups' to TRUE.\n")
+  }
+  pattern <- makePattern(zebraPattern, dataframe[[by]])
   beginCommands <- c()
   if (landscape) beginCommands <- c(beginCommands,"landscape")
   beginCommands <- c(beginCommands, fontSize)
@@ -301,7 +312,7 @@ listTable <- function(fileName,
   defineColors(outFile)
   processBeginCommand(beginCommands, outFile,
                       caption, fontSize, colNames,
-                      zebra, dataframe, pattern,
+                      dataframe, pattern,
                       fixedColVars, fixedColWdths,
                       markVar, markVarVal)
 }#end of the function listTable
