@@ -2,10 +2,11 @@
 listTable <- function(fileName,
                        longtable=TRUE, landscape=FALSE,
                        caption = "", fontSize="small",
-                       dataframe, zebraPattern="none", by=dataframe[[1]], orderGroups=FALSE,
+                       dataframe, zebraPattern="none", by=names(dataframe)[1], orderGroups=FALSE,
                        colNames = names(dataframe),
                        vars =names(dataframe), fixedColVars=c(), fixedColWdths=c(),
-                       markVar="", markVarVal=""){
+                       markVar="", markVarVal="",
+                       toLatexChar=TRUE){
                        
   #internal constants and functions definitions
       
@@ -165,7 +166,8 @@ listTable <- function(fileName,
     }
     processRows <- function(data, zebraPattern, outFile, markVar, markVarVal){
       #internal constants and functions definitions
-          
+
+if (FALSE){
       processRow <- function(row, color, outFile, markVarIndex){
         if (!is.na(color)){
           cat("\\rowcolor{",color,"}\n",sep="", file=outFile)
@@ -180,6 +182,26 @@ listTable <- function(fileName,
         }
         cat("\\\\\n", file=outFile)
       }
+}
+
+if (TRUE){
+      processRow <- function(row, color, outFile, markVarIndex){
+        rowStr <- ""
+        if (!is.na(color)){
+          rowStr <- paste(rowStr,"\\rowcolor{",color,"}\n",sep="")
+        }
+        rowStr <- paste(rowStr,row[[1]],sep="")
+        for (i in c(2:length(row))){
+          if (i==markVarIndex){
+            rowStr <- paste(rowStr," &", "\\color{red}{\\bfseries\\em ", row[[i]],"}",sep="")
+          }else{
+            rowStr <- paste(rowStr," &", row[[i]],sep="")
+          }
+        }
+        rowStr <- paste(rowStr,"\\\\\n", sep="")
+        cat(rowStr, file=outFile)
+      }
+}
       
     #beginning of the function processRows
       markVarIndex <- match(markVar, names(data))
@@ -289,18 +311,21 @@ listTable <- function(fileName,
   outFile <- file(fileName, open="wt")
   on.exit(close(outFile))
   dataframe <- dataframe[,vars]
-  for (n in names(dataframe)){
-    dataframe[[n]] <- as.character(as.character(dataframe[[n]]))
-    dataframe[[n]] <- sapply(X = dataframe[[n]], FUN=latexTextMode)
-  }
   if (orderGroups){
     dataframe <- dataframe[order(dataframe[[by]]),]
   }
-  if ((zebraPattern %in% c("group","plaingroup")) && 
-       !all(dataframe[[by]]==dataframe[[by]][order(dataframe[[by]])])){
-    cat("\nWARNING: It is recommended to order the data by", by, "\n",
-        "         when argument 'zebraPattern' is set to 'group' or 'plaingroup'.\n",
-        "         It can be done by setting argument 'orderGroups' to TRUE.\n")
+  if (zebraPattern %in% c("group","plaingroup")){
+    ordered <- dataframe[[by]][order(dataframe[[by]])]
+    if (!all(dataframe[[by]]==ordered) && !all(dataframe[[by]]==ordered[length(ordered):1])){
+      cat("\nWARNING: It is recommended to order the data by", by, "\n",
+          "         when argument 'zebraPattern' is set to 'group' or 'plaingroup'.\n",
+          "         It can be done by setting argument 'orderGroups' to TRUE.\n")
+    }
+  }
+  for (n in names(dataframe)){
+    dataframe[[n]] <- as.character(as.character(dataframe[[n]]))
+    if (toLatexChar)
+      dataframe[[n]] <- sapply(X = dataframe[[n]], FUN=latexTextMode)
   }
   pattern <- makePattern(zebraPattern, dataframe[[by]])
   beginCommands <- c()
