@@ -8,7 +8,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            Majorvars=NULL, cexMajor=.7, continuous=10,
                            keyloc=list(x=.8, y=.02),
                            pl=TRUE, size=NULL, h=5, w=6,
-                           clearPlots=FALSE, ...) {
+                           clearPlots=FALSE, auxCol=NULL, ...) {
 
   npct <- match.arg(npct)
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
@@ -28,7 +28,8 @@ mixedvarReport <- function(data, vars, panel, treat,
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
-        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
+        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
+        size=size, auxCol=auxCol)
   if(pl) {
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
@@ -104,8 +105,9 @@ mixedvarReport <- function(data, vars, panel, treat,
     form <- as.formula(paste('~', paste(vars,collapse='+')))
     d <- summary(form, data=data, method='reverse', continuous=continuous)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
-        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE, size=size)
+          append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
+          caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
+          size=size, auxCol=auxCol)
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
