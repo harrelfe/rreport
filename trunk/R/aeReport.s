@@ -290,12 +290,67 @@ aeReport2 <- function(major, minor, treat, id, denom,
     }
   }
 
-  x <- cbind('\\#AE'=ae, '\\% AE'=100*ae/n, '\\#Sb'=sb, 'Mean/Sb'=sb/n)
-  prn(x)
+  x <- cbind('\\#AE'=ae, '\\%AE'=100*ae/n, '\\#Sb'=sb, 'Mean/Sb'=sb/n)
   latex(x, file='gentex/Oae.tex', append=append, rowlabel='Event',
         caption=paste('Summary of all adverse events ',bycaption,
           ' (N=', n, ')', sep=''),
         where='hbp!', cdec=c(0,1,0,3),
         rowname=lab, longtable=longtable, lines.page=lines.page)
+
+  treat <- as.factor(treat)
+  treats <- levels(treat)
+  if(!length(names(denom))) {
+    warning(paste('assuming that order of frequencies in denom is',
+                  paste(treats, collapse=' ')))
+    names(denom) <- treats
+  }
+  nt <- length(treats)
+  x <- matrix(NA, nrow=nrow(x), ncol=nt*4)
+  ae <- sb <- matrix(NA, nrow=nrow(x), ncol=nt)
+  lab <- 'Any'
+  g <- function(x) length(unique(x))
+  
+  i <- 1
+  ae[i,] <- tapply(id, treat, length)
+  sb[i,] <- tapply(id, treat, g)
+
+  for(maj in sort(unique(major))) {
+    lab <- c(lab,'')
+    i <- i + 1
+    
+    lab <- c(lab, maj)
+    j <- major==maj
+    m <- sort(unique(minor[j]))
+    i <- i + 1
+    ae[i,] <- tapply(j, treat, sum)
+    sb[i,] <- tapply(id, treat, g)
+    for(mi in m) {
+      k <- j & minor==mi
+      lab <- c(lab, paste('~~',mi,sep=''))
+      i <- i + 1
+      ae[i,] <- tapply(k, treat, sum)
+      sb[i,] <- tapply(k, treat, g)
+    }
+  }
+
+  x <- matrix(NA, nrow=nrow(ae), ncol=nt*4,
+              dimnames=list(NULL,
+                rep(c('\\#AE','\\%AE','\\#Sb','Mean/sb'),nt)))
+  n <- denom[treats]
+  j <- 1
+  for(i in 1:nt) {
+    x[,j:(j+3)] <- cbind(ae[,i], 100*ae[,i]/n[i],
+                         sb[,i], sb[,i]/n[i])
+    j <- j + 4
+  }
+  
+  cgroup <- paste(treats, '(N=', n, ')', sep='')
+  latex(x, file='gentex/ae.tex', append=append, rowlabel='Event',
+        cgroup=cgroup, n.cgroup=rep(4,nt),
+        caption=paste('Summary of all adverse events',bycaption),
+        where='hbp!', cdec=rep(c(0,1,0,3),nt),
+        rowname=lab, longtable=longtable, lines.page=lines.page)
+
+  invisible()
 }
 
