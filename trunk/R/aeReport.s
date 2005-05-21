@@ -1,5 +1,5 @@
 ## $Id$
-aeReport <- function(data, vars, treat, time,
+aeReport <- function(data=NULL, vars, treat, time,
                      times=sort(unique(time)),
                      id=NULL, plotprop=FALSE, plotkm=TRUE, etimedata=NULL,
                      tables=TRUE, times.tables=times,
@@ -249,3 +249,53 @@ freqReport <- function(type, panel, treat, longPanel=panel,
   }
 
 }
+
+
+aeReport2 <- function(major, minor, treat, id, denom,
+                      bycaption='by system organ class and preferred term',
+                      size=NULL, longtable=FALSE, lines.page=50,
+                      append=FALSE){
+
+  i <- is.na(major) | is.na(minor) | is.na(treat) | is.na(id)
+  if(any(i)) {
+    i <- !i
+    major <- major[i]; minor <- minor[i]
+    treat <- treat[i]; id <- id[i]
+  }
+  major <- as.character(major)
+  minor <- as.character(minor)
+  
+  n <- sum(denom)
+
+  lab <- 'Any'
+
+  ae <- length(id)
+  sb <- length(unique(id))
+
+  for(maj in sort(unique(major))) {
+    lab <- c(lab,'')
+    ae <- c(ae, NA)
+    sb <- c(sb, NA)
+    
+    lab <- c(lab, maj)
+    j <- major==maj
+    m <- sort(unique(minor[j]))
+    ae <- c(ae, sum(j))
+    sb <- c(sb, length(unique(id[j])))
+    for(mi in m) {
+      k <- j & minor==mi
+      lab <- c(lab, paste('~~',mi,sep=''))
+      ae <- c(ae, sum(k))
+      sb <- c(sb, length(unique(id[k])))
+    }
+  }
+
+  x <- cbind('\\#AE'=ae, '\\% AE'=100*ae/n, '\\#Sb'=sb, 'Mean/Sb'=sb/n)
+  prn(x)
+  latex(x, file='gentex/Oae.tex', append=append, rowlabel='Event',
+        caption=paste('Summary of all adverse events ',bycaption,
+          ' (N=', n, ')', sep=''),
+        where='hbp!', cdec=c(0,1,0,3),
+        rowname=lab, longtable=longtable, lines.page=lines.page)
+}
+
