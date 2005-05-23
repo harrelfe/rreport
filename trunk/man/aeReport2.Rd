@@ -46,8 +46,6 @@ size = NULL, longtable = FALSE, lines.page = 50, append = FALSE)
 
 \seealso{ ~~objects to See Also as \code{\link{~~fun~~}}, ~~~ }
 \examples{
-major <- sample(c('A','B','C'), 200, replace=TRUE)
-minor <- sample(c('a','b','c','d'), 200, replace=TRUE)
 major <- c('A', 'A', 'A', 'B', 'B', 'C')
 minor <- c('a1','a1','a2','b1','b2','c1')
 id    <- c(1,   1,   1,   1,    2,  3)
