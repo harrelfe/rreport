@@ -328,7 +328,7 @@ aeReport2 <- function(major, minor, treat, id, denom,
           cgroup=cgroup, n.cgroup=if(nt > 1)rep(4,nt),
           caption=paste('Summary of all adverse events ',bycaption,
             if(nt==1) paste(' (N=',n,')',sep=''), sep=''),
-          where='hbp!', cdec=rep(c(0,1,0,3),nt),
+          where='hbp!', cdec=rep(c(0,1,0,3),nt), size=size,
           rowname=lab, longtable=longtable, lines.page=lines.page)
   }
   doit('gentex/Oae.tex')
