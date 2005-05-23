@@ -258,99 +258,81 @@ aeReport2 <- function(major, minor, treat, id, denom,
 
   i <- is.na(major) | is.na(minor) | is.na(treat) | is.na(id)
   if(any(i)) {
+    warning(paste(sum(i),'records deleted due to NAs'))
     i <- !i
     major <- major[i]; minor <- minor[i]
     treat <- treat[i]; id <- id[i]
   }
   major <- as.character(major)
   minor <- as.character(minor)
-  
-  n <- sum(denom)
 
-  lab <- 'Any'
-
-  ae <- length(id)
-  sb <- length(unique(id))
-
-  for(maj in sort(unique(major))) {
-    lab <- c(lab,'')
-    ae <- c(ae, NA)
-    sb <- c(sb, NA)
+  doit <- function(file, treat=rep('',length(major))) {
     
-    lab <- c(lab, maj)
-    j <- major==maj
-    m <- sort(unique(minor[j]))
-    ae <- c(ae, sum(j))
-    sb <- c(sb, length(unique(id[j])))
-    for(mi in m) {
-      k <- j & minor==mi
-      lab <- c(lab, paste('~~',mi,sep=''))
-      ae <- c(ae, sum(k))
-      sb <- c(sb, length(unique(id[k])))
+
+    treat <- as.factor(treat)
+    treats <- levels(treat)
+    nt <- length(treats)
+  
+    if(nt > 1 && !length(names(denom))) {
+      warning(paste('assuming that order of frequencies in denom is',
+                    paste(treats, collapse=' ')))
+      names(denom) <- treats
     }
-  }
 
-  x <- cbind('\\#AE'=ae, '\\%AE'=100*ae/n, '\\#Sb'=sb, 'Mean/Sb'=sb/n)
-  latex(x, file='gentex/Oae.tex', append=append, rowlabel='Event',
-        caption=paste('Summary of all adverse events ',bycaption,
-          ' (N=', n, ')', sep=''),
-        where='hbp!', cdec=c(0,1,0,3),
-        rowname=lab, longtable=longtable, lines.page=lines.page)
-
-  treat <- as.factor(treat)
-  treats <- levels(treat)
-  if(!length(names(denom))) {
-    warning(paste('assuming that order of frequencies in denom is',
-                  paste(treats, collapse=' ')))
-    names(denom) <- treats
-  }
-  nt <- length(treats)
-  x <- matrix(NA, nrow=nrow(x), ncol=nt*4)
-  ae <- sb <- matrix(NA, nrow=nrow(x), ncol=nt)
-  lab <- 'Any'
-  g <- function(x) length(unique(x))
+    ae <- sb <- matrix(NA, nrow=10000, ncol=nt)
+    g <- function(x) length(unique(x))
+    w <- function(z) {
+      z[is.na(z)] <- 0
+      z
+    }
   
-  i <- 1
-  ae[i,] <- tapply(id, treat, length)
-  sb[i,] <- tapply(id, treat, g)
-
-  for(maj in sort(unique(major))) {
-    lab <- c(lab,'')
-    i <- i + 1
+    lab <- 'Any'
+    i <- 1
+    ae[i,] <- table(treat)
+    sb[i,] <- w(tapply(id, treat, g))
     
-    lab <- c(lab, maj)
-    j <- major==maj
-    m <- sort(unique(minor[j]))
-    i <- i + 1
-    ae[i,] <- tapply(j, treat, sum)
-    sb[i,] <- tapply(id, treat, g)
-    for(mi in m) {
-      k <- j & minor==mi
-      lab <- c(lab, paste('~~',mi,sep=''))
+    for(maj in sort(unique(major))) {
+      lab <- c(lab,'')
       i <- i + 1
-      ae[i,] <- tapply(k, treat, sum)
-      sb[i,] <- tapply(k, treat, g)
+      
+      lab <- c(lab, maj)
+      j <- which(major==maj)
+      m <- sort(unique(minor[j]))
+      i <- i + 1
+      ae[i,] <- table(treat[j,drop=FALSE])
+      sb[i,] <- w(tapply(id[j], treat[j,drop=FALSE], g))
+
+      for(mi in m) {
+        k <- which(major==maj & minor==mi)
+        lab <- c(lab, paste('~~',mi,sep=''))
+        i <- i + 1
+        ae[i,] <- table(treat[k,drop=FALSE])
+        sb[i,] <- w(tapply(id[k], treat[k,drop=FALSE], g))
+      }
     }
-  }
-
-  x <- matrix(NA, nrow=nrow(ae), ncol=nt*4,
-              dimnames=list(NULL,
-                rep(c('\\#AE','\\%AE','\\#Sb','Mean/sb'),nt)))
-  n <- denom[treats]
-  j <- 1
-  for(i in 1:nt) {
-    x[,j:(j+3)] <- cbind(ae[,i], 100*ae[,i]/n[i],
-                         sb[,i], sb[,i]/n[i])
-    j <- j + 4
-  }
+    ae <- ae[1:i,,drop=FALSE]
+    sb <- sb[1:i,,drop=FALSE]
+    x <- matrix(NA, nrow=nrow(ae), ncol=nt*4,
+                dimnames=list(NULL,
+                  rep(c('\\#AE','\\%AE','\\#Sb','Mean/Sb'),nt)))
+    n <- if(nt==1) sum(denom) else denom[treats]
+    j <- 1
+    for(i in 1:nt) {
+      x[,j:(j+3)] <- cbind(ae[,i], 100*ae[,i]/n[i],
+                           sb[,i], sb[,i]/n[i])
+      j <- j + 4
+    }
   
-  cgroup <- paste(treats, '(N=', n, ')', sep='')
-  latex(x, file='gentex/ae.tex', append=append, rowlabel='Event',
-        cgroup=cgroup, n.cgroup=rep(4,nt),
-        caption=paste('Summary of all adverse events',bycaption),
-        where='hbp!', cdec=rep(c(0,1,0,3),nt),
-        rowname=lab, longtable=longtable, lines.page=lines.page)
-
+    cgroup <- if(nt > 1) paste(treats, ' (N=', n, ')', sep='')
+    latex(x, file=file, append=append, rowlabel='Event',
+          cgroup=cgroup, n.cgroup=if(nt > 1)rep(4,nt),
+          caption=paste('Summary of all adverse events ',bycaption,
+            if(nt==1) paste(' (N=',n,')',sep=''), sep=''),
+          where='hbp!', cdec=rep(c(0,1,0,3),nt),
+          rowname=lab, longtable=longtable, lines.page=lines.page)
+  }
+  doit('gentex/Oae.tex')
+  doit('gentex/ae.tex', treat)
   invisible()
 }
 
