@@ -40,7 +40,13 @@ size = NULL, longtable = FALSE, lines.page = 50, append = FALSE)
 Values of \code{minor} are not assumed to be unique across values of
 \code{major}.
 }
-\author{Frank E Harrell Jr}
+\author{Frank E Harrell Jr,
+  \cr
+  Department of Biostatistics,
+  \cr
+  Vanderbilt University School of Medicine,
+  \cr
+\code{f.harrell@vanderbilt.edu}}
 \seealso{\code{\link{aeReport}}}
 \examples{
 major <- c('A', 'A', 'A', 'B', 'B', 'C')
