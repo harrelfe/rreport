@@ -253,9 +253,12 @@ freqReport <- function(type, panel, treat, longPanel=panel,
 
 aeReport2 <- function(major, minor, treat, id, denom,
                       bycaption='by system organ class and preferred term',
+                      descending=c('both','major','minor','none'),
                       size=NULL, longtable=FALSE, lines.page=50,
                       append=FALSE){
 
+  descending <- match.arg(descending)
+  
   i <- is.na(major) | is.na(minor) | is.na(treat) | is.na(id)
   if(any(i)) {
     warning(paste(sum(i),'records deleted due to NAs'))
@@ -268,7 +271,6 @@ aeReport2 <- function(major, minor, treat, id, denom,
 
   doit <- function(file, treat=rep('',length(major))) {
     
-
     treat <- as.factor(treat)
     treats <- levels(treat)
     nt <- length(treats)
@@ -290,14 +292,17 @@ aeReport2 <- function(major, minor, treat, id, denom,
     i <- 1
     ae[i,] <- table(treat)
     sb[i,] <- w(tapply(id, treat, g))
-    
-    for(maj in sort(unique(major))) {
+
+    majors <- if(descending %in% c('major','both'))
+      names(sort(-table(major))) else sort(unique(major))
+    for(maj in majors) {
       lab <- c(lab,'')
       i <- i + 1
       
       lab <- c(lab, maj)
       j <- which(major==maj)
-      m <- sort(unique(minor[j]))
+      m <- if(descending %in% c('minor','both'))
+        names(sort(-table(minor[j]))) else sort(unique(minor[j]))
       i <- i + 1
       ae[i,] <- table(treat[j,drop=FALSE])
       sb[i,] <- w(tapply(id[j], treat[j,drop=FALSE], g))
