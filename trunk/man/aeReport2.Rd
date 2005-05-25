@@ -14,6 +14,7 @@ must be specified.  Produces an open meeting table not stratified by
 }
 \usage{
 aeReport2(major, minor, treat, id, denom, bycaption,
+descending=c('both','major','minor','none'),
 size = NULL, longtable = FALSE, lines.page = 50, append = FALSE)
 }
 \arguments{
@@ -27,6 +28,12 @@ size = NULL, longtable = FALSE, lines.page = 50, append = FALSE)
   \item{denom}{a vector giving the number of subjects on each treatment
 	(in order of treatment levels), i.e., number of subjects at risk}
   \item{bycaption}{text string describing how events are coded}
+  \item{descending}{By default, \code{major} categories are sorted in
+	order of descending frequency (ignoring \code{minor}), and
+	\code{minor} categories are sorted in order of descending frequency
+	within each major category.  Specify \code{descending='none'} to
+	have categories in order of factor levels or alphabetic for
+	character variables, or to \code{'major'} or \code{'minor'}.}
   \item{size}{see \code{\link[Hmisc]{latex.default}}}
   \item{longtable}{see \code{\link[Hmisc]{latex.default}}}}
   \item{lines.page}{see \code{\link[Hmisc]{latex.default}}}
