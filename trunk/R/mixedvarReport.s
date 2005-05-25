@@ -7,7 +7,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7, continuous=10,
                            keyloc=list(x=.8, y=.02),
-                           pl=TRUE, size=NULL, h=5, w=6,
+                           pl=TRUE, landscape=FALSE, size=NULL, h=5, w=6,
                            clearPlots=FALSE, auxCol=NULL, ...) {
 
   npct <- match.arg(npct)
@@ -29,7 +29,7 @@ mixedvarReport <- function(data, vars, panel, treat,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
         caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
-        size=size, auxCol=auxCol)
+        size=size, landscape=landscape, auxCol=auxCol)
   if(pl) {
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
@@ -107,7 +107,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
           append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
           caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
-          size=size, auxCol=auxCol)
+          size=size, landscape=landscape, auxCol=auxCol)
   if(!pl) return(invisible())
   if(any(d$type == 1)) {
     pn <- paste(panel, 'cat', sep='-')
