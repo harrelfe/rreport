@@ -20,7 +20,7 @@ completenessReport <- function(data, vars,
   nv <- length(vars)
   pl <- TRUE
 
-  lcap <- paste('Completeness of', longPanel,'variables. ')
+  lcap <- paste('Completeness of', longPanel,'.')
   if(!timeUsed) {
     n <- sapply(data[vars], function(y)sum(!is.na(y)))
     ce <- combineEqual(n)
@@ -72,7 +72,7 @@ completenessReport <- function(data, vars,
   if(pl) {
     endPlot()
     putFig('completeness', fn,
-           paste('Completeness of',longPanel,'variables'),
+           paste('Completeness of',longPanel),
            lcap, append=append)
     if(length(ce$codes))
       cat('\nCodes used in Figure~\\ref{fig:',fn,'} are as follows:',
@@ -82,7 +82,7 @@ completenessReport <- function(data, vars,
           '.}\n\n', sep='', file=paste(fn,'tex',sep='.'), append=TRUE)
 
   } else cat('For the',length(vars),longPanel,
-             'variables, the number of subjects having values entered',
+             ', the number of subjects having values entered',
              if(r[1]==r[2])paste('was ', r[1],'.\n', sep='') else
                            paste('ranged from ',r[1],' to ',
                                  r[2],'.\n', sep=''),

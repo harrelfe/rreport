@@ -66,10 +66,9 @@ mixedvarReport <- function(data, vars, panel, treat,
       endPlot()
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste('Box-percentile plots for continuous',longPanel,'variables',
+               paste('Box-percentile plots for continuous',longPanel,
                      if(i>1) '(continued)' else ''),
                paste('Box-percentile plots for continuous ',longPanel,
-                     ' variables',
                      if(i>1) ' (continued)' else
                      paste('.  $x$-axes are scaled to the $0.025$ and',
                            '$0.975$ quantiles when data are pooled',
@@ -89,10 +88,10 @@ mixedvarReport <- function(data, vars, panel, treat,
         for(i in 1:np) {
           putFig(panel, paste(pn, i, sep=''),
                  paste('Cumulative distribution plots for',
-                       'continuous', longPanel, 'variables',
+                       'continuous', longPanel,
                        if(i>1)'(continued)' else ''),
                  paste('Empirical cumulative distribution plots for ',
-                       'continuous ', longPanel,' variables',
+                       'continuous ', longPanel,
                        if(i>1)' (continued)' else 
                        paste('. Reference lines are drawn at',
                              'treatment-specific median values.',
@@ -109,7 +108,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     d <- summary(form, data=data, method='reverse', continuous=continuous)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
           append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
-          caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
+          caption=lp, where='hbp!', ctable=TRUE,
           size=size, landscape=landscape, longtable=longtable,
           lines.page=lines.page, auxCol=auxCol)
   if(!pl) return(invisible())
