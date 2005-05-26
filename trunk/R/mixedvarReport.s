@@ -30,7 +30,7 @@ mixedvarReport <- function(data, vars, panel, treat,
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
-        caption=paste(lp,'variables'), where='hbp!', ctable=TRUE,
+        caption=lp, where='hbp!', ctable=TRUE,
         size=size, landscape=landscape,
         longtable=longtable, lines.page=lines.page, auxCol=auxCol)
   if(pl) {
