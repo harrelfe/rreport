@@ -251,14 +251,21 @@ freqReport <- function(type, panel, treat, longPanel=panel,
 }
 
 
-aeReport2 <- function(major, minor, treat, id, denom,
-                      bycaption='by system organ class and preferred term',
-                      descending=c('both','major','minor','none'),
-                      size=NULL, longtable=FALSE, lines.page=50,
-                      append=FALSE){
+aeReport2 <-
+  function(major, minor=rep('',length(major)),
+           treat, id, denom,
+           caption='Summary of adverse events by system organ class and preferred term',
+           descending=c('both','major','minor','none'),
+           sortby=c('incidence','% difference'),
+           minpct=c(0,0), mindif=c(0,0),
+           size=NULL, longtable=FALSE, lines.page=50,
+           landscape=FALSE, append=FALSE){
 
   descending <- match.arg(descending)
-  
+  sortby <- match.arg(sortby)
+  if(sortby == '% difference') stop('% difference not currently implemented')
+
+                 
   i <- is.na(major) | is.na(minor) | is.na(treat) | is.na(id)
   if(any(i)) {
     warning(paste(sum(i),'records deleted due to NAs'))
@@ -274,13 +281,39 @@ aeReport2 <- function(major, minor, treat, id, denom,
     treat <- as.factor(treat)
     treats <- levels(treat)
     nt <- length(treats)
+    if(any(mindif != 0) && nt > 2)
+      stop('mindif only applies when there are two treatments')
   
+    acap <- ''
+    if(minpct[1] != 0)
+      acap <- paste('Major categories for which the per-subject incidence is',
+                    ' $<$ ', minpct[1], '\\% are suppressed.', sep='')
+    if(minpct[2] != 0)
+      acap <- paste(acap,
+                    ' Events for which the per-subject',
+                    ' incidence is $<$ ', minpct[2], '\\% are suppressed.',
+                    sep='')
+    if(nt == 2) {
+      if(mindif[1] != 0)
+        acap <- paste(acap,
+                      ' Major categories for which the difference in',
+                      ' per-subject incidence between treatments is $<$ ',
+                      mindif[1], '\\% are suppressed.',sep='')
+      if(mindif[2] != 0)
+        acap <- paste(acap,
+                      ' Events for which the difference in',
+                      ' per-subject incidence between treatments is $<$ ',
+                      mindif[1], '\\% are suppressed.',sep='')
+    }
+    
     if(nt > 1 && !length(names(denom))) {
       warning(paste('assuming that order of frequencies in denom is',
                     paste(treats, collapse=' ')))
       names(denom) <- treats
     }
-
+    
+    n <- if(nt==1) sum(denom) else denom[treats]
+    
     ae <- sb <- matrix(NA, nrow=10000, ncol=nt)
     g <- function(x) length(unique(x))
     w <- function(z) {
@@ -296,45 +329,55 @@ aeReport2 <- function(major, minor, treat, id, denom,
     majors <- if(descending %in% c('major','both'))
       names(sort(-table(major))) else sort(unique(major))
     for(maj in majors) {
+      j <- which(major==maj)
+      if(100*g(id[j])/sum(denom) < minpct[1]) next
+
+      sbinc <- w(tapply(id[j], treat[j,drop=FALSE], g))
+      if(length(sbinc) == 2 && abs(100*diff(sbinc/n)) < mindif[1]) next
+      
       lab <- c(lab,'')
       i <- i + 1
       
       lab <- c(lab, maj)
-      j <- which(major==maj)
-      m <- if(descending %in% c('minor','both'))
-        names(sort(-table(minor[j]))) else sort(unique(minor[j]))
       i <- i + 1
       ae[i,] <- table(treat[j,drop=FALSE])
-      sb[i,] <- w(tapply(id[j], treat[j,drop=FALSE], g))
+      sb[i,] <- sbinc
 
-      for(mi in m) {
+      m <- if(descending %in% c('minor','both'))
+        names(sort(-table(minor[j]))) else sort(unique(minor[j]))
+      if(any(m!='', na.rm=TRUE)) for(mi in m) {
         k <- which(major==maj & minor==mi)
+        if(100*g(id[k])/sum(denom) < minpct[2]) next
+        sbinc <- w(tapply(id[k], treat[k,drop=FALSE], g))
+        if(length(sbinc) ==2 && abs(100*diff(sbinc/n)) < mindif[2]) next
+        
         lab <- c(lab, paste('~~',mi,sep=''))
         i <- i + 1
         ae[i,] <- table(treat[k,drop=FALSE])
-        sb[i,] <- w(tapply(id[k], treat[k,drop=FALSE], g))
+        sb[i,] <- sbinc
       }
     }
     ae <- ae[1:i,,drop=FALSE]
     sb <- sb[1:i,,drop=FALSE]
     x <- matrix(NA, nrow=nrow(ae), ncol=nt*4,
                 dimnames=list(NULL,
-                  rep(c('\\#AE','\\%AE','\\#Sb','Mean/Sb'),nt)))
-    n <- if(nt==1) sum(denom) else denom[treats]
+                  rep(c('\\#AE','\\#AE/N','\\#Sb','\\%AE'),nt)))
     j <- 1
     for(i in 1:nt) {
-      x[,j:(j+3)] <- cbind(ae[,i], 100*ae[,i]/n[i],
-                           sb[,i], sb[,i]/n[i])
+      x[,j:(j+3)] <- cbind(ae[,i], ae[,i]/n[i],
+                           sb[,i], 100*sb[,i]/n[i])
       j <- j + 4
     }
   
     cgroup <- if(nt > 1) paste(treats, ' (N=', n, ')', sep='')
     latex(x, file=file, append=append, rowlabel='Event',
           cgroup=cgroup, n.cgroup=if(nt > 1)rep(4,nt),
-          caption=paste('Summary of all adverse events ',bycaption,
-            if(nt==1) paste(' (N=',n,')',sep=''), sep=''),
+          caption=paste(caption,
+            if(nt==1) paste(' (N=',n,')',sep=''), '. ', 
+            acap, sep=''),
           where='hbp!', cdec=rep(c(0,1,0,3),nt), size=size,
-          rowname=lab, longtable=longtable, lines.page=lines.page)
+          rowname=lab, longtable=longtable, lines.page=lines.page,
+          landscape=landscape)
   }
   doit('gentex/Oae.tex')
   doit('gentex/ae.tex', treat)
