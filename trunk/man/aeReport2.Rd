@@ -13,30 +13,55 @@ must be specified.  Produces an open meeting table not stratified by
 \code{treatment} (\code{"ae.tex"}) in the \code{"gentex"} directory.
 }
 \usage{
-aeReport2(major, minor, treat, id, denom, bycaption,
+aeReport2(major, minor, treat, id, denom,
+caption='Summary of adverse events by system organ class and preferred term',
 descending=c('both','major','minor','none'),
-size = NULL, longtable = FALSE, lines.page = 50, append = FALSE)
+sortby=c('incidence','\% difference'),
+minpct=c(0,0), mindif=c(0,0),
+size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE, append = FALSE)
 }
 \arguments{
   \item{major}{factor or character vector specifying the major
 	classification of events, usually organ system}
   \item{minor}{factor or character vector specifying the minor
-	classification, usually an individual event given by the preferred term}
+	classification, usually an individual event given by the preferred
+	term.  If \code{minor} is omitted, breakdowns are only by \code{major}.}
   \item{treat}{discrete treatment variable}
   \item{id}{subject ID, used to determine when multiple events arise
 	from the same subject}
   \item{denom}{a vector giving the number of subjects on each treatment
 	(in order of treatment levels), i.e., number of subjects at risk}
-  \item{bycaption}{text string describing how events are coded}
+  \item{caption}{text string containing the table caption.  Other
+	information is automatically appended to this, especially related to
+	\code{minpct} and \code{mindif}.  \code{caption} should not end with
+	a period.}
   \item{descending}{By default, \code{major} categories are sorted in
 	order of descending frequency (ignoring \code{minor}), and
 	\code{minor} categories are sorted in order of descending frequency
 	within each major category.  Specify \code{descending='none'} to
 	have categories in order of factor levels or alphabetic for
 	character variables, or to \code{'major'} or \code{'minor'}.}
+  \item{sortby}{Specify \code{sortby='\% difference'} to have
+	  \code{descending} apply to difference in percent incidence between
+	  two treatments, instead of to the pooled incidence over treatments.}
+  \item{minpct}{a 2-vector specifying the minimum percents for which to
+	output results for \code{major} and \code{minor} categories,
+	respectively.  The default is \code{c(0,0)} so that all results are
+	output.  Specify \code{minpct=c(10,0)} for example to only print
+	\code{major} categories for which at least a ten percent incidence
+	of events in those categories are present, ignoring \code{treat},
+	and for any qualifying \code{major} category, output all
+	\code{minor} ones.  The percents pertain to the per-subject
+	incidences, not counting multiple events per subject.}
+  \item{mindif}{a 2-vector specifying the minimum difference in percent
+	per-subject incidence between treatments, corresponding to
+	\code{major} and \code{minor}.  The sign of differences is ignored.
+	This only applies to the case of two treatments.  Output not meeting
+	the minimum difference in percents is suppressed.}
   \item{size}{see \code{\link[Hmisc]{latex.default}}}
-  \item{longtable}{see \code{\link[Hmisc]{latex.default}}}}
+  \item{longtable}{see \code{\link[Hmisc]{latex.default}}}
   \item{lines.page}{see \code{\link[Hmisc]{latex.default}}}
+  \item{landscape}{passed to \code{latex.default}}
   \item{append}{set to \code{TRUE} to have LaTeX code appended to
 	existing files}
 }
