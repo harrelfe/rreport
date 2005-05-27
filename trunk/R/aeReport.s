@@ -260,7 +260,7 @@ aeReport2 <-
            sortby=c('incidence','% difference'),
            minpct=c(0,0), mindif=c(0,0),
            size=NULL, longtable=FALSE, lines.page=50,
-           landscape=FALSE, append=FALSE){
+           landscape=FALSE, maxcol=NULL, append=FALSE){
 
   descending <- match.arg(descending)
   sortby <- match.arg(sortby)
@@ -376,6 +376,8 @@ aeReport2 <-
           caption=paste(caption,
             if(nt==1) paste(' (N=',n,')',sep=''), '. ', 
             acap, sep=''),
+          rowlabel.just=if(length(maxcol))
+           paste('p{',maxcol,'ex}',sep='') else 'l',
           where='hbp!', cdec=rep(c(0,1,0,3),nt), size=size,
           rowname=lab, longtable=longtable, lines.page=lines.page,
           landscape=landscape)
