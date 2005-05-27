@@ -18,7 +18,8 @@ caption='Summary of adverse events by system organ class and preferred term',
 descending=c('both','major','minor','none'),
 sortby=c('incidence','\% difference'),
 minpct=c(0,0), mindif=c(0,0),
-size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE, append = FALSE)
+size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE,
+maxcol=NULL, append = FALSE)
 }
 \arguments{
   \item{major}{factor or character vector specifying the major
@@ -65,6 +66,11 @@ size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE, append = FALSE
   \item{longtable}{see \code{\link[Hmisc]{latex.default}}}
   \item{lines.page}{see \code{\link[Hmisc]{latex.default}}}
   \item{landscape}{passed to \code{latex.default}}
+  \item{maxcol}{the maximum number of columns to allow for a
+	\code{major} or \code{minor} label (note that two extra spaces are
+	added to \code{minor} labels as they are indented).  Longer event
+	labels are wrapped to multiple lines.  By default, LaTeX will
+	attempt to display the full labels no matter how long.}
   \item{append}{set to \code{TRUE} to have LaTeX code appended to
 	existing files}
 }
