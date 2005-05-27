@@ -9,11 +9,11 @@ to preferred term.  As only events are signaled in the data, the
 denominator (number of subjects at risk and having some likelihood of
 having had adverse events collected had they occured) for each treatment
 must be specified.  Produces an open meeting table not stratified by
-\code{treatment} (\code{"Oae.tex"}) and one stratified by
-\code{treatment} (\code{"ae.tex"}) in the \code{"gentex"} directory.
+\code{treatment} (for open report) and one stratified by
+\code{treatment} (for closed report) in the \code{gentex} directory.
 }
 \usage{
-aeReport2(major, minor, treat, id, denom,
+aeReport2(major, minor, treat, id, denom, panel='ae',
 caption='Summary of adverse events by system organ class and preferred term',
 descending=c('both','major','minor','none'),
 sortby=c('incidence','\% difference'),
@@ -31,6 +31,9 @@ size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE, append = FALSE
 	from the same subject}
   \item{denom}{a vector giving the number of subjects on each treatment
 	(in order of treatment levels), i.e., number of subjects at risk}
+  \item{panel}{base name for \code{.tex} files.  Default is
+	\code{"ae"}.  Table for the open report has an \code{"O"} put at the
+	front, and files are written to directory \code{gentex}.}
   \item{caption}{text string containing the table caption.  Other
 	information is automatically appended to this, especially related to
 	\code{minpct} and \code{mindif}.  \code{caption} should not end with
@@ -66,8 +69,8 @@ size = NULL, longtable = FALSE, lines.page = 50, landscape=FALSE, append = FALSE
 	existing files}
 }
 \section{Side Effets}{creates or appends to files
-  \code{"gentex/Oae.tex"} and \code{"gentex/ae.tex"} under the current
-  working directory.}
+  \code{"gentex/Ox.tex"} and \code{"gentex/x.tex"} under the current
+  working directory, where \code{x} is the value of \code{panel}.}
 \details{
 Values of \code{minor} are not assumed to be unique across values of
 \code{major}.
