@@ -254,6 +254,7 @@ freqReport <- function(type, panel, treat, longPanel=panel,
 aeReport2 <-
   function(major, minor=rep('',length(major)),
            treat, id, denom,
+           panel='ae',
            caption='Summary of adverse events by system organ class and preferred term',
            descending=c('both','major','minor','none'),
            sortby=c('incidence','% difference'),
@@ -379,8 +380,8 @@ aeReport2 <-
           rowname=lab, longtable=longtable, lines.page=lines.page,
           landscape=landscape)
   }
-  doit('gentex/Oae.tex')
-  doit('gentex/ae.tex', treat)
+  doit(paste('gentex/O',panel,'.tex',sep=''))
+  doit(paste('gentex/', panel,'.tex',sep=''), treat)
   invisible()
 }
 
