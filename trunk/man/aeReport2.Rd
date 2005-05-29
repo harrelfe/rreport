@@ -47,7 +47,9 @@ maxcol=NULL, append = FALSE)
 	character variables, or to \code{'major'} or \code{'minor'}.}
   \item{sortby}{Specify \code{sortby='\% difference'} to have
 	  \code{descending} apply to difference in percent incidence between
-	  two treatments, instead of to the pooled incidence over treatments.}
+	  two treatments, instead of to the pooled incidence over
+	  treatments.  For the open report, sorting is always alphabetic by
+	  category or by descending pooled (over treatments) incidence.}
   \item{minpct}{a 2-vector specifying the minimum percents for which to
 	output results for \code{major} and \code{minor} categories,
 	respectively.  The default is \code{c(0,0)} so that all results are
@@ -94,7 +96,9 @@ major <- c('A', 'A', 'A', 'B', 'B', 'C')
 minor <- c('a1','a1','a2','b1','b2','c1')
 id    <- c(1,   1,   1,   1,    2,  3)
 treat <- c('drug','placebo','drug','placebo','drug','placebo')
-aeReport2(major, minor, treat, id, denom=c(10,10))
+aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10))
+aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10),
+          sortby='% difference')
 }
 \keyword{interface}
 \keyword{category}
