@@ -264,8 +264,6 @@ aeReport2 <-
 
   descending <- match.arg(descending)
   sortby <- match.arg(sortby)
-  if(sortby == '% difference') stop('% difference not currently implemented')
-
                  
   i <- is.na(major) | is.na(minor) | is.na(treat) | is.na(id)
   if(any(i)) {
@@ -312,23 +310,33 @@ aeReport2 <-
                     paste(treats, collapse=' ')))
       names(denom) <- treats
     }
-    
     n <- if(nt==1) sum(denom) else denom[treats]
-    
-    ae <- sb <- matrix(NA, nrow=10000, ncol=nt)
+
     g <- function(x) length(unique(x))
     w <- function(z) {
       z[is.na(z)] <- 0
       z
     }
+
+    sortit <- function(what, sub=1:length(major)) {
+      x <- if(what=='major') major else minor
+      if(descending %nin% c(what,'both')) sort(unique(x[sub])) else
+      if(sortby == '% difference' && nt == 2) {
+        z <- w(tapply(id[sub], list(x[sub],treat[sub]), g))
+        cn <- colnames(z)
+        d <- z[,1,drop=FALSE]/n[cn[1]] -  z[,2,drop=FALSE]/n[cn[2]]
+        rownames(d)[order(-abs(d))]  # sort not work on matrices
+      } else names(sort(-table(x[sub])))
+    }
+    
+    ae <- sb <- matrix(NA, nrow=10000, ncol=nt)
   
     lab <- 'Any'
     i <- 1
     ae[i,] <- table(treat)
     sb[i,] <- w(tapply(id, treat, g))
 
-    majors <- if(descending %in% c('major','both'))
-      names(sort(-table(major))) else sort(unique(major))
+    majors <- sortit('major')
     for(maj in majors) {
       j <- which(major==maj)
       if(100*g(id[j])/sum(denom) < minpct[1]) next
@@ -344,8 +352,7 @@ aeReport2 <-
       ae[i,] <- table(treat[j,drop=FALSE])
       sb[i,] <- sbinc
 
-      m <- if(descending %in% c('minor','both'))
-        names(sort(-table(minor[j]))) else sort(unique(minor[j]))
+      m <- sortit('minor', j)
       if(any(m!='', na.rm=TRUE)) for(mi in m) {
         k <- which(major==maj & minor==mi)
         if(100*g(id[k])/sum(denom) < minpct[2]) next
@@ -386,4 +393,3 @@ aeReport2 <-
   doit(paste('gentex/', panel,'.tex',sep=''), treat)
   invisible()
 }
-
