@@ -307,10 +307,7 @@ aeReport2 <-
     if(descending != 'none') acap <-
       paste(acap,
             ' Output is sorted on ',
-            switch(descending,
-                   both='major and minor',
-                   major='major',
-                   minor='minor'),
+            if(descending == 'both') 'major and minor' else desending,
             ' categories based on descending order of ',
             if(nt==2 && sortby=='% difference')
             'absolute differences in incidences between treatments.' else
