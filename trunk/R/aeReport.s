@@ -304,7 +304,18 @@ aeReport2 <-
                       ' per-subject incidence between treatments is $<$ ',
                       mindif[1], '\\% are suppressed.',sep='')
     }
-    
+    if(descending != 'none') acap <-
+      paste(acap,
+            ' Output is sorted on ',
+            switch(descending,
+                   both='major and minor',
+                   major='major',
+                   minor='minor'),
+            ' categories based on descending order of ',
+            if(nt==2 && sortby=='% difference')
+            'absolute differences in incidences between treatments.' else
+            'pooled incidences.', sep='')
+      
     if(nt > 1 && !length(names(denom))) {
       warning(paste('assuming that order of frequencies in denom is',
                     paste(treats, collapse=' ')))
