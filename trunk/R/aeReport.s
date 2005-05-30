@@ -393,7 +393,7 @@ aeReport2 <-
             acap, sep=''),
           rowlabel.just=if(length(maxcol))
            paste('p{',maxcol,'ex}',sep='') else 'l',
-          where='hbp!', cdec=rep(c(0,1,0,3),nt), size=size,
+          where='hbp!', cdec=rep(c(0,3,0,1),nt), size=size,
           rowname=lab, longtable=longtable, lines.page=lines.page,
           landscape=landscape)
   }
