@@ -185,7 +185,7 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
               linkType='href')
     system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
     for(i in 1:length(rn))
-      system(paste('scp -p ', rn[i], ' ', server, ':', path, sep=''))
+      system(paste('scp -p "', rn[i], '" ', server, ':', path, sep=''))
   }
   if(email) {
     url <- strsplit(path, '/')[[1]]
@@ -198,7 +198,9 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
             paste(c(reports,minutes), collapse=nl), nl, nl,
             'Point your browser to ', url, nl,
             'and use the username ', uid,
-            ' and the password that will be in the next note.',nl,nl,
+            ' and the password that will be in the next note.',nl,
+            'For accuracy, copy the password from the e-mail and',
+            ' paste it in the proper field in your browser.',nl,nl,
             'Please confirm your ability to open the pdf files within 24 hours by replying to this message.',nl,nl,
             if(hardcopies)'I will bring final hard copies to the meeting.',
             if(length(extra)) paste(nl,nl, extra,sep=''),
