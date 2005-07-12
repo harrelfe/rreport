@@ -15,6 +15,10 @@ mixedvarReport <- function(data, vars, panel, treat,
 
   npct <- match.arg(npct)
   conType <- match.arg(conType)
+  pdesc <- switch(conType,
+                  bp='Box-percentile plots',
+                  dot='Quartiles',
+                  raw='Raw data')
   
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
@@ -53,7 +57,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       cp()
     }
     if(any(d$type == 2) || length(Major)) {
-      if(bpPrototype) {
+      if(bpPrototype && conType=='bp') {
         startPlot('bpplot-prototype', h=4)
         bpplt()
         endPlot()
@@ -69,9 +73,9 @@ mixedvarReport <- function(data, vars, panel, treat,
       endPlot()
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste('Box-percentile plots for continuous',longPanel,
+               paste(pdesc, 'for continuous',longPanel,
                      if(i>1) '(continued)' else ''),
-               paste('Box-percentile plots for continuous ',longPanel,
+               paste(pdesc, ' for continuous ',longPanel,
                      if(i>1) ' (continued)' else
                      paste('.  $x$-axes are scaled to the $0.025$ and',
                            '$0.975$ quantiles when data are pooled',
