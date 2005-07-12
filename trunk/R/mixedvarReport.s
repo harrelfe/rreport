@@ -2,6 +2,7 @@
 mixedvarReport <- function(data, vars, panel, treat,
                            longPanel=panel, test=TRUE, exclude1=TRUE,
                            npct=c('numerator','both','denominator','none'),
+                           conType=c('bp','dot', 'raw'),
                            cdf=FALSE, Ohist=TRUE,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
@@ -13,6 +14,8 @@ mixedvarReport <- function(data, vars, panel, treat,
                            clearPlots=FALSE, auxCol=NULL, ...) {
 
   npct <- match.arg(npct)
+  conType <- match.arg(conType)
+  
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
@@ -62,7 +65,7 @@ mixedvarReport <- function(data, vars, panel, treat,
 
       pn <- paste(panel, 'cont', sep='-')
       startPlot(paste(pn,'%d',sep=''), h=6, w=6)
-      np <- plot(d, which='con', conType='bp')
+      np <- plot(d, which='con', conType=conType)
       endPlot()
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
