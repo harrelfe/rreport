@@ -77,6 +77,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                      if(i>1) '(continued)' else ''),
                paste(pdesc, ' for continuous ',longPanel,
                      if(i>1) ' (continued)' else
+                     if(conType!='raw')
                      paste('.  $x$-axes are scaled to the $0.025$ and',
                            '$0.975$ quantiles when data are pooled',
                            'over treatments.'),
