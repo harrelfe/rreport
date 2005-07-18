@@ -2,11 +2,12 @@
 mixedvarReport <- function(data, vars, panel, treat,
                            longPanel=panel, test=TRUE, exclude1=TRUE,
                            npct=c('numerator','both','denominator','none'),
-                           conType=c('bp','dot', 'raw'),
+                           conType=c('bp','dot', 'raw'), nmin=15,
                            cdf=FALSE, Ohist=TRUE,
                            bpPrototype=FALSE, digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
-                           Majorvars=NULL, cexMajor=.7, continuous=10,
+                           Majorvars=NULL, cexMajor=.7,
+                           continuous=10, nx=15,
                            keyloc=list(x=.8, y=.02),
                            pl=TRUE, landscape=FALSE, size=NULL,
                            longtable=FALSE, lines.page=40,
@@ -31,7 +32,7 @@ mixedvarReport <- function(data, vars, panel, treat,
 
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
   d <- summary(form, data=data, method='reverse',
-               test=test, continuous=continuous)
+               test=test, continuous=continuous, nmin=nmin)
   lp <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
@@ -113,7 +114,8 @@ mixedvarReport <- function(data, vars, panel, treat,
 
     panel <- paste('O', panel, sep='')
     form <- as.formula(paste('~', paste(vars,collapse='+')))
-    d <- summary(form, data=data, method='reverse', continuous=continuous)
+    d <- summary(form, data=data, method='reverse',
+                 continuous=continuous, nmin=nmin)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
           append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
           caption=lp, where='hbp!', ctable=TRUE,
