@@ -169,7 +169,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       endPlot()
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste('Histograms of', longPanel, 'variables',
+               paste('Frequencies of', longPanel, 'variables',
                      if(i>1)'(continued)' else ''))
         cp()
       }
