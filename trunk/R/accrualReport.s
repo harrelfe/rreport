@@ -3,7 +3,8 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
                           dateRange, targetN,
                           Major=rep('', length(Site)),
                           MajorLabel='',longMajor=Major,
-                          combine=FALSE, append=FALSE) {
+                          combine=FALSE, append=FALSE,
+                          format='%d%b%y', by='year') {
   
   nMajor <- length(unique(Major))
   if(nMajor > 1) {
@@ -86,9 +87,13 @@ accrualReport <- function(Site, Entry=NULL, panel='randomized',
   if(length(Entry)) {
     lb <- paste('accrual',panel,'cumulative',sep='-')
     startPlot(lb, h=3)
+    dr <- as.Date(dateRange)
     ecdf(Entry, what='f', ylab='Cumumlative Number of Subjects',
          xlab=label(Entry), ylim=c(0,max(length(Entry),targetN)),
-         xlim=as.Date(dateRange))
+         xlim=dr, axes=FALSE)
+    axis(2)
+    axis.Date(1, at=seq.Date(dr[1],dr[2],by=by), format=format)
+    
     lines(as.Date(dateRange), c(0,targetN), col='gray', lwd=3)
     endPlot()
     putFig('accrual', lb, paste('Subjects',panel,'over time'),
