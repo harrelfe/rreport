@@ -1,6 +1,7 @@
 ## $Id$
 mixedvarReport <- function(data, vars, panel, treat,
-                           longPanel=panel, test=TRUE, exclude1=TRUE,
+                           longPanel=panel, test=TRUE,
+                           exclude1=TRUE, long=FALSE,
                            npct=c('numerator','both','denominator','none'),
                            conType=c('bp','dot', 'raw'), nmin=15,
                            cdf=FALSE, Ohist=TRUE,
@@ -37,8 +38,8 @@ mixedvarReport <- function(data, vars, panel, treat,
                substring(longPanel,2), sep='')
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
-        append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
-        caption=lp, where='hbp!', ctable=TRUE,
+        append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
+        npct=npct, caption=lp, where='hbp!', ctable=TRUE,
         size=size, landscape=landscape,
         longtable=longtable, lines.page=lines.page, auxCol=auxCol)
   if(pl) {
@@ -117,7 +118,8 @@ mixedvarReport <- function(data, vars, panel, treat,
     d <- summary(form, data=data, method='reverse',
                  continuous=continuous, nmin=nmin)
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
-          append=append, middle.bold=TRUE, exclude1=exclude1, npct=npct,
+          append=append, middle.bold=TRUE, exclude1=exclude1,
+          long=long, npct=npct,
           caption=lp, where='hbp!', ctable=TRUE,
           size=size, landscape=landscape, longtable=longtable,
           lines.page=lines.page, auxCol=auxCol)
