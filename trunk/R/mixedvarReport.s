@@ -39,7 +39,7 @@ mixedvarReport <- function(data, vars, panel, treat,
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
-        npct=npct, caption=lp, where='hbp!', ctable=TRUE,
+        npct=npct, caption=lp, where='hbp!', ctable=!longtable,
         size=size, landscape=landscape,
         longtable=longtable, lines.page=lines.page, auxCol=auxCol)
   if(pl) {
@@ -120,7 +120,7 @@ mixedvarReport <- function(data, vars, panel, treat,
     latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
           append=append, middle.bold=TRUE, exclude1=exclude1,
           long=long, npct=npct,
-          caption=lp, where='hbp!', ctable=TRUE,
+          caption=lp, where='hbp!', ctable=!longtable,
           size=size, landscape=landscape, longtable=longtable,
           lines.page=lines.page, auxCol=auxCol)
   if(!pl) return(invisible())
