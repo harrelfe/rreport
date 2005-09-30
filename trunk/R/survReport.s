@@ -2,7 +2,8 @@
 survReport <- function(etime, event, treat,
                        ylabel='Survival Probability',
                        conf=c('bars','bands','none'),
-                       n=NULL, labels=NULL, previousActual=NULL, h=4, ...) {
+                       n=NULL, labels=NULL, previousActual=NULL, h=4, 
+		       append=FALSE, ...) {
   require('survival')
   require('Design')
   
@@ -16,7 +17,7 @@ survReport <- function(etime, event, treat,
   endPlot()
   putFig('surv', 'surv-km',
          'Kaplan-Meier cumulative event-free probability estimates by treatment',
-         'Kaplan-Meier cumulative event-free probability estimates.  \\protect\\treatkey')
+         'Kaplan-Meier cumulative event-free probability estimates.  \\protect\\treatkey', append=append)
   
   if(length(n)) {
     p <- ldBands(n=n, ...)
@@ -31,6 +32,6 @@ survReport <- function(etime, event, treat,
     endPlot()
     putFig('surv','surv-monitor',
            'Group-sequential monitoring boundaries',
-           paste('Lan-DeMets group-sequential monitoring boundaries using the Obrien-Fleming alpha-spending function with',n,'looks equally spaced in time.  Points indicate observed Cox-logrank Z statistics.'))
+           paste('Lan-DeMets group-sequential monitoring boundaries using the Obrien-Fleming alpha-spending function with',n,'looks equally spaced in time.  Points indicate observed Cox-logrank Z statistics.'), append=append)
   }
 }
