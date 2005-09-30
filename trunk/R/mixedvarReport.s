@@ -73,7 +73,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       startPlot(paste(pn,'%d',sep=''), h=6, w=6)
       np <- plot(d, which='con', conType=conType)
       endPlot()
-      for(i in 1:np) {
+      if(np > 0) for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste(pdesc, 'for continuous',longPanel,
                      if(i>1) '(continued)' else ''),
@@ -95,7 +95,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                    lwd=c(1,2), col=gray(c(0,.7)), q=.5,
                    label.curves=FALSE)
         endPlot()
-        for(i in 1:np) {
+        if(np > 0) for(i in 1:np) {
           putFig(panel, paste(pn, i, sep=''),
                  paste('Cumulative distribution plots for',
                        'continuous', longPanel,
@@ -145,7 +145,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       mfrowSet(length(vars))
       np <- ecdf(data[vars], lwd=1, q=(1:3)/4)
       endPlot()
-      for(i in 1:np) {
+      if(np > 0) for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste('Cumulative distribution plots for continuous',
                      longPanel, 'variables',
@@ -162,12 +162,9 @@ mixedvarReport <- function(data, vars, panel, treat,
       pn <- paste(panel, 'hist', sep='-')
       startPlot(paste(pn, '%d', sep=''), h=6, w=6)
       mfrowSet(length(vars))
-#    omf <- mfrowSet(nv)
-#    on.exit(par(mfrow=omf))
-#    mf <- par('mfrow')
       np <- hist.data.frame(data[vars])
       endPlot()
-      for(i in 1:np) {
+      if(np > 0) for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
                paste('Frequencies of', longPanel, 'variables',
                      if(i>1)'(continued)' else ''))
