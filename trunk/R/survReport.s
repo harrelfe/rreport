@@ -3,7 +3,7 @@ survReport <- function(etime, event, treat,
                        ylabel='Survival Probability',
                        conf=c('bars','bands','none'),
                        n=NULL, labels=NULL, previousActual=NULL, h=4, 
-		       append=FALSE, ...) {
+		       append=FALSE,...) {
   require('survival')
   require('Design')
   
@@ -11,6 +11,10 @@ survReport <- function(etime, event, treat,
   S <- Surv(etime, event)
   treat <- as.factor(treat)
   lwd <- c(1,2); lty=c(1,1); col=gray(c(0,.7))
+  
+  if(attributes(survfit(S ~ treat)$strata)$names[1]=="B") {
+     col=gray(c(0.7, 0))
+  }
   
   survplot(survfit(S ~ treat), n.risk=TRUE, conf=conf, lwd=lwd,
            lty=lty, col=col, ylabel=ylabel)
