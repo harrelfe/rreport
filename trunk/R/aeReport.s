@@ -257,7 +257,7 @@ aeReport2 <-
            panel='ae',
            caption='Summary of adverse events by system organ class and preferred term',
            descending=c('both','major','minor','none'),
-           sortby=c('incidence','% difference'),
+           sortby=c('incidence','% difference'), headerStr="AE",
            minpct=c(0,0), mindif=c(0,0),
            size=NULL, longtable=FALSE, lines.page=50,
            landscape=FALSE, maxcol=NULL, append=FALSE){
@@ -377,7 +377,7 @@ aeReport2 <-
     sb <- sb[1:i,,drop=FALSE]
     x <- matrix(NA, nrow=nrow(ae), ncol=nt*4,
                 dimnames=list(NULL,
-                  rep(c('\\#AE','\\#AE/N','\\#Sb','\\%AE'),nt)))
+                  rep(c(paste("\\#",headerStr,sep=""),paste("\\#",headerStr,"/N",sep=""),"\\#Sb",paste("\\%",headerStr,sep="")),nt)))
     j <- 1
     for(i in 1:nt) {
       x[,j:(j+3)] <- cbind(ae[,i], ae[,i]/n[i],
