@@ -159,7 +159,7 @@ listTable <- function(fileName,
             sep="", file=outFile)
         cat("\\endfoot\n", file=outFile)
         hline(outFile)
-        cat("\\multicolumn{",colNum,"}{r}{",otherStyle," The end}\\\\\n",
+        cat("\\multicolumn{",colNum,"}{r}{",otherStyle," End}\\\\\n",
             sep="", file=outFile)
         cat("\\endlastfoot\n", file=outFile)
       }
