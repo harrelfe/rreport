@@ -183,9 +183,9 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
                                check.names=FALSE))
     z <- html(i, file=f, append=TRUE, link=basename(rn), linkCol='Name',
               linkType='href')
-    system(paste('scp -p ', f, ' ', server, ':', path, '/index.html', sep=''))
+    system(paste('scp ', f, ' ', server, ':', path, '/index.html', sep=''))
     for(i in 1:length(rn))
-      system(paste('scp -p "', rn[i], '" ', server, ':', path, sep=''))
+      system(paste('scp "', rn[i], '" ', server, ':', path, sep=''))
   }
   if(email) {
     url <- strsplit(path, '/')[[1]]
