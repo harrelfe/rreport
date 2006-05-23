@@ -159,7 +159,7 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
                        copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
                        hardcopies=TRUE, verbose=TRUE,
-                       mailer=c('kmail','mail'), extra=NULL) {
+                       mailer=c('mail','kmail'), extra=NULL) {
 
   ## E.g. publishPdf(c(report='Closed Meeting Report',
   ##                   Oreport='Open Meeting Report'),title='My Project',
