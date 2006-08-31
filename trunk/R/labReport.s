@@ -1,12 +1,33 @@
+
 ## $Id$
-labReport <- function(data, vars, panel, treat, time, times,
+labReportNew <- function(data, vars, panel, treat, id, time, times,
                       longPanel=panel, h=6.5, w=6.5,
-                      diffs=FALSE, cdf=FALSE, tables=TRUE,
+                      diffs=FALSE, cdfPlot=length(levels(data[[treat]]))<=2,
+                      tables=TRUE, boxPlot=!cdfPlot,
                       digits=3, append=FALSE, clearPlots=FALSE, open=TRUE) {
 
+  ##################################################
+  ### By default the function plots CDFs if the number of treatment
+  ### groups is less or equal than two. 
+  ### If the number of treatment groups is three or more
+  ### boxplots are plotted.
+  ##################################################
+  ###  FUTURE PLANS:
+  ### It is a good idea to implement the same argument as in mixedVarReport()
+  ### contDataPlotType=c('bp','dot', 'raw')
+  ### contDataPlotType <- match.arg(contDataPlotType)
+  ### some lines of the code are already preparing for that.
+  
+  contDataPlotType!="bp"
+  continuous <- 10
+  pdesc <- switch(contDataPlotType,
+                  bp='Box-percentile plots',
+                  dot='Quartiles',
+                  raw='Raw data')
   vars  <- unlist(vars)
   Treat <- data[[treat]]
   Time  <- data[[time]]
+  subject  <- data[[id]]
 
   makerep <- function(Treat, panel) {
   g <- function(y) {
@@ -60,7 +81,7 @@ labReport <- function(data, vars, panel, treat, time, times,
     ## difference in median y between treatments.  Also save
     ## midpoint of two medians for plotting vertical half-interval.
     if(length(trlev)==2) {
-      tt <- sort(unique(z$Time))
+      tt <- sort(times)
       j <- 0
       for(tim in tt) {
         j <- j + 1
@@ -99,17 +120,18 @@ labReport <- function(data, vars, panel, treat, time, times,
            append=npage > 1)
   }
 
-  if(!is.logical(cdf) || cdf) {
-    tf <- factor(paste(label(Time), Time),
-                paste(label(Time), sort(unique(Time))))
-
+  ##################################################
+  ### plot CDF function and include the corresponding *.pdf files
+  ### into the relevant *.tex file
+  ##################################################
+  tf <- factor(paste(label(Time), Time), paste(label(Time), sort(unique(Time))))
+  if(cdfPlot) {
     i <- 0
-    vrs <- if(is.logical(cdf)) vars else cdf
     nt <- length(times)
     h <- w <- 4.5*(nt < 7) + 5.5*(nt >= 7 & nt <=9) + 6.5*(nt > 9)
-    for(v in data[vrs]) {
+    for(v in data[vars]) {
       i <- i + 1
-      fn <- paste(panel,'-ecdf-',vrs[i],sep='')
+      fn <- paste(panel,'-ecdf-',vars[i],sep='')
       startPlot(fn, trellis=TRUE, h=h, w=w)
       d <- data.frame(v,tf,Treat,Time)[Time %in% times,]
       if(length(trlev)==1)
@@ -132,16 +154,45 @@ labReport <- function(data, vars, panel, treat, time, times,
                    if(length(trlev) > 1) 'by treatment over time. \\protect\\treatkey'))
     }
   }
-  
+  ##################################################
+  ### plot boxplots and include the corresponding *.pdf files
+  ### into the relevant *.tex file
+  ##################################################
+  if (boxPlot){
+    for (varName in vars){
+      v <- data[varName]
+      test=TRUE
+      nmin = 1
+      d <- data.frame(subject,v,Time)[Time %in% times,]
+      d <- reshape(d, direction="wide", idvar="subject", timevar="Time")
+      d <- merge(d, data.frame(subject, Treat), by="subject", all.x=TRUE)
+      timeLabels <- c(id, paste(label(data[[varName]]), times[order(times)], sep=", visit "), treat)
+      for (i in 1:length(d)) label(d[,i]) <- timeLabels[i]
+      form <- as.formula(paste("Treat", paste(setdiff(names(d), Cs(subject,Treat)),collapse='+'), sep='~'))
+      d <- summary(form, data=d, method='reverse',
+                   test=test, continuous=continuous, nmin=nmin)
+                   
+      panelName <- paste(panel,"cont", varName, sep='-')
+      startPlot(paste(panelName,'%d',sep=''), trellis=TRUE, h=6, w=6)
+      plotNumber <- plot(d, which='con', conType=contDataPlotType)
+      endPlot()
+      if(plotNumber > 0) for(i in 1:plotNumber) {
+        putFig(panel, paste(panelName, i, sep=''),
+              paste('Frequencies of', longPanel, 'variables',
+                    if(i>1) "(continued)" else ""))
+      }
+    }
+  }
   if(!tables) return(invisible())
-
+  ##################################################
+  ### create tables and put them into
+  ### the relevant *.tex file
+  ##################################################
   form <- as.formula(paste(if(length(trlev)==1)'' else treat,
                            paste(vars,collapse='+'),sep='~'))
-
   if(clearPlots)
     cat('\\clearpage\n', file=paste('gentex/',panel,'.tex',sep=''),
         append=TRUE)
-  
   for(x in times) {
     s <- summary(form, data=data[Time==x,], method='reverse',
                  test=length(trlev) > 1)
