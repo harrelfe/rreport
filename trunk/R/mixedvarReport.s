@@ -1,28 +1,34 @@
+
 ## $Id$
 mixedvarReport <- function(data, vars, panel, treat,
                            longPanel=panel, test=TRUE,
                            exclude1=TRUE, long=FALSE,
                            npct=c('numerator','both','denominator','none'),
                            prmsd=FALSE,
-                           conType=c('bp','dot', 'raw'), nmin=15,
-                           cdf=FALSE, Ohist=TRUE,
-                           bpPrototype=FALSE, digits=3, append=FALSE,
+                           contDataPlotType=c('bp','dot', 'raw'), nmin=15,
+                           categDataPlot=TRUE,
+                           cdfPlot=length(levels(data[[treat]]))<=2,
+                           contDataPlot=!cdfPlot,
+                           Ohist = TRUE,
+                           bpPrototype=FALSE,
+                           digits=3, append=FALSE,
                            Major=NULL, MajorLabel='',
                            Majorvars=NULL, cexMajor=.7,
                            continuous=10, nx=15,
                            keyloc=list(x=.8, y=.02),
-                           pl=TRUE, landscape=FALSE, size=NULL,
-                           longtable=FALSE, lines.page=40,
+                           landscape=FALSE, size=NULL,
+                           longtable=FALSE,
                            h=5, w=6,
                            clearPlots=FALSE, auxCol=NULL, ...) {
+  
 
   npct <- match.arg(npct)
-  conType <- match.arg(conType)
-  pdesc <- switch(conType,
+  contDataPlotType <- match.arg(contDataPlotType)
+  pdesc <- switch(contDataPlotType,
                   bp='Box-percentile plots',
                   dot='Quartiles',
                   raw='Raw data')
-  
+                   
   ## h and w pertain to plot.summary.formula.reverse for categorical vars 
   vars  <- unlist(vars)
   Treat <- data[[treat]]
@@ -35,15 +41,27 @@ mixedvarReport <- function(data, vars, panel, treat,
   form <- as.formula(paste('Treat', paste(vars,collapse='+'), sep='~'))
   d <- summary(form, data=data, method='reverse',
                test=test, continuous=continuous, nmin=nmin)
+  contVars = vars[d$type==2]
+  categVars = vars[d$type==1]
+  
   lp <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
+               
+  #########################################################
+  ### CLOSED REPORT
+  #########################################################
+  ### create a table
+  #########################################################
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/',panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
         npct=npct, prmsd=prmsd, caption=lp, where='hbp!', ctable=!longtable,
         size=size, landscape=landscape,
         longtable=longtable, lines.page=lines.page, auxCol=auxCol)
-  if(pl) {
+  #########################################################
+  ### plot categorical data
+  #########################################################
+  if(categDataPlot) {
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
       startPlot(pn, h=h, w=w)
@@ -59,8 +77,13 @@ mixedvarReport <- function(data, vars, panel, treat,
                    'the category shown on the $y$-axis.'))
       cp()
     }
+  }
+  #########################################################
+  ### plot continuous data
+  #########################################################
+  if (contDataPlot){
     if(any(d$type == 2) || length(Major)) {
-      if(bpPrototype && conType=='bp') {
+      if(bpPrototype & contDataPlotType=='bp') {
         startPlot('bpplot-prototype', h=4)
         bpplt()
         endPlot()
@@ -69,111 +92,109 @@ mixedvarReport <- function(data, vars, panel, treat,
                paste('Prototype box-percentile plot to be used to',
                      'interpret the following plots'))
       }
-
+      
       pn <- paste(panel, 'cont', sep='-')
       startPlot(paste(pn,'%d',sep=''), h=6, w=6)
-      np <- plot(d, which='con', conType=conType)
+      np <- plot(d, which='con', conType=contDataPlotType)
       endPlot()
       if(np > 0) for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste(pdesc, 'for continuous',longPanel,
-                     if(i>1) '(continued)' else ''),
-               paste(pdesc, ' for continuous ',longPanel,
-                     if(i>1) ' (continued)' else
-                     if(conType!='raw')
-                     paste('.  $x$-axes are scaled to the $0.025$ and',
-                           '$0.975$ quantiles when data are pooled',
-                           'over treatments.'),
-                     sep=''))
+              paste(pdesc, 'for continuous',longPanel,
+                    if(i>1) '(continued)' else ''),
+              paste(pdesc, ' for continuous ',longPanel,
+                    if(i>1) ' (continued)' else
+                    if(contDataPlotType!='raw')
+                    paste('.  $x$-axes are scaled to the $0.025$ and',
+                          '$0.975$ quantiles when data are pooled',
+                          'over treatments.'),
+                    sep=''))
         cp()
       }
+    }
+  }
   
-      if(cdf) {
-        pn <- paste(panel, 'ecdf', sep='-')
-        startPlot(paste(pn,'%d',sep=''), h=6, w=6)
-        mfrowSet(length(vars))
-        np <- ecdf(data[vars], group=Treat,
-                   lwd=c(1,2), col=gray(c(0,.7)), q=.5,
-                   label.curves=FALSE)
-        endPlot()
-        if(np > 0) for(i in 1:np) {
-          putFig(panel, paste(pn, i, sep=''),
-                 paste('Cumulative distribution plots for',
-                       'continuous', longPanel,
-                       if(i>1)'(continued)' else ''),
-                 paste('Empirical cumulative distribution plots for ',
-                       'continuous ', longPanel,
-                       if(i>1)' (continued)' else 
-                       paste('. Reference lines are drawn at',
-                             'treatment-specific median values.',
-                             '\\protect\\treatkey'),
-                       sep=''))
-          cp()
-        }
-      }
-    }
-  }
-
-    panel <- paste('O', panel, sep='')
-    form <- as.formula(paste('~', paste(vars,collapse='+')))
-    d <- summary(form, data=data, method='reverse',
-                 continuous=continuous, nmin=nmin)
-    latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
-          append=append, middle.bold=TRUE, exclude1=exclude1,
-          long=long, npct=npct, prmsd=prmsd,
-          caption=lp, where='hbp!', ctable=!longtable,
-          size=size, landscape=landscape, longtable=longtable,
-          lines.page=lines.page, auxCol=auxCol)
-  if(!pl) return(invisible())
-  if(any(d$type == 1)) {
-    pn <- paste(panel, 'cat', sep='-')
-    startPlot(pn, h=h, w=w)
-    plot(d, which='cat', main='', ...)
+  #########################################################
+  ### plot CDF
+  #########################################################
+  if(cdfPlot) {
+    pn <- paste(panel, 'ecdf', sep='-')
+    startPlot(paste(pn,'%d',sep=''), h=6, w=6)
+    mfrowSet(length(vars))
+    np <- ecdf(data[vars], group=Treat,
+                lwd=c(1,2), col=gray(c(0,.7)), q=.5,
+                label.curves=FALSE)
     endPlot()
-    cp()
-    putFig(panel, pn,
-           paste('Distribution of categorical', longPanel, 'variables'),
-           paste('Distribution of categorical', longPanel, 'variables.',
-                 'Proportions on the $x$-axis indicate the',
-                 'proportion of subjects in',
-                 'the category shown on the $y$-axis.'))
-    cp()
-  }
-  if(any(d$type == 2)) {
-    if(cdf) {
-      pn <- paste(panel, 'ecdf', sep='-')
-      startPlot(paste(pn, '%d', sep=''), h=6, w=6)
-      mfrowSet(length(vars))
-      np <- ecdf(data[vars], lwd=1, q=(1:3)/4)
-      endPlot()
-      if(np > 0) for(i in 1:np) {
-        putFig(panel, paste(pn, i, sep=''),
-               paste('Cumulative distribution plots for continuous',
-                     longPanel, 'variables',
-                     if(i>1)'(continued)' else ''),
-               paste('Empirical cumulative distribution plots for ',
-                     'continuous ', longPanel, ' variables',
-                     if(i>1)' (continued)' else 
-                     '. Reference lines are drawn at quartiles.',
-                     sep=''))
-        cp()
-      }
-    }
-    if(Ohist) {
-      pn <- paste(panel, 'hist', sep='-')
-      startPlot(paste(pn, '%d', sep=''), h=6, w=6)
-      mfrowSet(length(vars))
-      np <- hist.data.frame(data[vars])
-      endPlot()
-      if(np > 0) for(i in 1:np) {
-        putFig(panel, paste(pn, i, sep=''),
-               paste('Frequencies of', longPanel, 'variables',
-                     if(i>1)'(continued)' else ''))
-        cp()
-      }
+    if(np > 0) for(i in 1:np) {
+      putFig(panel, paste(pn, i, sep=''),
+              paste('Cumulative distribution plots for',
+                    'continuous', longPanel,
+                    if(i>1)'(continued)' else ''),
+              paste('Empirical cumulative distribution plots for ',
+                    'continuous ', longPanel,
+                    if(i>1)' (continued)' else 
+                    paste('. Reference lines are drawn at',
+                          'treatment-specific median values.',
+                          '\\protect\\treatkey'),
+                    sep=''))
+      cp()
     }
   }
-
+  
+  #########################################################
+  ### OPEN REPORT
+  #########################################################
+  ### plot table
+  #########################################################
+  panel <- paste('O', panel, sep='')
+  form <- as.formula(paste('~', paste(vars,collapse='+')))
+  d <- summary(form, data=data, method='reverse',
+                continuous=continuous, nmin=nmin)
+  latex(d, digits=digits, file=paste('gentex/',panel, '.tex', sep=''),
+        append=append, middle.bold=TRUE, exclude1=exclude1,
+        long=long, npct=npct, prmsd=prmsd,
+        caption=lp, where='hbp!', ctable=!longtable,
+        size=size, landscape=landscape, longtable=longtable,
+        lines.page=lines.page, auxCol=auxCol)
+        
+  #########################################################
+  ### plot categorical data
+  #########################################################
+  categPanelName <- paste(panel, 'cat', sep='-')
+  if(categDataPlot){
+      #the following dummy data is necessary since function "hist.data.frame"
+      #does not work the way it should for categorical variables
+      dummyContData <- as.data.frame(matrix(rnorm(10), ncol=length(categVars)))
+      startPlot(paste(categPanelName, '%d', sep=''), h=6, w=6)
+      mfrowSet(length(contVars))
+      categ <- hist.data.frame(data[categVars])
+      np <- hist.data.frame(dummyContData)
+      endPlot()
+      if(np > 0) for(i in 1:np) {
+        putFig(panel, paste(categPanelName, i, sep=''),
+              paste('Frequencies of', longPanel, 'variables',
+                    if(i>1)'(continued)' else ''))
+        cp()
+      }
+  }
+  #########################################################
+  ### plot histogram
+  #########################################################
+  histPanelName <- paste(panel, 'hist', sep='-')
+  if(Ohist){
+      startPlot(paste(histPanelName, '%d', sep=''), h=6, w=6)
+      mfrowSet(length(contVars))
+      np <- hist.data.frame(data[contVars])
+      endPlot()
+      if(np > 0) for(i in 1:np) {
+        putFig(panel, paste(histPanelName, i, sep=''),
+              paste('Frequencies of', longPanel, 'variables',
+                    if(i>1)'(continued)' else ''))
+        cp()
+      }
+  }
+  #########################################################
+  ### not sure what this code is about (did not get into it yet)
+  #########################################################
   nv <- length(Majorvars)
   nm <- length(unique(Major))
   if(nv) {
@@ -199,7 +220,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                   MajorLabel)
     putFig(panel, pn, lcap)
     cp()
-    
   }
   invisible()
 }
+

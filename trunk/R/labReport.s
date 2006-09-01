@@ -1,6 +1,6 @@
 
 ## $Id$
-labReportNew <- function(data, vars, panel, treat, id, time, times,
+labReport <- function(data, vars, panel, treat, id, time, times,
                       longPanel=panel, h=6.5, w=6.5,
                       diffs=FALSE, cdfPlot=length(levels(data[[treat]]))<=2,
                       tables=TRUE, boxPlot=!cdfPlot,
@@ -164,8 +164,8 @@ labReportNew <- function(data, vars, panel, treat, id, time, times,
       test=TRUE
       nmin = 1
       d <- data.frame(subject,v,Time)[Time %in% times,]
-      d <- reshape(d, direction="wide", idvar="subject", timevar="Time")
-      d <- merge(d, data.frame(subject, Treat), by="subject", all.x=TRUE)
+      d <- reshape(d, direction="wide", idvar=id, timevar="Time")
+      d <- merge(d, data.frame(subject, Treat), by=id, all.x=TRUE)
       timeLabels <- c(id, paste(label(data[[varName]]), times[order(times)], sep=", visit "), treat)
       for (i in 1:length(d)) label(d[,i]) <- timeLabels[i]
       form <- as.formula(paste("Treat", paste(setdiff(names(d), Cs(subject,Treat)),collapse='+'), sep='~'))
