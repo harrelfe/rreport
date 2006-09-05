@@ -18,7 +18,7 @@ labReport <- function(data, vars, panel, treat, id, time, times,
   ### contDataPlotType <- match.arg(contDataPlotType)
   ### some lines of the code are already preparing for that.
   
-  contDataPlotType!="bp"
+  contDataPlotType="bp"
   continuous <- 10
   pdesc <- switch(contDataPlotType,
                   bp='Box-percentile plots',

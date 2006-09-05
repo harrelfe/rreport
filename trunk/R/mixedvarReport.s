@@ -163,7 +163,9 @@ mixedvarReport <- function(data, vars, panel, treat,
   if(categDataPlot){
       #the following dummy data is necessary since function "hist.data.frame"
       #does not work the way it should for categorical variables
-      dummyContData <- as.data.frame(matrix(rnorm(10), ncol=length(categVars)))
+      dummyLength <- 10
+      dummyContData <- as.data.frame(matrix(rnorm(dummyLength*length(categVars)),
+                                            nrow=dummyLength, ncol=length(categVars)))
       startPlot(paste(categPanelName, '%d', sep=''), h=6, w=6)
       mfrowSet(length(contVars))
       categ <- hist.data.frame(data[categVars])
@@ -193,7 +195,7 @@ mixedvarReport <- function(data, vars, panel, treat,
       }
   }
   #########################################################
-  ### not sure what this code is about (did not get into it yet)
+  ### plot boxplot for every variable stratified by country
   #########################################################
   nv <- length(Majorvars)
   nm <- length(unique(Major))
