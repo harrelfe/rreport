@@ -6,7 +6,11 @@ listTable <- function(fileName,
                        colNames = names(dataframe),
                        vars =names(dataframe), fixedColVars=c(), fixedColWdths=c(),
                        markVar="", markVarVal="",
-                       toLatexChar=TRUE){
+                       toLatexChar=TRUE,
+                       appendix=TRUE, subsection=NULL, marker=NULL, append=FALSE){
+  ### appendix: if TRUE the function will require the subsection and marker arguments
+  ### since it will have to reference the tables in the future.
+  ### append: if TRUE all the out put will be appended to a file specified in fileName 
                        
   #internal constants and functions definitions
       
@@ -308,8 +312,25 @@ if (TRUE){
   }
     
 #beginning of the function listTable
-  outFile <- file(fileName, open="wt")
+  if (appendix & is.null(marker)) {
+    stop("Argument 'marker' has to be provided\n")
+  }
+  
+  if (append){
+    openMode <- "at"
+  }else{
+    openMode <- "wt"
+  }
+  
+  outFile <- file(fileName, open=openMode)
   on.exit(close(outFile))
+  if (appendix){
+    if (!is.null(subsection)){
+      cat( paste( "\\subsection{", subsection, "}\n", sep="") , file=outFile)
+    }
+    cat(paste("\\label{", marker, "}\n", sep=""), file=outFile)
+  }
+
   dataframe <- dataframe[,vars]
   if (orderGroups){
     dataframe <- dataframe[order(dataframe[[by]]),]
@@ -340,4 +361,9 @@ if (TRUE){
                       dataframe, pattern,
                       fixedColVars, fixedColWdths,
                       markVar, markVarVal)
+  if (appendix){
+    cat("\\clearpage\n", file=outFile)
+  }
+  #close(outFile)
+
 }#end of the function listTable
