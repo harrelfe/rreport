@@ -338,6 +338,7 @@ aeReport2 <- function(major,
                       landscape = FALSE,
                       maxcol = NULL,
                       append = FALSE,
+                      ref.label = NULL,
                       minfreq = 7,
                       major.filter = TRUE,
                       minor.filter = FALSE,
@@ -361,7 +362,7 @@ aeReport2 <- function(major,
   major <- as.character(major)
   minor <- as.character(minor)
 
-  doit <- function(file, dirname, treat = rep('', length(major))) {      
+  doit <- function(file, open.report, treat = rep('', length(major))) {      
     treat <- as.factor(treat)
     treats <- levels(treat)
     nt <- length(treats)
@@ -568,9 +569,12 @@ aeReport2 <- function(major,
 
     extern.ref <- NULL
     if(appendix && (is.null(minfreq) || any(!minsubset))) {
-      reflabel <- paste(panel, '.', as.integer(Sys.time()), sep='')
-      
-      latex(x, file = joinPath(dirname, appendixName()), append = TRUE, rowlabel = 'Event',
+      if(is.null(ref.label)) {
+        ref.label <- paste(panel, '.', as.integer(Sys.time()), sep='')
+      }
+
+      latex(x, file = file.path(TexDirName(open.report), FilenameMask(appendixName(), open.report)),
+            append = TRUE, rowlabel = 'Event',
             cgroup = cgroup,
             n.cgroup = if(nt > 1){
               rep(4,nt)
@@ -603,7 +607,8 @@ aeReport2 <- function(major,
     }
       
     
-    latex(x, file = joinPath(dirname,file), append = append, rowlabel = 'Event',
+    latex(x, file = file.path(TexDirName(open.report), FilenameMask(file, open.report)),
+          append = append, rowlabel = 'Event',
           cgroup = cgroup,
           n.cgroup = if(nt > 1){
             rep(4,nt)
@@ -623,7 +628,7 @@ aeReport2 <- function(major,
 
   }
 
-  doit(dirname=openDirName(), file=paste('O', panel, '.tex', sep = ''))
-  doit(dirname=closedDirName(), file=paste(panel, '.tex', sep = ''), treat)
+  doit(file=paste(panel, '.tex', sep = ''), open.report=TRUE)
+  doit(file=paste(panel, '.tex', sep = ''), open.report=FALSE, treat)
   invisible()
 }
