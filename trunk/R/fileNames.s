@@ -11,9 +11,9 @@ joinFiles <- function(...) {
   do.call('paste', args)
 }
 
-filenameMask <- function(filename, name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.open.filename.mask = name)
+filenameMask <- function(filename, mask) {
+  if(!missing(mask) && !is.null(mask)) {
+    options(rreport.open.filename.mask = mask)
   }
 
   if(!missing(filename) && !is.null(filename)) {
@@ -55,4 +55,32 @@ appendixName <- function(name) {
   }
   
   options("rreport.appendix.file.name")[[1]]
+}
+
+
+rreportInit <- function(dir.closed, dir.open, dir.graph, open.mask, appendixName) {
+  closedDirName(dir.closed)
+  openDirName(dir.open)
+  graphicsDir(dir.graph)
+  filenameMask(mask=open.mask)
+  appendixName(appendixName)
+
+
+  ## Test directory existance
+  if(is.na(file.stat(closedDirName())$isdir) || !file.stat(closedDirName())$isdir) {
+    stop('Directory for closed report tex files', closedDirName(), 'does not exist')
+  }
+
+  if(is.na(file.stat(openDirName())$isdir) || !file.stat(openDirName())$isdir) {
+    stop('Directory for open report tex files', openDirName(), 'does not exist')
+  }
+
+  if(is.na(file.stat(graphicsDir())$isdir) || !file.stat(graphicsDir())$isdir) {
+    stop('Directory for graphics output', graphicsDir(), 'does not exist')
+  }
+
+  cat('', file=joinPath(closedDirName(), appendixName()))
+  cat('', file=joinPath(openDirName(), appendixName()))
+
+  NULL
 }
