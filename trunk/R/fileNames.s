@@ -42,7 +42,7 @@ closedNameMask <- function(filename, mask) {
   }
 }
 
-filenameMask <- function(filename, open.report) {
+FilenameMask <- function(filename, open.report) {
   if(open.report) {
     openNameMask(filename=filename)
   } else {
