@@ -1,4 +1,4 @@
-myaccrualReport <- function(Minor, Major = rep('', length(Minor)), 
+accrualReport <- function(Minor, Major = rep('', length(Minor)), 
                           MajorLabel='', MinorLabel = '', 
                           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '',
                           EntryDate1cap, EntryDate2cap,
