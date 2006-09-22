@@ -579,7 +579,7 @@ aeReport2 <- function(major,
             n.cgroup = if(nt > 1){
               rep(4,nt)
             },
-            caption = paste('\\label{',reflabel, '}', caption,
+            caption = paste('\\label{', ref.label, '}', caption,
               if(nt==1) {
                 paste(' (N=',n,')',sep='')
               }, '.', acap, sep = ''),
@@ -598,7 +598,7 @@ aeReport2 <- function(major,
       }
 
       extern.ref <- paste(filter.mesg, ' See Appendix Table \\ref{',
-                          reflabel, '} on p. \\pageref{', reflabel,
+                          ref.label, '} on p. \\pageref{', ref.label,
                           '} for a complete table that includes low-frequency events.',
                           sep='')
 
