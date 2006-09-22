@@ -18,7 +18,7 @@ mixedvarReport <- function(data, vars, panel, treat,
                            keyloc=list(x=.8, y=.02),
                            landscape=FALSE, size=NULL,
                            longtable=FALSE,
-                           h=5, w=6,
+                           h=5, w=6, lines.page = 40,
                            clearPlots=FALSE, auxCol=NULL, ...) {
   
 
