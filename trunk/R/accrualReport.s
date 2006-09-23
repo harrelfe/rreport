@@ -2,14 +2,21 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
                           MajorLabel='', MinorLabel = '', 
                           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '',
                           EntryDate1cap, EntryDate2cap,
-                          dateRange, format = '%d%b%y', by = 'year', targetN,
+                          dateRange, 
+                          dateformat = 'y-m-d', 
+                          targetN,
                           panel = 'randomized', append = TRUE) {
 
   ###############################################################
   ##### Plot: Subjects 'panel' (e.g., randomized) over time #####
   ###############################################################
   if(length(EntryDate1)) {
-    dr <- as.Date(dateRange)
+    dr <- dates(dateRange, format = dateformat, out.format='m/d/y')
+    xlimdr <- c(floor.chron(dr[1], units = "months"),
+       ceiling.chron(dr[2], units = "months")+1)
+    drseq <- seq.dates(xlimdr[1], xlimdr[2], by="month")
+    axisat <- drseq[drseq %in% drseq[seq(1, length(drseq), by= 6)]]
+
     lb <- paste('accrual', panel, 'cumulative', sep = '-')
     shortcap <- paste('Subjects', panel, 'over time.')
     if(length(EntryDate1cap)) cap1 <- paste('Solid black line depicts ', EntryDate1cap, '.', sep='')
@@ -18,17 +25,21 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     # Build plot based on EntryDate1
     ecdf(EntryDate1, what = 'f', 
       xlab = EntryDateLabel, ylab = 'Cumumlative Number of Subjects',
-      ylim = c(0, max(length(EntryDate1), targetN)), xlim = dr, axes = FALSE)
+      xlim = xlimdr,
+      ylim = c(0, max(length(EntryDate1), targetN)), axes = FALSE)
     axis(side = 2)
-    axis.Date(side = 1, at = seq.Date(dr[1], dr[2], by=by), format = format)
+    axis(side = 1, at = drseq, labels = rep("", length(drseq)), 
+      tcl = -0.25) # make the minor tick marks shorter
+    axis(side = 1, at = axisat, labels = as.character(axisat), 
+      tcl = -0.5) # keep the minor tick marks the default length
     # Add second line according to EntryDate2 (if appropriate)
     if(length(EntryDate1)) {
       ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
-        xlim = dr, ylim = c(0, max(length(EntryDate1), targetN)))
+        xlim = xlimdr, ylim = c(0, max(length(EntryDate1), targetN)))
       if(length(EntryDate2cap)) cap2 <- paste('Solid gray line depicts ', EntryDate2cap, '.', sep='')
     }
     # Add target accrual line
-    lines(x = as.Date(dateRange), y = c(0,targetN), lty = 3, lwd=1)
+    lines(x = dr, y = c(0,targetN), lty = 3, lwd=1)
     box()
     cap0 <- 'Dotted straight line depicts target accrual.'
     endPlot()
