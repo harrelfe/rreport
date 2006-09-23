@@ -1,5 +1,5 @@
-rangeCheck <- function(data, colheader = 'Variable', panel, longPanel=panel,
-                       makeNA=FALSE, append=FALSE) {
+rangeCheck <- function(data, colheader = 'Variable',
+                                        panel, append=FALSE) {
 
   x <- data
   # Make sure valid column names were specified for each dataframe specified in data
@@ -28,16 +28,10 @@ rangeCheck <- function(data, colheader = 'Variable', panel, longPanel=panel,
     Table[i, 'out1'] <- pctbad[1]
     Table[i, 'out2'] <- paste(pctbad[2], '\\% \\scriptsize $\\frac{', nbad, '}{', n, '}$', sep = '')
 
-    # If makeNA = TRUE, replace values outside the specified range with NA for each variable
-#     if(makeNA) {
-#       vec <- ifelse(checkfn(vec), NA, vec)
-#     }
-
-
   }
-# return(Table)
 
-  invisible(latex(Table, file = paste('gentex/', panel, '.tex', sep = ''),
+  invisible(latex(Table, 
+    file = paste('gentex/', panel, '.tex', sep = ''),
     where = '!htbp', ctable = TRUE, append = FALSE, rowname = NULL,
     cgroup = c(paste('\\textbf{', colheader, '}'), '\\textbf{Defined Range}', '\\textbf{Out of Range}'), 
     n.cgroup = c(1, 2, 2), colheads = NULL,
@@ -45,16 +39,9 @@ rangeCheck <- function(data, colheader = 'Variable', panel, longPanel=panel,
     # --> NOTE: col.just must have the same number of elements as ncol(Table) --> have to combine the justifications
     #		to align by the '-' and '.'
     col.just = Cs('l', 'r@{~-~}', 'l', 'r@{.}', 'l'),
-#     insert.bottom = paste('* Values outside the defined range ', '\\emph{were}',
-#       if(!makeNA) '\\emph{\\textbf{not}}', ' replaced with a missing value.'),
-    caption = paste('Frequency of', casefold(colheader), 'values outside of defined ranges'))
+    caption = paste('Frequency of', casefold(colheader), 
+      'values outside of defined ranges'))
     )
-
-# print(paste(as.character(x[i, 'variable']), length(vec[is.na(vec)]), sep = '\t')
-#       return(invisible(vec))
-
-
-
 
 }
 

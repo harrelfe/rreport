@@ -25,7 +25,6 @@ makeNA <- function(data, mins, maxs) {
     if(nbad) {
       data[bad & !is.na(x), n[i]] <- NA
     }
-print(range(data[, n[i]], na.rm = TRUE))
   }
   invisible(data)
 }
