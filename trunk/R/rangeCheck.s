@@ -40,7 +40,7 @@ rangeCheck <- function(data, colheader = 'Variable',
     #		to align by the '-' and '.'
     col.just = Cs('l', 'r@{~-~}', 'l', 'r@{.}', 'l'),
     caption = paste('Frequency of', casefold(colheader), 
-      'values outside of defined ranges'))
+      'values outside of defined ranges.'))
     )
 
 }

@@ -18,7 +18,8 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     axisat <- drseq[drseq %in% drseq[seq(1, length(drseq), by= 6)]]
 
     lb <- paste('accrual', panel, 'cumulative', sep = '-')
-    shortcap <- paste('Subjects', panel, 'over time.')
+    shortcap <- paste('Subjects ', panel, ' over time.  The target enrollment duration was defined from ',
+       dr[1], ' to ', dr[2], '.', sep = '')
     if(length(EntryDate1cap)) cap1 <- paste('Solid black line depicts ', EntryDate1cap, '.', sep='')
 
     startPlot(lb, h = 3)
@@ -33,7 +34,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     axis(side = 1, at = axisat, labels = as.character(axisat), 
       tcl = -0.5) # keep the minor tick marks the default length
     # Add second line according to EntryDate2 (if appropriate)
-    if(length(EntryDate1)) {
+    if(length(EntryDate2)) {
       ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
         xlim = xlimdr, ylim = c(0, max(length(EntryDate1), targetN)))
       if(length(EntryDate2cap)) cap2 <- paste('Solid gray line depicts ', EntryDate2cap, '.', sep='')
