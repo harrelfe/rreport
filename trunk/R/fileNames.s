@@ -107,40 +107,43 @@ appendixName <- function(name) {
 }
 
 
-rreportInit <- function(dir.closed.tex, dir.open.tex, dir.open.graph, dir.closed.graph,
-                        open.mask, closed.mask, appendixName, empty.dir=FALSE) {
-  closedDirName(dir.closed)
-  openDirName(dir.open)
-  closedGraphDir(dir.closed.graph)
+rreportInit <- function(dir.open.tex, dir.closed.tex,
+                        dir.open.graph,dir.closed.graph,
+                        open.mask, closed.mask,
+                        appendix.name, empty.dir=FALSE) {
+  openTexDir(dir.open.tex)
+  closedTexDir(dir.closed.tex)
   openGraphDir(dir.open.graph)
+  closedGraphDir(dir.closed.graph)
   openNameMask(mask=open.mask)
   closedNameMask(mask=closed.mask)
-  appendixName(appendixName)
+  appendixName(appendix.name)
 
 
   ## Test directory existance
-  if(is.na(file.stat(closedTexDir())$isdir) || !file.stat(closedTexDir())$isdir) {
+  if(is.na(file.info(closedTexDir())$isdir) || !file.info(closedTexDir())$isdir) {
     stop('Directory for closed report tex files', closedTexDir(), 'does not exist')
   }
 
-  if(is.na(file.stat(openTexDir())$isdir) || !file.stat(openTexDir())$isdir) {
+  if(is.na(file.info(openTexDir())$isdir) || !file.info(openTexDir())$isdir) {
     stop('Directory for open report tex files', openTexDir(), 'does not exist')
   }
 
-  if(is.na(file.stat(closedGraphDir())$isdir) || !file.stat(closedGraphDir())$isdir) {
+  if(is.na(file.info(closedGraphDir())$isdir) || !file.info(closedGraphDir())$isdir) {
     stop('Directory for closed graphics output', closedGraphDir(), 'does not exist')
   }
 
-  if(is.na(file.stat(openGraphDir())$isdir) || !file.stat(openGraphDir())$isdir) {
+  if(is.na(file.info(openGraphDir())$isdir) || !file.info(openGraphDir())$isdir) {
     stop('Directory for open graphics output', openGraphDir(), 'does not exist')
   }
 
   if(empty.dir) {
-    unlink(file.path(c(closedDirName(), openDirName()), '*'))
+    unlink(file.path(c(openTexDir(), closedTexDir()), '*'))
+    unlink(file.path(c(openGraphDir(), closedGraphDir()), '*'))
   }
 
-  cat('', file=file.path(closedDirName(), closedNameMask(appendixName())))
-  cat('', file=file.path(openDirName(), openNameMask(appendixName())))
+  cat('', file=file.path(openTexDir(), openNameMask(appendixName())))
+  cat('', file=file.path(closedTexDir(), closedNameMask(appendixName())))
 
   NULL
 }
