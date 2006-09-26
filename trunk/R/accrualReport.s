@@ -18,8 +18,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     axisat <- drseq[drseq %in% drseq[seq(1, length(drseq), by= 6)]]
 
     lb <- paste('accrual', panel, 'cumulative', sep = '-')
-    shortcap <- paste('Subjects ', panel, ' over time.  The target enrollment duration was defined from ',
-       dr[1], ' to ', dr[2], '.', sep = '')
+    shortcap <- paste('Subjects', panel, 'over time.')
     if(length(EntryDate1cap)) cap1 <- paste('Solid black line depicts ', EntryDate1cap, '.', sep='')
 
     startPlot(lb, h = 3)
@@ -42,10 +41,11 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     # Add target accrual line
     lines(x = dr, y = c(0,targetN), lty = 3, lwd=1)
     box()
+    cap00 <- paste('The target enrollment duration was defined from ', dr[1], ' to ', dr[2], '.', sep = '')
     cap0 <- 'Dotted straight line depicts target accrual.'
     endPlot()
     putFig(panel = 'accrual', name = lb, caption = shortcap,
-      longcaption = paste(shortcap, cap0, cap1, cap2, sep = '  '), append = FALSE)
+      longcaption = paste(shortcap, cap00, cap0, cap1, cap2, sep = '  '), append = FALSE)
   }
   ###############################################################
 
@@ -102,7 +102,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     ##### Table: Number of subjects 'panel' (e.g., randomized) by site (Minor or MajorMinor) #####
     ##############################################################################################
     listTable(fileName = paste('gentex/accrual', panel, 'sitefreq.tex', sep=''), 
-      caption = paste('\\label{table:abbrev}', 'Legend of the', singlesitecap,  
+      caption = paste('\\label{table:abbrev}Legend of the', singlesitecap,  
         'groupings used in the', dQuote(shortcap), 'figure (Figure \\ref{fig:abbrev} on page \\pageref{fig:abbrev}).'),
       zebraPattern = 'group', dataframe = subset(rand.data, code.infig %in% ce$codes), by='code.infig',
       colNames = c('Grouping used in figure', 'Definition of grouping'),
@@ -133,7 +133,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
   startPlot(lb, h = 6, trellis = FALSE)
   dotchart2(-sort(-n), xlab = 'Number of Subjects', auxdata = -sort(-n), auxtitle = '# subjects')
   endPlot()
-  putFig(panel = 'accrual', name = lb, caption = lcap, append=append)
+  putFig(panel = 'accrual', name = lb, caption = figcap, longcaption = lcap, append=append)
   ##########################################################################
 
   # Add line in accrual.tex to pull in combineEqual table
@@ -152,13 +152,13 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
   plot(as.numeric(names(nn)),nn, type = 'b',
     xlab = 'Number of Subjects', ylab = paste('Number of', pluralsitecap))
   endPlot()
-  lcap <- paste('Number of ', pluralsitecap, ' having a given number of subjects ', panel, '.', sep='')
+  shortcap <- paste('Number of ', pluralsitecap, ' having a given number of subjects ', panel, '.', sep='')
   if(length(unique(Major)) > 1) {
-    lcap <- paste(lcap, '  ', sQuote('Site'), 
+    lcap <- paste(shortcap, '  ', sQuote('Site'), 
       ' is defined as the concatenation of ', MajorLabel, ' and ', MinorLabel, ' (e.g., ',
       sQuote(sample(setdiff(Minor, 'NANA'), size = 1)), ').', sep = '')
   }
-  putFig(panel = 'accrual', name = lb, caption = lcap)
+  putFig(panel = 'accrual', name = lb, caption = shortcap, longcaption = lcap)
   #########################################################################################
 
  invisible()
