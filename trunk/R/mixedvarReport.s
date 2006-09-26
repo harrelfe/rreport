@@ -88,8 +88,10 @@ mixedvarReport <- function(data,
       endPlot()
       cp()
       putFig(panel, pn,
-             paste('Distribution of categorical', longPanel, 'variables'),
-             paste('Distribution of categorical', longPanel, 'variables.',
+#              paste('Distribution of categorical', longPanel, 'variables'),
+#              paste('Distribution of categorical', longPanel, 'variables.',
+             paste('Distribution of categorical variables in', longPanel),
+             paste('Distribution of categorical variables in', longPanel, 
                    'Proportions on the $x$-axis indicate the',
                    'treatment-specific proportion of subjects in',
                    'the category shown on the $y$-axis.'))
@@ -118,13 +120,15 @@ mixedvarReport <- function(data,
       if(np > 0) {
         for(i in 1:np) {
           putFig(panel, paste(pn, i, sep=''),
-                 paste(pdesc, 'for continuous', longPanel,
+#                  paste(pdesc, 'for continuous', longPanel,
+                 paste(pdesc, 'of continuous continuous variables in', longPanel,
                        if(i>1) {
                          '(continued)'
                        } else {
                          ''
                        }),
-                 paste(pdesc, ' for continuous ', longPanel,
+#                  paste(pdesc, ' for continuous ', longPanel,
+                 paste(pdesc, ' of continuous continuous variables in ', longPanel,
                        if(i>1) {
                          ' (continued)'
                        } else {
@@ -154,15 +158,19 @@ mixedvarReport <- function(data,
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste('Cumulative distribution plots for',
-                     'continuous', longPanel,
+#                paste('Cumulative distribution plots for',
+#                      'continuous', longPanel,
+               paste('Cumulative distribution plots of',
+                     'continuous variables in', longPanel,
                      if(i>1) {
                        '(continued)'
                      } else {
                        ''
                      }),
-               paste('Empirical cumulative distribution plots for ',
-                     'continuous ', longPanel,
+#                paste('Empirical cumulative distribution plots for ',
+#                      'continuous ', longPanel,
+               paste('Empirical cumulative distribution plots of ',
+                     'continuous variables in ', longPanel,
                      if(i>1) {
                        ' (continued)'
                      } else {
@@ -209,7 +217,8 @@ mixedvarReport <- function(data,
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(categPanelName, i, sep=''),
-               paste('Frequencies of', longPanel, 'variables',
+#                paste('Frequencies of', longPanel, 'variables',
+               paste('Distributions of categorical variables in', longPanel, 
                      if(i>1) {
                        '(continued)'
                      } else {
@@ -226,12 +235,13 @@ mixedvarReport <- function(data,
   if(Ohist){
     startPlot(paste(histPanelName, '%d', sep=''), h=6, w=6)
     mfrowSet(length(contVars))
-    np <- hist.data.frame(data[contVars])
+    np <- hist.data.frame(data[contVars], xlab = label(data[contVars]))
     endPlot()
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(histPanelName, i, sep=''),
-               paste('Frequencies of', longPanel, 'variables',
+#                paste('Frequencies of', longPanel, 'variables',
+               paste('Distributions of continuous variables in', longPanel,
                      if(i>1) {
                        '(continued)'
                      } else {
@@ -274,8 +284,10 @@ mixedvarReport <- function(data,
       }
     }
     endPlot()
-    lcap <- paste('Box-percentile plots of selected', longPanel,
-                  'variables stratified by', MajorLabel)
+#     lcap <- paste('Box-percentile plots of selected', longPanel,
+#                   'variables stratified by', MajorLabel)
+    lcap <- paste('Box-percentile plots of selected continuous variables in', longPanel,
+                  'stratified by', MajorLabel)
 
     putFig(panel, pn, lcap)
     cp()
