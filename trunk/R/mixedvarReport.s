@@ -88,13 +88,11 @@ mixedvarReport <- function(data,
       endPlot()
       cp()
       putFig(panel, pn,
-#              paste('Distribution of categorical', longPanel, 'variables'),
-#              paste('Distribution of categorical', longPanel, 'variables.',
-             paste('Distribution of categorical variables in', longPanel),
-             paste('Distribution of categorical variables in', longPanel, 
-                   'Proportions on the $x$-axis indicate the',
-                   'treatment-specific proportion of subjects in',
-                   'the category shown on the $y$-axis.'))
+             paste('Distribution of the categorical variables in the `', longPanel, '\' table', sep = ''),
+             paste('Distribution of the categorical variables in the `', longPanel, 
+                   '\' table.  Proportions on the $x$-axis indicate the ',
+                   'treatment-specific proportion of subjects in ',
+                   'the category shown on the $y$-axis.', sep = ''))
       cp()
     }
   }
@@ -120,15 +118,13 @@ mixedvarReport <- function(data,
       if(np > 0) {
         for(i in 1:np) {
           putFig(panel, paste(pn, i, sep=''),
-#                  paste(pdesc, 'for continuous', longPanel,
-                 paste(pdesc, 'of continuous continuous variables in', longPanel,
+                 paste(pdesc, 'of continuous continuous variables in the `', longPanel, '\' table',
                        if(i>1) {
-                         '(continued)'
+                         ' (continued)'
                        } else {
                          ''
-                       }),
-#                  paste(pdesc, ' for continuous ', longPanel,
-                 paste(pdesc, ' of continuous continuous variables in ', longPanel,
+                       }, sep = ''),
+                 paste(pdesc, ' of continuous continuous variables in the `', longPanel, '\' table',
                        if(i>1) {
                          ' (continued)'
                        } else {
@@ -158,19 +154,15 @@ mixedvarReport <- function(data,
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-#                paste('Cumulative distribution plots for',
-#                      'continuous', longPanel,
-               paste('Cumulative distribution plots of',
-                     'continuous variables in', longPanel,
+               paste('Cumulative distribution plots of the',
+                     'continuous variables in the `', longPanel, '\' table',
                      if(i>1) {
-                       '(continued)'
+                       ' (continued)'
                      } else {
                        ''
-                     }),
-#                paste('Empirical cumulative distribution plots for ',
-#                      'continuous ', longPanel,
-               paste('Empirical cumulative distribution plots of ',
-                     'continuous variables in ', longPanel,
+                     }, sep = ''),
+               paste('Empirical cumulative distribution plots of the ',
+                     'continuous variables in the `', longPanel, '\' table ',
                      if(i>1) {
                        ' (continued)'
                      } else {
@@ -211,19 +203,22 @@ mixedvarReport <- function(data,
                                           nrow=dummyLength, ncol=length(categVars)))
     startPlot(paste(categPanelName, '%d', sep=''), h=6, w=6)
     mfrowSet(length(contVars))
+    # NOTE: hist.data.frame automatically uses the variable label or variable name
+    #	as the x-lab depending on the length of the variable label
+    #		lab <- attr(v, "label")
+    #		lab <- if (length(lab) && nchar(lab) > 35) nam[j]
     categ <- hist.data.frame(data[categVars])
     np <- hist.data.frame(dummyContData)
     endPlot()
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(categPanelName, i, sep=''),
-#                paste('Frequencies of', longPanel, 'variables',
-               paste('Distributions of categorical variables in', longPanel, 
+               paste('Distributions of the categorical variables in the `', longPanel, '\' table',
                      if(i>1) {
-                       '(continued)'
+                       ' (continued)'
                      } else {
                        ''
-                     }))
+                     }, sep = ''))
         cp()
       }
     }
@@ -235,18 +230,21 @@ mixedvarReport <- function(data,
   if(Ohist){
     startPlot(paste(histPanelName, '%d', sep=''), h=6, w=6)
     mfrowSet(length(contVars))
-    np <- hist.data.frame(data[contVars], xlab = label(data[contVars]))
+    # NOTE: hist.data.frame automatically uses the variable label or variable name
+    #	as the x-lab depending on the length of the variable label
+    #		lab <- attr(v, "label")
+    #		lab <- if (length(lab) && nchar(lab) > 35) nam[j]
+    np <- hist.data.frame(data[contVars], xlab = "blah")
     endPlot()
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(histPanelName, i, sep=''),
-#                paste('Frequencies of', longPanel, 'variables',
-               paste('Distributions of continuous variables in', longPanel,
+               paste('Distributions of the continuous variables in the `', longPanel, '\' table',
                      if(i>1) {
-                       '(continued)'
+                       ' (continued)'
                      } else {
                        ''
-                     }))
+                     }, sep = ''))
         cp()
       }
     }
@@ -284,10 +282,8 @@ mixedvarReport <- function(data,
       }
     }
     endPlot()
-#     lcap <- paste('Box-percentile plots of selected', longPanel,
-#                   'variables stratified by', MajorLabel)
-    lcap <- paste('Box-percentile plots of selected continuous variables in', longPanel,
-                  'stratified by', MajorLabel)
+    lcap <- paste('Box-percentile plots of selected continuous variables in the `', longPanel,
+                  '\' table stratified by ', MajorLabel, sep = '')
 
     putFig(panel, pn, lcap)
     cp()

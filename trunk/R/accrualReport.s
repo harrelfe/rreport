@@ -19,7 +19,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
 
     lb <- paste('accrual', panel, 'cumulative', sep = '-')
     shortcap <- paste('Subjects', panel, 'over time.')
-    if(length(EntryDate1cap)) cap1 <- paste('Solid black line depicts ', EntryDate1cap, '.', sep='')
+    if(length(EntryDate1cap)) cap1 <- paste('The solid black line depicts ', EntryDate1cap, '.', sep='')
 
     startPlot(lb, h = 3)
     # Build plot based on EntryDate1
@@ -36,13 +36,13 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     if(length(EntryDate2)) {
       ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
         xlim = xlimdr, ylim = c(0, max(length(EntryDate1), targetN)))
-      if(length(EntryDate2cap)) cap2 <- paste('Solid gray line depicts ', EntryDate2cap, '.', sep='')
+      if(length(EntryDate2cap)) cap2 <- paste('The solid gray line depicts ', EntryDate2cap, '.', sep='')
     }
     # Add target accrual line
     lines(x = dr, y = c(0,targetN), lty = 3, lwd=1)
     box()
     cap00 <- paste('The target enrollment duration was defined from ', dr[1], ' to ', dr[2], '.', sep = '')
-    cap0 <- 'Dotted straight line depicts target accrual.'
+    cap0 <- 'The dotted straight line depicts target accrual.'
     endPlot()
     putFig(panel = 'accrual', name = lb, caption = shortcap,
       longcaption = paste(shortcap, cap00, cap0, cap1, cap2, sep = '  '), append = FALSE)
@@ -64,7 +64,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     endPlot()
     lcap <- paste('Number of subjects', panel, 'by', casefold(MajorLabel))
     putFig(panel = 'accrual', name = lb, caption = lcap,
-      longcaption = paste(lcap, '. Numbers to right of chart show the number of ', 
+      longcaption = paste(lcap, '. Numbers to the right of the chart show the number of ', 
       casefold(MinorLabel), 's within each ', casefold(MajorLabel), '.', sep=''), append = append)
     ##########################################################################
 
@@ -102,8 +102,9 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
     ##### Table: Number of subjects 'panel' (e.g., randomized) by site (Minor or MajorMinor) #####
     ##############################################################################################
     listTable(fileName = paste('gentex/accrual', panel, 'sitefreq.tex', sep=''), 
-      caption = paste('\\label{table:abbrev}Legend of the', singlesitecap,  
-        'groupings used in the', dQuote(shortcap), 'figure (Figure \\ref{fig:abbrev} on page \\pageref{fig:abbrev}).'),
+      caption = paste('\\label{table:abbrev}Legend of the ', singlesitecap,
+        ' groupings used in the `', shortcap, 
+        '\' figure (Figure \\ref{fig:abbrev} on page \\pageref{fig:abbrev}).', sep = ''),
       zebraPattern = 'group', dataframe = subset(rand.data, code.infig %in% ce$codes), by='code.infig',
       colNames = c('Grouping used in figure', 'Definition of grouping'),
       vars = c('code.infig', 'defs'),
@@ -116,8 +117,8 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
   ##### Plot: Number of subjects randomized by site (Minor or MajorMinor) ######
   ##############################################################################
   lb <- paste('accrual',panel,'sitefreq',sep='-')
-  medcap <- paste(figcap, '.  Numbers to right of chart show the number of subjects ', panel, 
-    ' within each ', singlesitecap, '.', sep = '')
+  medcap <- paste(figcap, '.  Numbers to the right of the chart show the values that each dot represents ', 
+    '(i.e., the number of subjects ', panel, ' within each ', singlesitecap, ').', sep = '')
   if(length(unique(Major)) > 1) {
     medcap <- paste(medcap, '  ', sQuote('Site'), 
       ' is defined as the concatenation of ', casefold(MajorLabel), ' and ', casefold(MinorLabel), ' (e.g., ',
