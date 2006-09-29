@@ -229,7 +229,7 @@ dirps2pdf <- function() {
 }                       
 
 publishPdf <- function(reports, minutes=NULL, title, server, path,
-                       copy=TRUE, email=FALSE, uid=NULL, passwd=NULL,
+                       upload=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
                        hardcopies=TRUE, verbose=TRUE,
                        mailer=c('mail','kmail'), extra=NULL) {
@@ -243,7 +243,7 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
   mailer <- match.arg(mailer)
   nl <- ifelse(mailer=='kmail','\n','\\n')
   
-  if(copy) {
+  if(upload) {
     f <- tempfile()
 
     if(file.exists(f) && !file.info(f)$isdir) {
@@ -268,9 +268,9 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
     file.copy(rn, paths[-1], overwrite=TRUE)
     
     system(paste('chmod u=rw,g=rw,o=', paste(shQuote(paths), collapse=' ')))
-    system(paste('scp -p ', paste(shQuote(paths), collapse=' '), ' ', server, ':', path, sep=''))
+    system(paste('scp ', paste(shQuote(paths), collapse=' '), ' ', server, ':', path, sep=''))
 
-    file.remove(paths, f)
+    #file.remove(paths, f)
   }
   if(email) {
     url <- strsplit(path, '/')[[1]]
@@ -282,11 +282,11 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
                  } else {
                    'The following documents have'
                  },
-                 ' been placed or updated on a secure web page:',nl,nl,
+                 ' been placed or updated on a secure web page:',nl,#nl,
                  paste(c(reports,minutes), collapse=nl), nl, nl,
-                 'Point your browser to ', url, nl,
-                 'and use the username ', uid,
-                 ' and the password that will be in the next note. ',
+                 'Point your browser to ', url, #nl,
+                 ' and use the username ', uid,
+                 ' and the password that will be in the next email. ',
                  'For accuracy, copy the password from the e-mail and',
                  ' paste it in the proper field in your browser.',nl,nl,
                  'Please confirm your ability to open the pdf files within 24 hours by replying to this message.',nl,nl,
