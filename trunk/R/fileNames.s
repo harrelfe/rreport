@@ -106,6 +106,13 @@ appendixName <- function(name) {
   options("rreport.appendix.file.name")[[1]]
 }
 
+AppendixName <- function(open.report) {
+  FilenameMask(appendixName(), open.report)
+}
+
+AppendixPath <- function(open.report) {
+  file.path(TexDirName(open.report), AppendixName(open.report))
+}
 
 rreportInit <- function(dir.open.tex, dir.closed.tex,
                         dir.open.graph,dir.closed.graph,
@@ -138,12 +145,12 @@ rreportInit <- function(dir.open.tex, dir.closed.tex,
   }
 
   if(empty.dir) {
-    unlink(file.path(c(openTexDir(), closedTexDir()), '*'))
-    unlink(file.path(c(openGraphDir(), closedGraphDir()), '*'))
+    unlink(file.path(c(closedTexDir(), openTexDir()), '*'))
+    unlink(file.path(c(closedGraphDir(), openGraphDir()), '*'))   
   }
 
-  cat('', file=file.path(openTexDir(), openNameMask(appendixName())))
-  cat('', file=file.path(closedTexDir(), closedNameMask(appendixName())))
+  cat('', file=AppendixPath(open=FALSE))
+  cat('', file=AppendixPath(open=TRUE))
 
   NULL
 }
