@@ -29,7 +29,7 @@ closedNameMask <- function(filename, mask) {
     options(rreport.closed.filename.mask = mask)
   }
 
-  mask <- options("rreport.open.filename.mask")[[1]]
+  mask <- options("rreport.closed.filename.mask")[[1]]
 
   if(!missing(filename) && !is.null(filename)) {
     if(is.null(mask)) {

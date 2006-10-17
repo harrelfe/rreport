@@ -506,6 +506,8 @@ aeReport2 <- function(major,
         isminfreq <- FALSE
       }
 
+#      cat('j: '); print(j)
+#      cat("g(id[j])"); print(g(id[j]))
       lab <- c(lab, '')
         
       lab <- c(lab, maj)
