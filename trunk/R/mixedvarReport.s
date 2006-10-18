@@ -154,7 +154,7 @@ mixedvarReport <- function(data,
     if(np > 0) {
       for(i in 1:np) {
         putFig(panel, paste(pn, i, sep=''),
-               paste('Cumulative distribution plots of the',
+               paste('Cumulative distribution plots of the ',
                      'continuous variables in the `', longPanel, '\' table',
                      if(i>1) {
                        ' (continued)'
