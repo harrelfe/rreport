@@ -399,30 +399,30 @@ aeReport2 <- function(major,
       }
     }
 
-    print(appendix)
-    print(minfreq)
+#    print(appendix)
+#    print(minfreq)
     if(appendix && !is.null(minfreq)) {
       filter.mesg <- " Table includes only those"
       if(major.filter != 0) {
         filter.mesg <- paste(filter.mesg, 'major categories')
-        cat(filter.mesg,'\n')
+#        cat(filter.mesg,'\n')
       }
 
       if(major.filter != 0 && minor.filter != 0) {
         filter.mesg <- paste(filter.mesg, 'and');
-        cat(filter.mesg,'\n')
+#        cat(filter.mesg,'\n')
       }
       
       if(minor.filter != 0) {
         filter.mesg <- paste(filter.mesg, 'events')
-        cat(filter.mesg,'\n')
+#        cat(filter.mesg,'\n')
       }
 
       filter.mesg <- paste(filter.mesg,  ' where per-subject incidence is $>$ ', minfreq, '.', sep='')
-      cat(filter.mesg,'\n')
+#      cat(filter.mesg,'\n')
     }
 
-    cat(filter.mesg, '\n')
+#    cat(filter.mesg, '\n')
     if(descending != 'none') {
       acap <- paste(acap, ' Output is sorted on ',
                     if(descending == 'both') {
