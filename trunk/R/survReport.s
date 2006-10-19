@@ -15,7 +15,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
     S <- Surv(data[[etime]], data[[event]])
     treat.group <- as.factor(data[[treat.group]])
     survplot(survfit(S ~ treat.group), n.risk=TRUE, conf=conf, lwd=lwd,
-       lty=lty, col=col, ylabel=ylabel)
+       lty=lty, col=col, ylabel=ylabel, ...)
     endPlot()
     # Calculate the corresponding z for each level of group 
     for(i in levels(as.factor(data[[group]]))) {
@@ -49,7 +49,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
        col=gray(c(0.7, 0))
     }
     survplot(survfit(S ~ treat), n.risk=TRUE, conf=conf, lwd=lwd,
-       lty=lty, col=col, ylabel=ylabel)
+       lty=lty, col=col, ylabel=ylabel, ...)
     endPlot()
     # Calculate the corresponding z 
     i <- is.na(S) | is.na(treat) 
