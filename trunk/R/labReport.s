@@ -4,7 +4,7 @@ labReport <- function(data, vars, panel, treat, id, time, times,
                       longPanel=panel, h=6.5, w=6.5,
                       diffs=FALSE, cdfPlot=length(levels(data[[treat]]))<=2,
                       tables=TRUE, boxPlot=!cdfPlot,
-                      digits=3, append=FALSE, clearPlots=FALSE, open=TRUE) {
+                      digits=3, append=FALSE, clearPlots=FALSE, open=TRUE, ...) {
 
   ##################################################
   ### By default the function plots CDFs if the number of treatment
