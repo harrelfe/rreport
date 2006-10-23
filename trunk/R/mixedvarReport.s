@@ -4,6 +4,8 @@ mixedvarReport <- function(data,
                            panel,
                            treat,
                            longPanel=panel,
+                           ncaption = '',
+                           tableref = panel,
                            test=TRUE,
                            exclude1=TRUE,
                            long=FALSE,
@@ -62,9 +64,12 @@ mixedvarReport <- function(data,
   contVars = vars[d$type==2]
   categVars = vars[d$type==1]
   
-  lp <-  paste(toupper(substring(longPanel,1,1)),
+  lp.lot <-  paste(toupper(substring(longPanel,1,1)),
                substring(longPanel,2), sep='')
-               
+  lp <-  paste(lp.lot, ncaption)
+#  lp <-  paste(toupper(substring(longPanel,1,1)),
+#               substring(longPanel,2), sep='')
+
   #########################################################
   ### CLOSED REPORT
   #########################################################
@@ -73,7 +78,9 @@ mixedvarReport <- function(data,
   latex(d, prtest='P', digits=digits,
         file=paste('gentex/', panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
-        npct=npct, prmsd=prmsd, caption=lp, where='hbp!', ctable=!longtable,
+        npct=npct, prmsd=prmsd, caption=lp, caption.lot = lp.lot, label = tableref,
+#        npct=npct, prmsd=prmsd, caption=lp,
+        where='hbp!', ctable=!longtable,
         size=size, landscape=landscape,
         longtable=longtable, lines.page=lines.page, auxCol=auxCol)
   #########################################################
@@ -187,7 +194,9 @@ mixedvarReport <- function(data,
   latex(d, digits=digits, file=paste('gentex/', panel, '.tex', sep=''),
         append=append, middle.bold=TRUE, exclude1=exclude1,
         long=long, npct=npct, prmsd=prmsd,
-        caption=lp, where='hbp!', ctable=!longtable,
+        caption=lp, caption.lot = lp.lot, label = tableref,
+#        caption=lp, 
+        where='hbp!', ctable=!longtable,
         size=size, landscape=landscape, longtable=longtable,
         lines.page=lines.page, auxCol=auxCol)
         

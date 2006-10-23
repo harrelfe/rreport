@@ -2,7 +2,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
                        ylabel='Survival Probability',
                        conf=c('bars','bands','none'),
                        n=NULL, labels=NULL, previousActual=NULL, h=4, 
-                       append=FALSE, fileName="trt", descrip="treatment", ...) {
+                       append=FALSE, fileName="trt", descrip="treatment", ndescrip = "", ...) {
   require('survival')
   require('Design')
 
@@ -30,7 +30,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
     }
     putFig(panel = 'surv', name = plotName,
       caption = paste('Kaplan-Meier estimates by ',  descrip, '.', sep=''), 
-      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', descrip, '.', 
+      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', descrip, ndescrip, '.', 
         '  Based on these data, the unadjusted Cox-logrank $z$ values for ', levels(as.factor(data[[group]]))[1], ' and ', levels(as.factor(data[[group]]))[2],
         ' across treatment were calculated to be ', get(paste("z", levels(as.factor(data[[group]]))[1], sep=".")), ' and ', 
         get(paste("z", levels(as.factor(data[[group]]))[2], sep=".")), 

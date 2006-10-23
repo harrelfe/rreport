@@ -327,6 +327,7 @@ aeReport2 <- function(major,
                       denom,
                       panel = 'ae',
                       caption = 'Summary of adverse events by system organ class and preferred term',
+                      ncaption = '',
                       descending = c('both', 'major', 'minor', 'none'),
                       sortby = c('incidence', '% difference'),
                       headerStr = "AE",
@@ -584,7 +585,7 @@ aeReport2 <- function(major,
             caption = paste('\\label{', ref.label, '}', caption,
               if(nt==1) {
                 paste(' (N=',n,')',sep='')
-              }, '.', acap, sep = ''),
+              }, ncaption, '.', acap, sep = ''),
             caption.lot=caption,
             rowlabel.just = if(length(maxcol)) {
               paste('p{',maxcol,'ex}',sep='')
@@ -617,7 +618,7 @@ aeReport2 <- function(major,
           }, caption = paste(caption,
                if(nt==1) {
                  paste(' (N=',n,')',sep='')
-               }, '.', acap, extern.ref, sep = ''),
+               }, ncaption, '.', acap, extern.ref, sep = ''),
           caption.lot=caption,
           rowlabel.just = if(length(maxcol)) {
             paste('p{',maxcol,'ex}',sep='')
