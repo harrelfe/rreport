@@ -32,15 +32,15 @@ getReferenceObject()
 }
 
 print.latexReference <- function(refD){
-  cat("class", class(refD), "\n")
-  for (i in 1:length(refD$marker)){
-    cat(refD$marker[i], refD$keyword[i], refD$label[i], "++++++\n")
-  }
-  cat("\n")
+  print(data.frame(marker=refD$marker, keyword=refD$keyword, label=refD$label))
 }
 
 getReferenceObject <- function(){
-  options("rreport.reference.list")[[1]]
+  refD <- options("rreport.reference.list")[[1]]
+  if (class(refD)!= "latexReference"){
+    stop("the type of the argument 'refD' should be 'latexReference'. Use function initMarkerList() to create it\n")
+  }
+  refD
 }
 
 putReferenceObject <- function(refD){
@@ -52,9 +52,6 @@ updateMarkers <- function(newMarker, keyword="", label=""){
   ### checks if it is different from the existing ones
   ### returns updated latexReference
   refD = getReferenceObject()
-  if (class(refD)!= "latexReference"){
-    stop("the type of the argument 'refD' should be 'latexReference'. Use function initMarkerList() to create it\n")
-  }
   if (newMarker %in% refD$marker){
     stop(paste("Duplicated marker", newMarker))
   }
@@ -68,11 +65,11 @@ updateMarkers <- function(newMarker, keyword="", label=""){
 }
 
 generateRef <- function(){
+  generate <- function(){paste("marker",abs(round(rnorm(1)*(10^8))), sep="")}
   existingMarkers <- getRefsByKey()
-  koef <- 10^3
-  newMarker <- abs(round(rnorm(1)*koef))
+  newMarker <- generate()
   while (newMarker %in% existingMarkers){
-    newMarker <- abs(round(rnorm(1)*koef))
+    newMarker <- generate()
   }
   newMarker
 }
@@ -87,9 +84,6 @@ getRefsByKey <- function(keyword=NULL){
   ### returns all markers with a given keyword 
   ### if keyword==NULL returns all markers
   refD = getReferenceObject()
-  if (class(refD)!= "latexReference"){
-    stop("the type of the argument 'refD' should be latexReference. Use function initMarkerList() to create it\n")
-  }
   if (!is.null(keyword)){
     refD$marker[refD$keyword==keyword]
   }else{
@@ -98,11 +92,9 @@ getRefsByKey <- function(keyword=NULL){
 }
 
 getLabelsByKey <- function(keyword=NULL){
-  ### returns all markers with a given keyword 
+  ### returns all labels with a given keyword 
+  ### if keyword==NULL returns all labels
   refD = getReferenceObject()
-  if (class(refD)!= "latexReference"){
-    stop("the type of the argument 'refD' should be latexReference. Use function initMarkerList() to create it\n")
-  }
   if (!is.null(keyword)){
     refD$label[refD$keyword==keyword]
   }else{
