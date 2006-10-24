@@ -20,7 +20,7 @@ rangeCheck <- function(data, colheader = 'Variable',
     bad <- checkfn(vec)
     nbad <- sum(bad, na.rm = TRUE)
     # Split 'pctbad' by the decimal point so can align the column by the decimal --> see col.just
-    pctbad <- unlist(strsplit(as.character(round((nbad/n)*100, 2)), '\\.'))
+    pctbad <- unlist(strsplit(format(round((nbad/n)*100, 2), nsmall = 2), '\\.'))
     Table[i, 'column'] <- as.character(x[i, 'label'])
     Table[i, 'min'] <- format(x[i, 'min'], big.mark = ',')
     Table[i, 'max'] <- paste(format(x[i, 'max'], big.mark = ','),

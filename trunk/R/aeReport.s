@@ -601,7 +601,7 @@ aeReport2 <- function(major,
       }
 
       extern.ref <- paste(filter.mesg, ' See Appendix Table \\ref{',
-                          ref.label, '} on p. \\pageref{', ref.label,
+                          ref.label, '} on p.\\ \\pageref{', ref.label,
                           '} for a complete table that includes low-frequency events.',
                           sep='')
 
