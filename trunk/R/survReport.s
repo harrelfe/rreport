@@ -30,7 +30,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
     }
     putFig(panel = 'surv', name = plotName,
       caption = paste('Kaplan-Meier estimates by ',  descrip, '.', sep=''), 
-      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', descrip, ndescrip, '.', 
+      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', paste(descrip, ndescrip, sep = " "), '.', 
         '  Based on these data, the unadjusted Cox-logrank $z$ values for ', levels(as.factor(data[[group]]))[1], ' and ', levels(as.factor(data[[group]]))[2],
         ' across treatment were calculated to be ', get(paste("z", levels(as.factor(data[[group]]))[1], sep=".")), ' and ', 
         get(paste("z", levels(as.factor(data[[group]]))[2], sep=".")), 
@@ -60,7 +60,7 @@ survReport <- function(etime, event, treat, group=NULL, treat.group=NULL, data,
     z <- round(sqrt(logrank(S, as.integer(treat))), 2)
     putFig(panel = 'surv', name = plotName,
       caption = paste('Kaplan-Meier estimates by ',  descrip, '.', sep=''), 
-      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', descrip, ".", 
+      longcaption = paste('Kaplan-Meier cumulative event-free probability estimates by ', paste(descrip, ndescrip, sep = " "), ".", 
            '  Based on these data, an unadjusted Cox-logrank $z$ value was calculated to be ', z, ".  ", 
            # Inset treatment key        
            levels(treat)[1], ':\\rule[.05in]{.25in}{.5pt}; ', levels(treat)[2], ':\\textcolor[gray]{0.7}{\\rule[.05in]{.25in}{1.25pt}}.', sep=""), 
