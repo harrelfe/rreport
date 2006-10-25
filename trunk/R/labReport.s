@@ -135,10 +135,10 @@ labReport <- function(data, vars, panel, treat, id, time, times,
       startPlot(fn, trellis=TRUE, h=h, w=w)
       d <- data.frame(v,tf,Treat,Time)[Time %in% times,]
       if(length(trlev)==1)
-      print(ecdf( ~ v | tf, data=d, q=.5,
+      print(Ecdf( ~ v | tf, data=d, q=.5,
                  label.curve=FALSE,
                  as.table=TRUE)) else
-      print(ecdf( ~ v | tf, groups=Treat, data=d,
+      print(Ecdf( ~ v | tf, groups=Treat, data=d,
                  lty=c(1,1), lwd=c(1,2), col=gray(c(0,.7)), q=.5,
                  label.curve=FALSE,
                  as.table=TRUE))

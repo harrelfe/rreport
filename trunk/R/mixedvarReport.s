@@ -154,7 +154,7 @@ mixedvarReport <- function(data,
     pn <- paste(panel, 'ecdf', sep='-')
     startPlot(paste(pn, '%d', sep=''), h=6, w=6)
     mfrowSet(length(vars))
-    np <- ecdf(data[vars], group=Treat,
+    np <- Ecdf(data[vars], group=Treat,
                 lwd=c(1, 2), col=gray(c(0, 0.7)), q=0.5,
                 label.curves=FALSE)
     endPlot()

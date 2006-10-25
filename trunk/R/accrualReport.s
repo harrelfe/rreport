@@ -23,7 +23,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
 
     startPlot(lb, h = 3)
     # Build plot based on EntryDate1
-    ecdf(EntryDate1, what = 'f', 
+    Ecdf(EntryDate1, what = 'f', 
       xlab = EntryDateLabel, ylab = 'Cumumlative Number of Subjects',
       xlim = xlimdr,
       ylim = c(0, max(length(EntryDate1), targetN)), axes = FALSE)
@@ -34,7 +34,7 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
       tcl = -0.5) # keep the minor tick marks the default length
     # Add second line according to EntryDate2 (if appropriate)
     if(length(EntryDate2)) {
-      ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
+      Ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
         xlim = xlimdr, ylim = c(0, max(length(EntryDate1), targetN)))
       if(length(EntryDate2cap)) cap2 <- paste('The solid gray line depicts ', EntryDate2cap, '.', sep='')
     }
