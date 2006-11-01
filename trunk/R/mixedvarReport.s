@@ -35,6 +35,7 @@ mixedvarReport <- function(data,
                            lines.page = 40,
                            clearPlots=FALSE,
                            auxCol=NULL,
+                           prn=TRUE,
                            ...) {
 
   npct <- match.arg(npct)
@@ -82,7 +83,7 @@ mixedvarReport <- function(data,
 #        npct=npct, prmsd=prmsd, caption=lp,
         where='hbp!', ctable=!longtable,
         size=size, landscape=landscape,
-        longtable=longtable, lines.page=lines.page, auxCol=auxCol)
+        longtable=longtable, lines.page=lines.page, auxCol=auxCol, prn=prn)
   #########################################################
   ### plot categorical data
   #########################################################
@@ -198,7 +199,7 @@ mixedvarReport <- function(data,
 #        caption=lp, 
         where='hbp!', ctable=!longtable,
         size=size, landscape=landscape, longtable=longtable,
-        lines.page=lines.page, auxCol=auxCol)
+        lines.page=lines.page, auxCol=auxCol, prn=prn)
         
   #########################################################
   ### plot categorical data
