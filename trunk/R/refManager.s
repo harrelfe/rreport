@@ -1,23 +1,9 @@
-initMarkerList <- function(){
-  ### initiates a list of markers
-  refD = data.frame(marker=c(), keyword=c(), label = c())
-  refD$marker <- as.character(refD$marker)
-  refD$keyword <- as.character(refD$keyword)
-  refD$label <- as.character(refD$label)
-  class(refD) <- "latexReference"
-  options(rreport.reference.list = refD)
-}
-
-initMarkerList()
-
-
+## $Id: 
 
 if (FALSE){
-source("refManager.s")
-#updateMarkers("newm3")
-#updateMarkers("newm2")
-#updateMarkers("newm1")
-
+source("rreport.s")
+#source("refManager.s")
+#newMarker="mar1";label="label1"; keyword="sae1"
 getReference("sae", "ser.adv withdr")
 getReference("Osae", "ser.advWITHDR")
 getReference("Osae", "ser.advCARDIO")
@@ -31,20 +17,24 @@ getReferenceString("Osae")
 getReferenceObject()
 }
 
-print.latexReference <- function(refD){
-  print(data.frame(marker=refD$marker, keyword=refD$keyword, label=refD$label))
-}
-
 getReferenceObject <- function(){
   refD <- options("rreport.reference.list")[[1]]
-  if (class(refD)!= "latexReference"){
-    stop("the type of the argument 'refD' should be 'latexReference'. Use function initMarkerList() to create it\n")
+  if (is.null(refD)){
+    refD <- data.frame(marker=c(), keyword=c(), label=c())
   }
   refD
 }
 
 putReferenceObject <- function(refD){
   options(rreport.reference.list=refD)
+}
+
+print.latexReference <- function(refD){
+  if (is.null(refD)){
+    cat("The list of markers has not been created. Use function getReferenceObject() to create it\n")
+  }else{
+    print(refD)
+  }
 }
 
 updateMarkers <- function(newMarker, keyword="", label=""){
@@ -60,7 +50,7 @@ updateMarkers <- function(newMarker, keyword="", label=""){
   newM$keyword <- as.character(newM$keyword)
   newM$label <- as.character(newM$label)
   refD = rbind(refD, newM)
-  class(refD) <- "latexReference"
+  for (n in names(refD)) refD[[n]] <- as.character(refD[[n]])
   putReferenceObject(refD)
 }
 
