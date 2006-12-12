@@ -9,7 +9,7 @@ Description: The rreport package contains many functions useful for
 	monitoring and reporting the results of clinical trials and other
 	experiments in which treatments are compared.  LaTeX is
 	used to typeset the resulting reports.  The Hmisc package is used
-	by rreport for high-level graphics and for LaTeX table construction.
+	by rreport for high-level graphics and for LaTeX table construction. Test thing
 License: GPL version 2 or newer
 URL: http://biostat.mc.vanderbilt.edu,
 	http://biostat.mc.vanderbilt.edu/twiki/pub/Main/StatReport/summary.pdf
