@@ -17,8 +17,6 @@ major = "aesoc"
 lookBy="aept"
 id = "subject"
 sep = "  "
-#what = sae
-what = subset(ae, aeser=="No")
 labelLen = 30
 
 colAllMinor=gray(0.85)
@@ -27,29 +25,45 @@ colBadMinor="#FF88AB"
 colBadMajor="#FFC8E8"
 
 
-source("saeFreqDisplay.s")
 Load(sae)
 Load(Codes)
 Load(ae)
+
+#tmpsae$txcode = factor(sample(c("A","B","C"), length(tmpsae$txcode), replace=TRUE))
+
+denomSub = tapply(Codes$subject, Codes$txcode, function(x){length(unique(x))})
+
 source("saeFreqDisplay.s")
-tmpsae = merge(subset(ae, subset=subject %in% Codes$subject, select=c("subject", "aesoc", "aept", "aeondt")),
+what = subset(ae, aeser=="No")
+tmpsae = merge(subset(what, subset=subject %in% Codes$subject, select=c("subject", "aesoc", "aept", "aeondt")),
                subset(Codes, select=c("subject", "txcode")),
                by = "subject",
                all.x=TRUE)
-tmpsae = tmpsae
-#tmpsae$txcode = factor(sample(c("A","B","C"), length(tmpsae$txcode), replace=TRUE))
-displayFreq(tmpsae, "subject", "aept", "aesoc", "aeondt", "txcode", fileName="newTMP.pdf", keepPvalue=0.2, minDisplayNum=10)
-#displayFreq(tmpsae, "subject", "aept", "aesoc", "date.of.onset", "txcode", fileName="newTMP.pdf", minDisplayNum=2)
+displayFreq(tmpsae, "subject", "aept", "aesoc", "aeondt", "txcode", denomSub=denomSub, fileName="newTMP.pdf", keepPvalue=0.2, minDisplayNum=5, titleOffsetKoef=4, sparseKoef=2)
+
+
+source("saeFreqDisplay.s")
+what = sae
+tmpsae = merge(subset(what, subset=subject %in% Codes$subject, select=c("subject", "aesoc", "aept", "aeondt")),
+               subset(Codes, select=c("subject", "txcode")),
+               by = "subject",
+               all.x=TRUE)
+displayFreq(tmpsae, "subject", "aept", "aesoc", "aeondt", "txcode", denomSub=denomSub, fileName="newTMP.pdf", keepPvalue=0.2, minDisplayNum=5, titleOffsetKoef=4, sparseKoef=2)
+
+
 
 dataframe=tmpsae; subjectVar="subject"; minorVar="aept"; majorVar="aesoc"
-#occurrenceVar="date.of.onset"
-occurrenceVar="aeondt"
+occurrenceVar="date.of.onset"
+#occurrenceVar="aeondt"
 stratVar="txcode";pvalue=0.05;keepPvalue=0.2;minDisplayNum=5
 
 }
 
 displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar, stratVar,
-                       fileName=NULL, minorPerPage, labelLen=10, pvalue=0.05, keepPvalue=0.5, minDisplayNum=2, ...){
+                       denomSub=NULL,
+                       fileName=NULL, minorPerPage, labelLen=10, pvalue=0.05, keepPvalue=0.5,
+                       minDisplayNum=2, majorGrid=NULL, minorGrid=NULL, plotGrid=TRUE, gridDig = 0,
+                       titleOffsetKoef=10, minorToMajorKoef=5, sparseKoef=1.5,...){
 ### dataframe: data in the dataframe format (adverse events)
 ### subjectVar: variable classified to major and minor category (subject id)
 ### minorVar: minor category variable (specific adverse event)
@@ -58,16 +72,37 @@ displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar,
 ###                a minor category for a given subjectVar (date or order in which event happened).
 ###                This variable is assumed to be unique for given subject and given minorVar.
 ### stratVar: stratification variable (treatment for example)
-### make sure that levels(stratVar) are different from names(dataframe)
+### denomSub: a vector the same length as levels(stratVar) and has the same names.
+###           it contains the number of unique subjects in each stratVar level
+### pvalue: if for a given major and minor category the proportion test gives p-value less
+###         than pvalue then this category will be highlighted 
+### keepPvalue: only categories with p-value (according to the proportion test) less than keepPvalue
+###             will be displayed
+### minDisplayNum: only categories with total frequency more than minDisplayNum will be displayed
+### plotGrid: plot grid or not
+### majorGrid: grid of major category. if not supplied and plotGrid=TRUE plots a default one
+### minorGrid: grid of minor category. if not supplied and plotGrid=TRUE plots a default one
+### gridDig: by how many digits to round the grid digits
+### titleOffsetKoef: how far the title should stay from the graph
+### minorToMajorKoef: how much longer the bars for minor category than for major category
+### sparseKoef: how farther away the graphs for different stratVar values are located on the diagram
 
+  ###----------------------make sure that levels(stratVar) are different from names(dataframe)
+  if (any(levels(dataframe[[stratVar]]) %in% names(dataframe))){
+    stop("Make sure that levels(stratVar) are different from names(dataframe)")
+  }
+  ###----------------------calculate the number of subjects in each "strat" category
+  if (is.null(denomSub)){
+    denomSub = tapply(dataframe[[subjectVar]], dataframe[[stratVar]], function(x){length(unique(x))})
+  }else{
+    if (!setequal(names(denomSub), levels(dataframe[[stratVar]]))) stop("Names of 'denomSub' have to be the same as levels of dataframe[[stratVar]].")
+  }
+  ###----------------------choosing colors for the diagram
   colAllMajor=gray(0.92)
   colAllMinor=gray(0.85)
   colBadMajor="#FFC8E8"
   colBadMinor="#FF88AB"
   
-  if (any(levels(dataframe[[stratVar]]) %in% names(dataframe))){
-    stop("Make sure that levels(stratVar) are different from names(dataframe)")
-  }
   ### ---------------------filling in NA major and minor category
   codeNA = "Not Available"
   majorLevels = levels(dataframe[[majorVar]])
@@ -87,19 +122,18 @@ displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar,
   ### ---------------------prepare some general data
   uniqueEv = unique(subset(dataframe, select=c(subjectVar, minorVar, majorVar, occurrenceVar, stratVar)))
   uniqueSub = unique(subset(dataframe, select=c(subjectVar, minorVar, majorVar, stratVar)))
-  denomSub = tapply(uniqueSub[[majorVar]], uniqueSub[[stratVar]], length)
   
   ###----------------------prepare major data
-  ###
-  majorSub = as.data.frame(tapply(uniqueSub[[majorVar]], list(uniqueSub[[majorVar]],
-                           uniqueSub[[stratVar]]), length))
-  ### changing names to make sure that new names are not in levels(stratVar)
+  majorSub = as.data.frame(tapply(uniqueSub[[subjectVar]], list(uniqueSub[[majorVar]],
+                           uniqueSub[[stratVar]]), function(x){length(unique(x))}))
+  ###----------------------changing names to make sure that new names are not in levels(stratVar)
   names(majorSub) = paste("strat", names(majorSub), sep="")
   stratNames = names(majorSub)
   #majorSub$label = substr(row.names(majorSub), 1, labelLen)
   majorSub$label = row.names(majorSub)
   row.names(majorSub) = NULL
-  ### substitute NA occurrences with 0
+  
+  ###----------------------substitute NA occurrences with 0
   for (n in stratNames) {
     majorSub[is.na(majorSub[[n]]),n] = 0
   }
@@ -134,15 +168,23 @@ displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar,
   
   ### get rid of non-informative categories
   ###---------------------------------------------------------
-  minorSub = minorSub[minorSub$pvalue<keepPvalue | minorSub$all>minDisplayNum,]
+  minorSub = minorSub[minorSub$pvalue<keepPvalue & minorSub$all>minDisplayNum,]
   if (length(minorSub$all)==0) {stop("No data to display. Posible problems: empty 'dataframe', low 'keepPvalue', low minDisplayNum.\n ")}
   majorSub = subset(majorSub, majorSub$label %in% minorSub$major)  
   
-  #major = majorSub; minor = minorSub;stratLevels=levels(dataframe[[stratVar]]); width=0.5; breakWidth=0.5; sparseKoef=1.5; gridMajor=NULL; gridMinor=NULL; title=""
-  plotEvents(majorSub, minorSub, levels(dataframe[[stratVar]]), width=0.5, breakWidth=0.5, colMajor=NULL, colMinor=NULL, sparseKoef=1.5, gridMajor=NULL, gridMinor=NULL, title="Treatment", fileName=fileName)
+  ### prepare the grid
+  ###---------------------------------------------------------
+  gridDens = 5
+  if (is.null(majorGrid)){majorGrid=seq(min(majorSub[stratNames]),max(majorSub[stratNames]),
+                                        (max(majorSub[stratNames])-min(majorSub[stratNames]))/gridDens)[2:(gridDens+1)]}
+  if (is.null(minorGrid)){minorGrid=seq(min(minorSub[stratNames]),max(minorSub[stratNames]),
+                                        (max(minorSub[stratNames])-min(minorSub[stratNames]))/gridDens)[2:(gridDens+1)]}
+  #major = majorSub; minor = minorSub;stratLevels=levels(dataframe[[stratVar]]); width=0.5; breakWidth=0.5; sparseKoef=1.5; majorGrid=NULL; minorGrid=NULL; title=""
+  plotEvents(majorSub, minorSub, levels(dataframe[[stratVar]]), width=0.5, breakWidth=0.5, colMajor=NULL, colMinor=NULL, sparseKoef=sparseKoef, minorToMajorKoef=minorToMajorKoef, majorGrid=round(majorGrid,gridDig), minorGrid=round(minorGrid,gridDig), title="Treatment", fileName=fileName,
+  titleOffsetKoef=titleOffsetKoef)
 }
 
-plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, sparseKoef=1.5, gridMajor=NULL, gridMinor=NULL, title="", fileName=NULL, ...){
+plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, sparseKoef=1.5, minorToMajorKoef=5, plotGrid=TRUE, majorGrid=NULL, minorGrid=NULL, title="", fileName=NULL, titleOffsetKoef=3, ...){
   labelMaker = function(str1, str2, cut1=15, cut2=15){
     dots="..."
     len1 = nchar(str1)
@@ -153,22 +195,22 @@ plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, spar
     label2 = ifelse(nchar(label2)<len2, paste(label2,"...", sep=""), label2)
     paste(label1, label2)
   }
+  recPerSheet = 100
   stratN = length(stratLevels)
   strat="strat"
   varNames = paste(strat,stratLevels, sep="")
   
   ### define how scale the length (y-axes dimention) of the rectangles)
   ###------------------------------------------------------------------
-  majorMaxLenKoef = 10
   globalMajorMaxLen = max(major[,varNames])
   majorMaxLen = rep(NA, stratN)
-  for (i in 1:length(varNames)){majorMaxLen[i]=majorMaxLenKoef*max(major[[varNames[i]]])/globalMajorMaxLen}
-  globalMinorMaxLen = max(major[,varNames])
-  minorMaxLenKoef = majorMaxLenKoef*globalMinorMaxLen/globalMajorMaxLen
+  for (i in 1:length(varNames)){majorMaxLen[i]=max(major[[varNames[i]]])/globalMajorMaxLen}
+  globalMinorMaxLen = max(minor[,varNames])
+  minorMaxLenKoef = minorToMajorKoef*globalMinorMaxLen/globalMajorMaxLen
   minorMaxLen = rep(NA, stratN)
   for (i in 1:length(varNames)){minorMaxLen[i]=minorMaxLenKoef*max(minor[[varNames[i]]])/globalMinorMaxLen}
   partition = (c(majorMaxLen, 0)+c(0,minorMaxLen))*sparseKoef
-  titleOffset=3*(width+breakWidth)
+  titleOffset=titleOffsetKoef*(width+breakWidth)
   
   ### define start coordinates and xlim, ylim coord.
   ### assumption: the very first graph starts at (0,0)
@@ -183,41 +225,63 @@ plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, spar
   major = major[order(-major$all),]
   majorOrder = match(minor$major, major$label)
   minor = minor[order(majorOrder, -minor$all),]
-  width = rep(width, length(minor$all), length.out=length(minor$all))
-  breakWidth = rep(breakWidth, length(minor$all), length.out=length(minor$all))
   
-  xlim = c(startXY[1,1]-partition[1], startXY[stratN,1]+partition[length(partition)])
-  ylim = min(startXY[,2])+c(titleOffset,-sum(width+breakWidth)-titleOffset/2)
+  ### choosing x limits for the layout
+  #xlim = c(startXY[1,1]-partition[1], startXY[stratN,1]+partition[length(partition)])
+  #xlim = c(startXY[1,1], startXY[stratN,1])+c(-1,1)*sum(partition[c(1,length(partition))])/2
+  xlim = c(startXY[1,1], startXY[stratN,1])+c(-1,1)*min(partition[c(1,length(partition))])
   
   titleXY = startXY
   titleXY[,2] = min(startXY[,2])+titleOffset
   
-  majorWidth = tapply(minor$label, minor$major, function(x){length(unique(x))})*(width[1]+breakWidth[1])-breakWidth[1]
-  majorWidth = majorWidth[major$label]
-  majorBreakWidth = breakWidth[1]
-  
-  if (fileName!=""){ pdf(file=fileName) }
-  
-  newGraph=TRUE
-  cutMajor=20
-  if (!is.null(fileName){
+  if (!is.null(fileName)){
     pdf(fileName, width=8, height=11)
   }
-  for (i in 1:stratN){
-    plotDataMaj = major[[varNames[i]]]
-    plotDataMin = minor[[varNames[i]]]
+  ### if the graph is too long it can be layed out on several pages
+  ### the following code does that
+  ###--------------------------------------------------
+  for (p in 1:ceiling(length(minor$all)/recPerSheet)){
+    rowRange = ((p-1)*recPerSheet+1) : (p*recPerSheet)
+    if (p>1){
+      printMinor = minor[rowRange,]
+    }else{
+      printMinor = subset(minor[rowRange,], !is.na(minor$all[rowRange]))
+    }
+    printMajor = subset(major, major$label %in% printMinor$major)
+    newGraph=TRUE
+    cutMajor=20
+    par(mar=c(0,0,0,0))
+
+    width = rep(width, length(printMinor$all), length.out=length(printMinor$all))
+    breakWidth = rep(breakWidth, length(printMinor$all), length.out=length(printMinor$all))
+    majorWidth = tapply(printMinor$label, printMinor$major, function(x){length(unique(x))})*(width[1]+breakWidth[1])-breakWidth[1]
+    majorWidth = majorWidth[printMajor$label]
+    majorBreakWidth = breakWidth[1]
+    ylim = min(startXY[,2])+c(titleOffset,-sum(width+breakWidth)-titleOffset/2)
   
-    plotVect(plotDataMaj, newGraph=newGraph, plotGrid = TRUE, startXYCoor = startXY[i,], alinement = 2, maxLen = majorMaxLen[i], minLen = 0, width = majorWidth, breakLen = majorBreakWidth, xlim=xlim, ylim=ylim, title=paste(title,stratLevels[i]), titleXY=titleXY[i,], col=major$col, labels=labelMaker(major$label, plotDataMaj, cutMajor))
+    majorMaxLen = rep(NA, stratN)
+    for (i in 1:length(varNames)){majorMaxLen[i]=max(printMajor[[varNames[i]]])/globalMajorMaxLen}
+    minorMaxLen = rep(NA, stratN)
+    for (i in 1:length(varNames)){minorMaxLen[i]=minorMaxLenKoef*max(printMinor[[varNames[i]]])/globalMinorMaxLen}
     
-    plotVect(plotDataMin, newGraph=FALSE, plotGrid = TRUE, startXYCoor = startXY[i,], alinement = 1, maxLen = minorMaxLen[i], minLen = 0, width = width, breakLen = breakWidth, labels=labelMaker(plotDataMin, minor$label), col = minor$col)
+    for (i in 1:stratN){
+      plotDataMaj = printMajor[[varNames[i]]]
+      plotDataMin = printMinor[[varNames[i]]]
     
-    newGraph=FALSE
-    cutMajor=7
+      plotVect(plotDataMaj, newGraph=newGraph, plotGrid = plotGrid, gridVal=majorGrid, startXYCoor = startXY[i,], alinement = 2, maxLen = majorMaxLen[i], minLen = majorMaxLen[i]*min(plotDataMaj)/max(plotDataMaj), width = majorWidth, breakLen = majorBreakWidth, xlim=xlim, ylim=ylim, title=paste(title,stratLevels[i]), titleXY=titleXY[i,], col=printMajor$col, labels=labelMaker(printMajor$label, plotDataMaj, cutMajor))
+      
+      minorLabels = labelMaker(plotDataMin, printMinor$label)
+      minorLabels[minorLabels=="NA NA"] = ""
+      plotVect(plotDataMin, newGraph=FALSE, plotGrid = plotGrid, gridVal=minorGrid, startXYCoor = startXY[i,], alinement = 1, maxLen = minorMaxLen[i], minLen = minorMaxLen[i]*min(plotDataMin)/max(plotDataMin), width = width, breakLen = breakWidth, labels=minorLabels, col = printMinor$col)
+      newGraph=FALSE
+      cutMajor=7
+    }
   }
-  if (!is.null(fileName){
+  if (!is.null(fileName)){
     dev.off()
   }
 }
+
 
 
 easyRect = function(startXY, xLen, yLen, corner=TRUE, ...){
@@ -319,7 +383,6 @@ plotVect <- function(vect,
     gridVal = nonZeroMin + gridSet*(vectMax-nonZeroMin)/(length(gridSet)-1)
   }
   gridLen = gridVal*scaleKoef + scaleInter 
-  #labels = substr(labels, 1, labelMaxLen)
   labelLocKoef=0.3
   if (vertical){
     recCornerX = startXYCoor[1] - (alinement-1)*recLen
@@ -367,7 +430,8 @@ plotVect <- function(vect,
     ### FIX THE BUG: xlim and ylim should depend on the alinement
     if (is.null(xlim)) xlim=xRange + c(-1,1)*(diff(xRange))*0.2
     if (is.null(ylim)) ylim=yRange + c(-1,1)*(diff(yRange))*0.2
-    plot(xlim, ylim, type="n", axes = TRUE, ann=FALSE)
+    #plot(xlim, ylim, type="n", axes = TRUE, ann=FALSE)
+    plot(xlim, ylim, type="n", axes = FALSE, ann=FALSE)
   }
   ### Plotting grid if necessary (plotGrid=TRUE)
   if (plotGrid){
