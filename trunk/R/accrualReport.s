@@ -2,14 +2,16 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
                           MajorLabel='', MinorLabel = '', 
                           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '',
                           EntryDate1cap, EntryDate2cap,
-                          dateRange, 
+                          dateRange,
                           dateformat = 'y-m-d', 
                           targetN,
+                          targetDate=NULL,
                           panel = 'randomized', append = TRUE) {
 
   ###############################################################
   ##### Plot: Subjects 'panel' (e.g., randomized) over time #####
   ###############################################################
+  cap2=""
   if(length(EntryDate1)) {
     dr <- dates(dateRange, format = dateformat, out.format='m/d/y')
     xlimdr <- c(floor.chron(dr[1], units = "months"),
@@ -39,7 +41,13 @@ accrualReport <- function(Minor, Major = rep('', length(Minor)),
       if(length(EntryDate2cap)) cap2 <- paste('The solid gray line depicts ', EntryDate2cap, '.', sep='')
     }
     # Add target accrual line
-    lines(x = dr, y = c(0,targetN), lty = 3, lwd=1)
+    if (!is.null(targetDate)) {
+      targetDateConv <- dates(targetDate, format = dateformat, out.format='m/d/y')
+      targetX=c(dr[1], targetDateConv)
+    }else{
+      targetX=dr
+    }
+    lines(x = targetX, y = c(0,targetN), lty = 3, lwd=1)
     box()
     cap00 <- paste('The target enrollment duration was defined from ', dr[1], ' to ', dr[2], '.', sep = '')
     cap0 <- 'The dotted straight line depicts target accrual.'
