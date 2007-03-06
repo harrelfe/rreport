@@ -91,7 +91,7 @@ mixedvarReport <- function(data,
     if(any(d$type == 1)) {
       pn <- paste(panel, 'cat', sep='-')
       startPlot(pn, h=h, w=w)
-      plot(d, which='cat', main='', ...)
+      plot(d, which='cat', main='', groupfont=2, ...)
       Key(keyloc)
       endPlot()
       cp()
