@@ -228,7 +228,7 @@ dirps2pdf <- function() {
   invisible()
 }                       
 
-publishPdf <- function(reports, minutes=NULL, title, server, path,
+publishPdf <- function(reports, minutes=NULL, title, server, path, extension="pdf",
                        upload=TRUE, email=FALSE, uid=NULL, passwd=NULL,
                        to=NULL, cc=NULL, bcc=NULL, sig=NULL,
                        hardcopies=TRUE, verbose=TRUE,
@@ -251,7 +251,8 @@ publishPdf <- function(reports, minutes=NULL, title, server, path,
     }
 
     dir.create(f, recursive=TRUE)
-    rn <- paste(names(c(reports,minutes)),'pdf',sep='.')
+    if (extension=="") {sep=""} else {sep="."}
+    rn <- paste(names(c(reports,minutes)), extension, sep=sep)
     paths <- file.path(f, c('index.html', basename(rn)))
 
     info <- file.info(rn)[,c('size','mtime')]
