@@ -1,6 +1,12 @@
 ## $Id$
 dropoutReport <- function(d.dropout, dropout, treat,
-                          time.inc=NULL, ylim=c(0,1), panel="dropout", ...) {
+                          time.inc=NULL, ylim=c(0,1), panel="dropout", what="study", ...) {
+  ### function for capitalizing the first letter of each word
+  ### borrowed from function "toupper" help
+  .simpleCap <- function(x) {
+    s <- strsplit(x, " ")[[1]]
+    paste(toupper(substring(s, 1,1)), substring(s, 2), sep="", collapse=" ")
+  }
   require('survival')
   require('Design')
   S <- if(length(dropout)) Surv(d.dropout, dropout) else
@@ -10,7 +16,7 @@ dropoutReport <- function(d.dropout, dropout, treat,
   d <- data.frame(treat)
   d$S <- S
   f <- survfit(S, data=d)
-  yl <- 'Fraction Remaining in Study'
+  yl <- paste("Fraction Remaining in",.simpleCap(what))
   lwd <- c(1,2); lty=c(1,1); col=gray(c(0,.7))
   if(length(time.inc))
     survplot(f, time.inc=time.inc, n.risk=TRUE, conf='none', ylab=yl,
@@ -29,12 +35,11 @@ dropoutReport <- function(d.dropout, dropout, treat,
                     lwd=lwd, lty=lty, col=col, label.curves=FALSE,
                     ylim=ylim, ...)
   endPlot()
-  for(w in c(panel,openPanel))
-    putFig(w, w,
-           'Distribution of time until dropout',
-           if(w==panel)
-           'Distribution of time until dropout. \\protect\\treatkey'
-           else 'Distribution of time until dropout',
-           append=FALSE)
+  for(w in c(panel,openPanel)){
+    figureCaption = paste("Distribution of time until dropout from",what)
+    putFig(w, w, figureCaption,
+           if(w==panel) paste(figureCaption,". \\protect\\treatkey", sep="")
+           else figureCaption, append=FALSE)
+  }
   invisible()
 }
