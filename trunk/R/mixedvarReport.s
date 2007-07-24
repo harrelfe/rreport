@@ -83,7 +83,7 @@ mixedvarReport <- function(data,
 #        npct=npct, prmsd=prmsd, caption=lp,
         where='hbp!', ctable=!longtable,
         size=size, landscape=landscape,
-        longtable=longtable, lines.page=lines.page, auxCol=auxCol, prn=prn)
+        longtable=longtable, lines.page=lines.page, auxCol=auxCol, prn=prn, dotchart=TRUE)
   #########################################################
   ### plot categorical data
   #########################################################
@@ -199,7 +199,7 @@ mixedvarReport <- function(data,
 #        caption=lp, 
         where='hbp!', ctable=!longtable,
         size=size, landscape=landscape, longtable=longtable,
-        lines.page=lines.page, auxCol=auxCol, prn=prn)
+        lines.page=lines.page, auxCol=auxCol, prn=prn, dotchart=TRUE)
         
   #########################################################
   ### plot categorical data
