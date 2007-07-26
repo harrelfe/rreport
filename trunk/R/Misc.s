@@ -329,7 +329,7 @@ publishPdf <- function(reports, minutes=NULL, title, server, path, extension="pd
       paste('kmail -s "', title, '"', cc,
             bcc, ' --msg ', tf, ' ', to, sep='')
     } else {
-      paste('echo -e "', cmd, '" | mail -s "',
+      paste('echo "', cmd, '" | mail -s "',
             title, ' Reports"', cc, bcc, ' ', to, sep='')
     }
 
