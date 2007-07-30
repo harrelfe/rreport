@@ -234,7 +234,6 @@ aeReport <- function(data=NULL, vars, treat, time,
   ## Make a new data frame unioning AEs over all times
   d <- data[c(vars, treat)]
   m <- asNumericMatrix(d)
-  at <- subsAttr(d)
   m <- mApply(m, Id,
               function(y) {
                 nc <- ncol(y)
@@ -245,7 +244,7 @@ aeReport <- function(data=NULL, vars, treat, time,
   dm <- dimnames(m)
   dm[[2]][length(dm[[2]])] <- treat
   dimnames(m) <- dm
-  v <- matrix2dataFrame(m, at)
+  v <- matrix2dataFrame(m)
   s <- summary(form, data = v, method = 'reverse', test = TRUE)
   w <- latex(s, file = 'gentex/ae.tex', append = TRUE,
              middle.bold = TRUE, title = '',
