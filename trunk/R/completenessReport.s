@@ -100,6 +100,6 @@ completenessReport <- function(data, vars,
            if(r[1]==r[2])paste('was ', r[1],'.\n', sep='') else
            paste('ranged from ',r[1],' to ',
                  r[2],'.\n', sep=''),
-           file='/gentex/completeness.tex', append=append)
+           file='gentex/completeness.tex', append=append)
   invisible()
 }
