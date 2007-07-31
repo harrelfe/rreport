@@ -1,18 +1,16 @@
 accrualReport <-
   function(Minor, Major = rep('', length(Minor)), 
            MajorLabel='', MinorLabel = '', 
-           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '',
-           EntryDate1cap, EntryDate2cap,
-           dateRange,
-           dateformat = 'y-m-d', 
-           targetN,
-           targetDate=NULL,
-           panel = 'randomized', append = TRUE)
+           EntryDate1 = NULL, EntryDate2 = NULL,
+           EntryDateLabel = '', EntryDate1cap, EntryDate2cap,
+           dateRange, dateformat = 'y-m-d', 
+           targetN, targetDate=NULL,
+           panel = 'randomized', hdotchart=6, append = TRUE)
 {
   
   ## Plot: Subjects 'panel' (e.g., randomized) over time
 
-  cap2=""
+  lcap <- cap2 <- ""
   if(length(EntryDate1))
     {
       dr <- dates(dateRange, format = dateformat, out.format='m/d/y')
@@ -42,15 +40,18 @@ accrualReport <-
         {
           Ecdf(EntryDate2, what = 'f', add=TRUE, col='gray',
                xlim = xlimdr, ylim = c(0, max(length(EntryDate1), targetN)))
-          if(length(EntryDate2cap)) cap2 <- paste('The solid gray line depicts ', EntryDate2cap, '.', sep='')
+          if(length(EntryDate2cap))
+            cap2 <- paste('The solid gray line depicts ',
+                          EntryDate2cap, '.', sep='')
         }
       ## Add target accrual line
-      if (length(targetDate))
+      targetX <- if (length(targetDate))
         {
-          targetDateConv <- dates(targetDate, format = dateformat, out.format='m/d/y')
-          targetX=c(dr[1], targetDateConv)
+          targetDateConv <- dates(targetDate, format = dateformat,
+                                  out.format='m/d/y')
+          c(dr[1], targetDateConv)
         }
-      else targetX=dr
+      else dr
 
       lines(x = targetX, y = c(0,targetN), lty = 3, lwd=1)
       box()
@@ -75,7 +76,7 @@ accrualReport <-
       ## Plot: Number of subjects randomized by 'Major' (e.g., country)
 
       lb <- paste('accrual',panel,'majorfreq',sep='-')
-      startPlot(lb, h = 6, trellis = FALSE)
+      startPlot(lb, h = hdotchart, trellis = FALSE)
       dotchart2(mm, auxdata = sitesPerMajor[names(mm)],
                 auxtitle = paste('# ', casefold(MinorLabel), 's',
                   sep = ''), xlab = 'Number of Subjects')
@@ -90,7 +91,9 @@ accrualReport <-
       Minor <- paste(Major, Minor, sep = '') ### redefine Minor as MajorMinor
   }
   
-  n <- table(Minor) ### Minor if Major was not submitted, or MajorMinor if it was
+  n <- table(Minor)
+  ## Minor if Major was not submitted, or MajorMinor if it was
+  
   singlesitecap <- if(length(unique(Major)) > 1) 'site'
   else casefold(MinorLabel)
   pluralsitecap <- paste(singlesitecap, 's', sep = '')
@@ -100,9 +103,11 @@ accrualReport <-
   if(length(n) > 40)
     {
       ## if Minor or MajorMinor > 40 levels, force a combineEqual
-      sites <- factor(names(n),names(n))
+      sites <- factor(names(n), names(n))
       sites <- reorder.factor(sites, n)
-      ce <- combineEqual(n)     # combineEqual is a rreport fn. --> see rreport.s
+      ce <- combineEqual(n)
+      ## combineEqual is a rreport fn. --> see rreport.s
+
       ## The output of combineEqual is a list with 3 components:
       ##    (1) 'x' --> labeled vector of code frequencies (label is code)
       ##    (2) 'codes' --> character vector of alpha code labels (i.e.
@@ -133,44 +138,45 @@ accrualReport <-
                   '\' figure', #'(Figure \\ref{fig:abbrev} on page \\pageref{fig:abbrev})', 
                   sep = ''),
                 zebraPattern = 'group',
-                dataframe = subset(rand.data, code.infig %in% ce$codes), by='code.infig',
+                dataframe = subset(rand.data, code.infig %in% ce$codes),
+                by='code.infig',
                 colNames = c('Grouping used in figure', 'Definition of grouping'),
                 vars = c('code.infig', 'defs'),
                 fixedColVars = c('code.infig', 'defs'),
                 fixedColWdths = c(50, 350),
                 appendix = FALSE)
-
     }
 
   ## Plot: Number of subjects randomized by site (Minor or MajorMinor)
 
   lb <- paste('accrual',panel,'sitefreq',sep='-')
-  medcap <- paste(figcap,
+  medcap <- figcap
+  lcap <- paste(medcap,
                   '.  Numbers to the right of the chart show the values that each dot represents ', 
                   '(i.e., the number of subjects ', panel,
                   ' within each ', singlesitecap, ').', sep = '')
   if(length(unique(Major)) > 1)
     {
-      medcap <- paste(medcap, '  ', sQuote('Site'), 
-                      ' is defined as the concatenation of ',
-                      casefold(MajorLabel), ' and ', casefold(MinorLabel), ' (e.g., ',
-                      sQuote(sample(setdiff(Minor, 'NANA'), size = 1)), ').',
-                      sep = '')
+      lcap <- paste(lcap, '  ', sQuote('Site'), 
+                    ' is defined as the concatenation of ',
+                    casefold(MajorLabel), ' and ', casefold(MinorLabel), ' (e.g., ',
+                    sQuote(sample(setdiff(Minor, 'NANA'), size = 1)), ').',
+                    sep = '')
     }
   if(length(ce$codes))
     {
-      lcap <- paste(medcap,
+      lcap <- paste(lcap,
                     '  Letters in parentheses indicate groups of ',
                     pluralsitecap, ' having the same number of subjects,',
-      ' which are defined in Table \\ref{table:abbrev} on page \\pageref{table:abbrev}.',
+                    ' which are defined in Table \\ref{table:abbrev} on page \\pageref{table:abbrev}.',
                     sep='')
     }
-  else medcap
-  startPlot(lb, h = 6, trellis = FALSE)
+  startPlot(lb, h = hdotchart, trellis = FALSE)
   dotchart2(-sort(-n), xlab = 'Number of Subjects',
             auxdata = -sort(-n), auxtitle = '# subjects')
   endPlot()
-  putFig(panel = 'accrual', name = lb, caption = figcap, longcaption = lcap, append=append)
+  putFig(panel = 'accrual', name = lb,
+         caption = figcap, longcaption = lcap, append=append)
 
   ## Add line in accrual.tex to pull in combineEqual table
 
@@ -193,6 +199,7 @@ accrualReport <-
   endPlot()
   shortcap <- paste('Number of ', pluralsitecap,
                     ' having a given number of subjects ', panel, '.', sep='')
+  lcap <- shortcap
   if(length(unique(Major)) > 1)
     {
       lcap <- paste(shortcap, '  ', sQuote('Site'), 
