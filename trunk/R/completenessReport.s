@@ -1,4 +1,5 @@
 ## $Id$
+
 completenessReport <- function(data, vars, 
                                panel, Time, times,
                                longPanel=panel, frac=0.95,
@@ -8,6 +9,10 @@ completenessReport <- function(data, vars,
 
   if(!exists('compFullCaptionDone'))
     storeTemp(FALSE, 'compFullCaptionDone')
+
+  if(!append) cat('', file='gentex/completeness-key.tex')
+
+  needkey <- TRUE
   
   vars <- unlist(vars)
   xlab <- 'Number of Non-Missing Values'
@@ -22,22 +27,22 @@ completenessReport <- function(data, vars,
   nv <- length(vars)
   pl <- TRUE
   
-  lcap <- paste('Completeness of', longPanel,'.')
+  lcap <- paste('Completeness of ', longPanel, '.', sep='')
   if(!timeUsed)
     {
       n <- sapply(data[vars], function(y)sum(!is.na(y)))
       ce <- combineEqual(n)
       n <- ce$x
       r <- range(n)
-    if(r[1] / r[2] < frac)
-      {
-        variable <- factor(names(n),names(n))
-        variable <- reorder.factor(variable, n)
-        startPlot(fn, h=h)
-        print(Dotplot(variable ~ n, xlab=xlab, cex=cex))
-      }
-    else pl <- FALSE
-  }
+      if(r[1] / r[2] < frac)
+        {
+          variable <- factor(names(n),names(n))
+          variable <- reorder.factor(variable, n)
+          startPlot(fn, h=h)
+          print(Dotplot(variable ~ n, xlab=xlab, cex=cex))
+        }
+      else pl <- FALSE
+    }
   else
     {
       n  <- rowsum(1-is.na(data[vars]), Time)
@@ -51,10 +56,11 @@ completenessReport <- function(data, vars,
                xlab=label(Time),
                ylab='Number of Values', type='b')
           lcap <- paste(lcap,
-                        'The $y$-axis displays the number of values measured for',
-                        '\\texttt{',
+                        ' The $y$-axis displays the number of values measured for',
+                        ' \\texttt{',
                         if(length(ce$defs)) ce$defs else vars[1],
-                        '}. ')
+                        '}. ', sep='')
+          needkey <- FALSE
         }
       else
         {
@@ -67,10 +73,11 @@ completenessReport <- function(data, vars,
           print(Dotplot(variable ~ n | Time,
                         xlab=xlab, cex=cex))
           if(length(ce$codes))
-            lcap <- paste(lcap,
-                          'Letters in parentheses indicate groups of variables ',
-                          'having the same number of values measured, ',
-                          'defined elsewhere.\n', sep='')
+            lcap <-
+              paste(lcap,
+                    '  Letters in parentheses indicate groups of variables ',
+                    'having the same number of values measured, ',
+                    'defined elsewhere.\n', sep='')
       if(!compFullCaptionDone)
         {
           lcap <- paste(lcap,
@@ -84,19 +91,20 @@ completenessReport <- function(data, vars,
     {
       endPlot()
       putFig('completeness', fn,
-             paste('Completeness of',longPanel),
+             paste('Completeness of', longPanel),
              lcap, append=append)
-      if(length(ce$codes))
+      if(length(ce$codes) & needkey)
         cat('\nCodes used in Figure~\\ref{fig:',fn,'} are as follows:',
-            '{\\smaller[3]',
+            '{\\smaller[2]',
             paste(paste('\\textbf{',ce$codes,'}:',
-                        '\\texttt{\\textbf{',ce$defs,'}}',sep=''),collapse='; '),
+                        '\\texttt{\\textbf{',ce$defs,'}}',sep=''),
+                  collapse='; '),
             '.}\n\n', sep='',
-            file=paste('gentex/', fn,'.tex',sep=''), append=TRUE)
+            file='gentex/completeness-key.tex', append=TRUE)
       
     }
   else cat('For the',length(vars),longPanel,
-           ', the number of subjects having values entered',
+           'variables, the number of subjects having values entered',
            if(r[1]==r[2])paste('was ', r[1],'.\n', sep='') else
            paste('ranged from ',r[1],' to ',
                  r[2],'.\n', sep=''),
