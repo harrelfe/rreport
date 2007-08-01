@@ -1,42 +1,44 @@
 ## $Id$
-mixedvarReport <- function(data,
-                           vars,
-                           panel,
-                           treat,
-                           longPanel=panel,
-                           ncaption = '',
-                           tableref = panel,
-                           test=TRUE,
-                           exclude1=TRUE,
-                           long=FALSE,
-                           npct=c('numerator', 'both', 'denominator', 'none'),
-                           prmsd=FALSE,
-                           contDataPlotType=c('bp', 'dot', 'raw'),
-                           nmin=15,
-                           categDataPlot=TRUE,
-                           cdfPlot=length(levels(data[[treat]]))<=2,
-                           contDataPlot=!cdfPlot,
-                           Ohist = TRUE,
-                           bpPrototype=FALSE,
-                           digits=3,
-                           append=FALSE,
-                           Major=NULL,
-                           MajorLabel='',
-                           Majorvars=NULL,
-                           cexMajor=0.7,
-                           continuous=10,
-                           nx=15,
-                           keyloc=list(x=0.8, y=0.02),
-                           landscape=FALSE,
-                           size=NULL,
-                           longtable=FALSE,
-                           h=5,
-                           w=6,
-                           lines.page = 40,
-                           clearPlots=FALSE,
-                           auxCol=NULL,
-                           prn=TRUE,
-                           ...)
+mixedvarReport <-
+  function(data,
+           vars,
+           panel,
+           treat,
+           longPanel=panel,
+           ncaption = '',
+           tableref = panel,
+           test=TRUE,
+           exclude1=TRUE,
+           long=FALSE,
+           npct=c('numerator', 'both', 'denominator', 'none'),
+           prmsd=FALSE,
+           contDataPlotType=c('bp', 'dot', 'raw'),
+           nmin=15,
+           categDataPlot=!Odotchart,
+           cdfPlot=length(levels(data[[treat]]))<=2,
+           contDataPlot=!cdfPlot,
+           Ohist = TRUE,
+           Odotchart = TRUE,
+           bpPrototype=FALSE,
+           digits=3,
+           append=FALSE,
+           Major=NULL,
+           MajorLabel='',
+           Majorvars=NULL,
+           cexMajor=0.7,
+           continuous=10,
+           nx=15,
+           keyloc=list(x=0.8, y=0.02),
+           landscape=FALSE,
+           size=NULL,
+           longtable=FALSE,
+           h=5,
+           w=6,
+           lines.page = 40,
+           clearPlots=FALSE,
+           auxCol=NULL,
+           prn=TRUE,
+           ...)
 {
   npct <- match.arg(npct)
   contDataPlotType <- match.arg(contDataPlotType)
@@ -198,7 +200,7 @@ mixedvarReport <- function(data,
         caption=lp, caption.lot = lp.lot, label = tableref,
         where='hbp!', ctable=!longtable,
         size=size, landscape=landscape, longtable=longtable,
-        lines.page=lines.page, auxCol=auxCol, prn=prn, dotchart=TRUE)
+        lines.page=lines.page, auxCol=auxCol, prn=prn, dotchart=Odotchart)
         
 
   ## plot categorical data
@@ -213,10 +215,13 @@ mixedvarReport <- function(data,
                                             nrow=dummyLength, ncol=length(categVars)))
       startPlot(paste(categPanelName, '%d', sep=''), h=6, w=6)
       mfrowSet(length(contVars))
-      ## NOTE: hist.data.frame automatically uses the variable label or variable name
-      ##	as the x-lab depending on the length of the variable label
+
+      ## NOTE: hist.data.frame automatically uses the variable label or
+      ##    variable name as the x-lab depending on the length of the
+      ##    variable label
       ##		lab <- attr(v, "label")
       ##		lab <- if (length(lab) && nchar(lab) > 35) nam[j]
+      
       categ <- hist.data.frame(data[categVars])
       np <- hist.data.frame(dummyContData)
       endPlot()
