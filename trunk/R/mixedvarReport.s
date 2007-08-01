@@ -9,7 +9,7 @@ mixedvarReport <-
            tableref = panel,
            test=TRUE,
            exclude1=TRUE,
-           long=FALSE,
+           long=TRUE,
            npct=c('numerator', 'both', 'denominator', 'none'),
            prmsd=FALSE,
            contDataPlotType=c('bp', 'dot', 'raw'),
