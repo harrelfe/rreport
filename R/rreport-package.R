@@ -4,10 +4,9 @@
 #'
 #' Maintainer: Charles Dupont \email{charles.dupont@@vanderbilt.edu}
 #'
-#' @importFrom chron dates seq.dates chron years days hours minutes seconds
+#' @importFrom chron as.chron dates seq.dates chron years days hours minutes seconds
 #' @importFrom lattice bwplot
-#' @importFrom rms survplot
-#' @importFrom survival survfit Surv
+#' @importFrom rms Surv survfit.formula survplot.survfit
 #' @import Hmisc
 #' @docType package
 #' @aliases rreport package-rreport
@@ -23,7 +22,6 @@ NULL
 }
 
 # questions?
-# Surv may come from rms
 # accrualReport: no visible binding for global variable ‘code.infig’
 # aeReport: no visible binding for global variable ‘weeks’
 # completenessReport: no visible binding for global variable ‘compFullCaptionDone’

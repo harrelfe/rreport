@@ -40,7 +40,7 @@ accrualReport <-
   lcap <- cap2 <- ""
   if(length(EntryDate1))
     {
-      dr <- dates(dateRange, format = dateformat, out.format='m/d/y')
+      dr <- as.chron(dates(dateRange, format = dateformat, out.format='m/d/y'))
       xlimdr <- c(floor.chron(dr[1], units = "months"),
                   ceiling.chron(dr[2], units = "months")+1)
       drseq <- seq.dates(xlimdr[1], xlimdr[2], by="month")

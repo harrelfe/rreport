@@ -8,8 +8,7 @@ Imports:
     chron,
     Hmisc,
     lattice,
-    rms,
-    survival
+    rms
 Description: The rreport package contains many functions useful for
     monitoring and reporting the results of clinical trials and other
     experiments in which treatments are compared.  LaTeX is

@@ -67,16 +67,16 @@ floor.chron <- function(x, units=c("minutes", "hours", "days", "months", "years"
   if(missing(units)) {
     return(floor(unclass(x)))
   }
-  
+
   units <- match.arg(units)
 
   time.units <- c("minutes", "hours", "days")
   date.units <- c("months", "years")
-  
+
   if(units %in% time.units && !inherits(x, what=c('dates', 'times'))) {
     stop("when 'units' is 'minutes', or 'hours' 'x' must be of class 'times' or 'dates'")
   }
-  
+
   if(units %in% date.units  && !inherits(x, what=c('dates'))) {
     stop("when 'units' is 'days', 'months', or 'years' 'x' must be of class 'dates'")
   }

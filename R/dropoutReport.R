@@ -30,25 +30,24 @@ dropoutReport <- function(d.dropout, dropout, treat,
       Surv(d.dropout)
   openPanel <- paste("O", panel, sep="")
   startPlot(openPanel, h=4)
+  f <- survfit.formula(S ~ treat)
   d <- data.frame(treat)
   d$S <- S
-  f <- survfit(S, data=d)
   yl <- paste("Fraction Remaining in",.simpleCap(what))
   lwd <- c(1,2); lty=c(1,1); col=gray(c(0,.7))
   if(length(time.inc))
-    survplot(f, time.inc=time.inc, n.risk=TRUE, conf='none', ylab=yl,
+    survplot.survfit(f, time.inc=time.inc, n.risk=TRUE, conf='none', ylab=yl,
       lwd=lwd, lty=lty, col=col, ylim=ylim, ...) else
-      survplot(f, conf='none', ylab=yl, lwd=lwd, lty=lty, col=col,
+      survplot.survfit(f, conf='none', ylab=yl, lwd=lwd, lty=lty, col=col,
                ylim=ylim, n.risk=TRUE, ...)
-               
+
   endPlot()
   startPlot(panel, h=4)
-  f <- survfit(S ~ treat, data=d)
+  f <- survfit.formula(S ~ treat, data=d)
   if(length(time.inc))
-    survplot(f, time.inc=time.inc, n.risk=TRUE, conf='none', ylab=yl,
-             lwd=lwd, lty=lty, col=col, label.curves=FALSE, ylim=ylim,
-             ...)
-      else survplot(f, conf='none', ylab=yl, n.risk=TRUE,
+    survplot.survfit(f, time.inc=time.inc, n.risk=TRUE, conf='none', ylab=yl,
+             lwd=lwd, lty=lty, col=col, label.curves=FALSE, ylim=ylim, ...)
+      else survplot.survfit(f, conf='none', ylab=yl, n.risk=TRUE,
                     lwd=lwd, lty=lty, col=col, label.curves=FALSE,
                     ylim=ylim, ...)
   endPlot()

@@ -183,14 +183,14 @@ aeReport <- function(data=NULL, vars, treat, time,
               etime <- r[,2]
               event <- r[,3]
             }
-          km <- survfit(Surv(etime, event) ~ tr)
+          km <- survfit.formula(Surv(etime, event) ~ tr)
           omar <- par('mar')
           mar <- omar
           mar[1] <- mar[1]+3
           par(mar=mar)
 
           lows <- min(km$surv, na.rm=TRUE)
-          survplot(km,
+          survplot.survfit(km,
                    fun = function(y) 1 - y,
                    xlab = label(Time),
                    ylab = ylab,
