@@ -17,8 +17,51 @@ NULL
 # see ?library
 .noGenerics <- TRUE
 
+#' RReport Package Options
+#'
+#' @aliases rreport.options
+#' @section Options used in rreport:
+#' \describe{
+#'  \item{\code{rreport.gtype}:}{graphing device (ps, pdf, interactive)}
+#'  \item{\code{rreport.appendix.file.name}:}{filename for appendix}
+#'  \item{\code{rreport.closed.generated.tex.dir}:}{directory name for closed report tex files}
+#'  \item{\code{rreport.open.generated.tex.dir}:}{directory name for open report tex files}
+#'  \item{\code{rreport.closed.graphics.dir}:}{directory name for closed report graphic files}
+#'  \item{\code{rreport.open.graphics.dir}:}{directory name for open report graphic files}
+#'  \item{\code{rreport.closed.filename.mask}:}{mask for closed report filenames}
+#'  \item{\code{rreport.open.filename.mask}:}{mask for open report filenames}
+#' }
+#' @name pkgOptions
+#' @seealso \code{\link{options}}
+NULL
+
+.defaultRreportOptions <- function() {
+  list(
+    rreport.gtype = 'pdf',
+    rreport.appendix.file.name = 'app.tex',
+    rreport.closed.generated.tex.dir = 'gentex',
+    rreport.open.generated.tex.dir = 'gentex',
+    rreport.closed.graphics.dir = 'pdf',
+    rreport.open.graphics.dir = 'pdf',
+    rreport.closed.filename.mask = NULL,
+    rreport.open.filename.mask = 'O%s'
+  )
+}
+
+.onLoad <- function(libname, pkgname) {
+  options(.defaultRreportOptions())
+}
+
 .onAttach <- function(libname, pkgname) {
   packageStartupMessage("rreport library by Frank E Harrell Jr\n\nType library(help='rreport') to see overall documentation.\n\n")
+}
+
+# remove rreport options
+.onUnload <- function(libpath) {
+  ropts <- grep("^rreport", names(options()), value=TRUE)
+  nulls <- vector('list', length(ropts))
+  names(nulls) <- ropts
+  options(nulls)
 }
 
 # questions?

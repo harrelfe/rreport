@@ -684,8 +684,7 @@ aeReport2 <- function(major,
         if(is.null(ref.label))
           ref.label <- paste(panel, '.', as.integer(Sys.time()), sep='')
 
-        latex(x, file = file.path(TexDirName(open.report),
-                   FilenameMask(appendixName(), open.report)),
+        latex(x, file = AppendixPath(open.report),
               append = TRUE, rowlabel = 'Event',
               cgroup = cgroup,
               n.cgroup = if(nt > 1) rep(4,nt),

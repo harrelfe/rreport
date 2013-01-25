@@ -2,22 +2,21 @@
 \alias{putparams}
 \title{Put Params}
 \usage{
-  putparams(...)
+  putparams(..., paramFile)
 }
 \arguments{
-  \item{\dots}{Additional arguments}
-}
-\value{
-  return something
+  \item{\dots}{list of name-value pairs. parameter names
+  and their associated formats}
+
+  \item{paramFile}{character. params filename}
 }
 \description{
-  Save various constants in LaTeX variable definitions in
-  file params.tex
+  Define parameters and provide LaTeX formatting.
 }
 \details{
-  details
+  Parameters will be saved to the parameter LaTeX file.
 }
 \examples{
-1
+putparams(go=1, fish='blue', paramFile='') #prints to standard output
 }
 

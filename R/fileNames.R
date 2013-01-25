@@ -1,82 +1,69 @@
-options('rreport.appendix.file.name' = 'app.tex')
-options('rreport.closed.generated.tex.dir' = 'gentex')
-options('rreport.open.generated.tex.dir' = 'gentex')
-options('rreport.closed.graphics.dir' = 'pdf')
-options('rreport.open.graphics.dir' = 'pdf')
-options('rreport.closed.filename.mask' = NULL)
-options('rreport.open.filename.mask' = 'O%s')
-
 #' Initialize R Report
 #'
-#' summary
+#' Initialize an \sQuote{rreport} by setting package options.
 #'
-#' details
-#'
-#' @param dir.open.tex NEEDDOC
-#' @param dir.closed.tex NEEDDOC
-#' @param dir.open.graph NEEDDOC
-#' @param dir.closed.graph NEEDDOC
-#' @param open.mask NEEDDOC
-#' @param closed.mask NEEDDOC
-#' @param appendix.name NEEDDOC
-#' @param empty.dir NEEDDOC
+#' @param dir.open.tex character. directory name for open report tex files
+#' @param dir.closed.tex character. directory name for closed report tex files
+#' @param dir.open.graph character. directory name for open report graphic files
+#' @param dir.closed.graph character. directory name for closed report graphic files
+#' @param open.mask character. mask for open report filenames
+#' @param closed.mask character. mask for closed report filenames
+#' @param appendix.name character. filename for appendix
+#' @param empty.dir logical. clean out all files found in tex and graph directories
 #' @export
+#' @seealso \code{\link{rreport.options}}
 #' @examples
-#' 1
+#' \dontrun{
+#'   rreportInit(empty.dir=TRUE)
+#' }
 
-rreportInit <- function(dir.open.tex, dir.closed.tex,
-                        dir.open.graph,dir.closed.graph,
-                        open.mask, closed.mask,
-                        appendix.name, empty.dir=FALSE) {
-  openTexDir(dir.open.tex)
-  closedTexDir(dir.closed.tex)
-  openGraphDir(dir.open.graph)
-  closedGraphDir(dir.closed.graph)
-  openNameMask(mask=open.mask)
-  closedNameMask(mask=closed.mask)
-  appendixName(appendix.name)
-
-
-  ## Test directory existance
-  if(is.na(file.info(closedTexDir())$isdir) || !file.info(closedTexDir())$isdir) {
-    stop('Directory for closed report tex files', closedTexDir(), 'does not exist')
+rreportInit <- function(dir.open.tex=getOption("rreport.open.generated.tex.dir"),
+                        dir.closed.tex=getOption("rreport.closed.generated.tex.dir"),
+                        dir.open.graph=getOption("rreport.open.graphics.dir"),
+                        dir.closed.graph=getOption("rreport.closed.graphics.dir"),
+                        open.mask=getOption("rreport.open.filename.mask"),
+                        closed.mask=getOption("rreport.closed.filename.mask"),
+                        appendix.name=getOption("rreport.appendix.file.name"),
+                        empty.dir=FALSE) {
+  dot <- file.info(dir.open.tex)$isdir
+  dct <- file.info(dir.closed.tex)$isdir
+  dog <- file.info(dir.open.graph)$isdir
+  dcg <- file.info(dir.closed.graph)$isdir
+  if(is.na(dct) || !dct) {
+    stop('Directory for closed report tex files ', dir.closed.tex, ' does not exist')
   }
-
-  if(is.na(file.info(openTexDir())$isdir) || !file.info(openTexDir())$isdir) {
-    stop('Directory for open report tex files', openTexDir(), 'does not exist')
+  if(is.na(dot) || !dot) {
+    stop('Directory for open report tex files ', dir.open.tex, ' does not exist')
   }
-
-  if(is.na(file.info(closedGraphDir())$isdir) || !file.info(closedGraphDir())$isdir) {
-    stop('Directory for closed graphics output', closedGraphDir(), 'does not exist')
+  if(is.na(dcg) || !dcg) {
+    stop('Directory for closed graphics output ', dir.closed.graph, ' does not exist')
   }
-
-  if(is.na(file.info(openGraphDir())$isdir) || !file.info(openGraphDir())$isdir) {
-    stop('Directory for open graphics output', openGraphDir(), 'does not exist')
+  if(is.na(dog) || !dog) {
+    stop('Directory for open graphics output ', dir.open.graph, ' does not exist')
   }
+  options(rreport.open.generated.tex.dir = dir.open.tex)
+  options(rreport.closed.generated.tex.dir = dir.closed.tex)
+  options(rreport.open.graphics.dir = dir.open.graph)
+  options(rreport.closed.graphics.dir = dir.closed.graph)
+  options(rreport.open.filename.mask = open.mask)
+  options(rreport.closed.filename.mask = closed.mask)
+  options(rreport.appendix.file.name = appendix.name)
 
   if(empty.dir) {
-    unlink(file.path(c(closedTexDir(), openTexDir()), '*'))
-    unlink(file.path(c(closedGraphDir(), openGraphDir()), '*'))   
+    unlink(file.path(c(dir.closed.tex, dir.open.tex), '*'))
+    unlink(file.path(c(dir.closed.graph, dir.open.graph), '*'))   
   }
-
   cat('', file=AppendixPath(open.report=FALSE))
   cat('', file=AppendixPath(open.report=TRUE))
-
   NULL
 }
 
-#' @rdname rreportInit
-#' @param filename NEEDDOC
-#' @param mask NEEDDOC
-#' @export
-
-openNameMask <- function(filename, mask) {
-  if(!missing(mask) && !is.null(mask)) {
-    options(rreport.open.filename.mask = mask)
+FilenameMask <- function(filename, open.report=TRUE) {
+  if(open.report) {
+    mask <- getOption("rreport.open.filename.mask")
+  } else {
+    mask <- getOption("rreport.closed.filename.mask")
   }
-
-  mask <- options("rreport.open.filename.mask")[[1]]
-
   if(!missing(filename) && !is.null(filename)) {
     if(is.null(mask)) {
       filename
@@ -88,127 +75,30 @@ openNameMask <- function(filename, mask) {
   }
 }
 
-#' @rdname rreportInit
-#' @export
-
-closedNameMask <- function(filename, mask) {
-  if(!missing(mask) && !is.null(mask)) {
-    options(rreport.closed.filename.mask = mask)
-  }
-
-  mask <- options("rreport.closed.filename.mask")[[1]]
-
-  if(!missing(filename) && !is.null(filename)) {
-    if(is.null(mask)) {
-      filename
-    } else {
-      sprintf(mask, filename)
-    }
-  } else {
-    mask
-  }
-}
-
-#' @rdname rreportInit
-#' @param open.report NEEDDOC
-#' @export
-
-FilenameMask <- function(filename, open.report) {
+GraphDirName <- function(open.report=TRUE) {
   if(open.report) {
-    openNameMask(filename=filename)
+    getOption("rreport.open.graphics.dir")
   } else {
-    closedNameMask(filename=filename)
+    getOption("rreport.closed.graphics.dir")
   }
 }
 
-#' @rdname rreportInit
-#' @param name NEEDDOC
-#' @export
-
-openGraphDir <- function(name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.open.graphics.dir = name)
-  }
-  
-  options("rreport.open.graphics.dir")[[1]]
-}
-
-#' @rdname rreportInit
-#' @export
-
-closedGraphDir <- function(name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.closed.graphics.dir = name)
-  }
-  
-  options("rreport.closed.graphics.dir")[[1]]
-}
-
-#' @rdname rreportInit
-#' @export
-
-GraphDirName <- function(open.report) {
+TexDirName <- function(open.report=TRUE) {
   if(open.report) {
-    openGraphDir()
+    getOption("rreport.open.generated.tex.dir")
   } else {
-    closedGraphDir()
+    getOption("rreport.closed.generated.tex.dir")
   }
 }
 
-#' @rdname rreportInit
-#' @export
-
-openTexDir <- function(name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.open.generated.tex.dir = name)
-  }
-  
-  options("rreport.open.generated.tex.dir")[[1]]
+AppendixName <- function(open.report=TRUE) {
+  FilenameMask(getOption("rreport.appendix.file.name"), open.report)
 }
 
-#' @rdname rreportInit
-#' @export
-
-closedTexDir <- function(name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.closed.generated.tex.dir = name)
-  }
-  
-  options("rreport.closed.generated.tex.dir")[[1]]
-}
-
-#' @rdname rreportInit
-#' @export
-
-TexDirName <- function(open.report) {
-  if(open.report) {
-    openTexDir()
-  } else {
-    closedTexDir()
-  }
-}
-
-#' @rdname rreportInit
-#' @export
-
-appendixName <- function(name) {
-  if(!missing(name) && !is.null(name)) {
-    options(rreport.appendix.file.name = name)
-  }
-  
-  options("rreport.appendix.file.name")[[1]]
-}
-
-#' @rdname rreportInit
-#' @export
-
-AppendixName <- function(open.report) {
-  FilenameMask(appendixName(), open.report)
-}
-
-#' @rdname rreportInit
-#' @export
-
-AppendixPath <- function(open.report) {
+AppendixPath <- function(open.report=TRUE) {
   file.path(TexDirName(open.report), AppendixName(open.report))
+}
+
+paramTexFile <- function(open.report=TRUE) {
+  file.path(TexDirName(open.report), 'params.tex')
 }
