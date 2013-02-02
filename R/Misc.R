@@ -120,109 +120,96 @@ mfrowSet <- function(n, trellis=FALSE, small=FALSE) {
 
 #' Put Figure
 #'
-#' summary
+#' Included a generated figure within LaTex document.
 #'
-#' details
-#'
-#' @param panel NEEDDOC
-#' @param name NEEDDOC
-#' @param caption NEEDDOC
-#' @param longcaption NEEDDOC
-#' @param append NEEDDOC
-#' @return return something
+#' @param panel character. Panel name.
+#' @param name character. Name for figure.
+#' @param caption character. Short caption for figure.
+#' @param longcaption character. Long caption for figure.
+#' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
+#' @param open.report logical. Generate figure for open or closed report.
 #' @export
-#' @examples
-#' 1
 
-putFig <- function(panel, name, caption=NULL, longcaption=NULL,
-                   append=TRUE) {
-
+putFig <- function(panel, name, caption=NULL, longcaption=NULL, append=TRUE, open.report=TRUE) {
+  gtype <- getOption('rreport.gtype')
   if(gtype=='interactive') {
     return(invisible())
   }
-  
-  file <- paste('gentex/',translate(panel,'.','-'),'.tex',sep='')
+  panel <- paste(translate(panel, '.', '-'), '.tex', sep='')
   name <- translate(name, '.', '-')
-  suffix <- paste('.',gtype,sep='')
+  file <- file.path(TexDirName(open.report), panel)
+  suffix <- paste('.', gtype, sep='')
 
   ## if(length(caption)) caption <- latexTranslate(caption)
   ## if(length(longcaption)) longcaption <- latexTranslate(longcaption)
 
-  cat('\\begin{figure}[hbp!]',
-      '\\leavevmode\\centerline{\\includegraphics{',name,suffix,'}}\n',
-      if(length(longcaption)) {
-        paste('\\caption[',caption,']{',
-              longcaption,'}\n',sep='')
-      } else if(length(caption)) {
-        paste('\\caption{',caption,'}\n',sep='')
-      },
-
-      if(length(caption)) {
-        paste('\\label{fig:',name,'}\n',sep='')
-      },
-      '\\end{figure}\n',sep='', file=file, append=append)
-  
+  capt1 <- capt2 <- ""
+  if(length(longcaption)) {
+    capt1 <- sprintf("\\caption[%s]{%s}\n", caption, longcaption)
+  } else if(length(caption)) {
+    capt1 <- sprintf("\\caption{%s}\n", caption)
+  }
+  if(length(caption)) {
+    capt2 <- sprintf("\\label{fig:%s}\n", name)
+  }
+  mytex <- sprintf("\\begin{figure}[hbp!]\\leavevmode\\centerline{\\includegraphics{%s%s}}\n%s%s\\end{figure}\n", name, suffix, capt1, capt2)
+  cat(mytex, file=file, append=append)
   invisible()
 }
 
-#' Start Plot
+#' Plot Initialization
 #'
-#' summary
+#' Toggle plotting.  Sets options by examining \code{.Options$rreport.gtype}.
 #'
-#' details
-#'
-#' @param file NEEDDOC
-#' @param \dots NEEDDOC
-#' @return return something
+#' @param file character.  Character string specifying file prefix.
+#' @param \dots Arguments to be passed to \code{setps} or \code{setpdf}.
 #' @export
-#' @examples
-#' 1
+#' @seealso \code{\link{ps.slide}}
 
 startPlot <- function(file, ...) {
-  if(gtype=='interactive') {
-    return(invisible())
-  }
-
+  gtype <- getOption('rreport.gtype')
   file <- translate(file,'.','-')
-  switch(gtype,
-         ps={options(setpsPrefix='ps/')
-             setps(file, ..., type='char')},
-         pdf={options(setpdfPrefix='pdf/')
-              setpdf(file,, ..., type='char')}
-         )
+  if(gtype == 'pdf') {
+    options(setpdfPrefix=file.path('pdf',''))
+    setpdf(file, ..., type='char')
+  } else if(gtype == 'ps') {
+    options(setpsPrefix=file.path('ps',''))
+    setps(file, ..., type='char')
+  }
   invisible()
 }
 
-#' End Plot
-#'
-#' summary
-#'
-#' details
-#'
+#' @rdname startPlot
 #' @export
-#' @examples
-#' 1
 
 endPlot <- function() {
+  gtype <- getOption('rreport.gtype')
   if(gtype != 'interactive') {
     dev.off()
   }
-
   invisible()
 }
 
 #' Combine Equal
 #'
-#' summary
+#' Given a contingency table of counts, combine factors with equal counts.
 #'
-#' details
+#' Factor names will be pasted together to make new names.  A code and definition will be generated
+#' if the new name should exceed \code{maxChar}.
 #'
-#' @param x NEEDDOC
-#' @param maxChar NEEDDOC
-#' @return return something
+#' @param x numeric. Contingency table or matrix of names and counts, see \code{table}.
+#' @param maxChar numeric. Maximum length of character string.  Names exceeding this will be replaced with a letter-code.
+#' @return a list with three elements
+#' \item{x}{Named vector of code frequencies.  The name corresponds to the code.}
+#'
+#' \item{codes}{Character vector of alpha-code labels.}
+#'
+#' \item{defs}{Character vector of code definitions.}
+#'
 #' @export
 #' @examples
-#' 1
+#' combineEqual(table(rep(991:1010, times=rep(1:4, each=5))))
+#' combineEqual(table(rep(991:1010, times=rep(1:4, each=5))), maxChar=10)
 
 combineEqual <- function(x, maxChar=24) {
   xorig <- x
@@ -245,6 +232,7 @@ combineEqual <- function(x, maxChar=24) {
   nam <- codes <- defs <- character(0)
   j <- 0
 
+  all.letters <- c(letters,LETTERS)
   for(i in 1:length(z)) {
     a <- z[[i]]
     ac <- paste(a, collapse=', ')
@@ -252,7 +240,7 @@ combineEqual <- function(x, maxChar=24) {
       nam <- c(nam,ac)
     } else {
       j <- j + 1
-      k <- paste('(',c(letters,LETTERS)[j],')',sep='')
+      k <- paste('(',all.letters[j],')',sep='')
       nam <- c(nam, k)
       codes <- c(codes, k)
       defs  <- c(defs, ac)
@@ -263,7 +251,7 @@ combineEqual <- function(x, maxChar=24) {
     v <- matrix(as.numeric(unlist(strsplit(v,','))),ncol=length(v),
                 dimnames=list(dimnames(xorig)[[1]], nam))
   }
-  
+
   list(x=v, codes=codes, defs=defs)
 }
 

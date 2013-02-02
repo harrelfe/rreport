@@ -10,21 +10,21 @@
     units = c("minutes", "hours", "days", "months", "years"))
 }
 \arguments{
-  \item{x}{NEEDDOC}
+  \item{x}{a chron vector.}
 
-  \item{units}{NEEDDOC}
-}
-\value{
-  return something
+  \item{units}{character.  Round to nearest unit, defined
+  as minutes, hours, days, months, or years.}
 }
 \description{
-  summary
+  Given a vector of chron objects, return a vector with
+  values rounded to the given unit. \code{floor.chron} will
+  round down and \code{ceiling.chron) will round up.
 }
 \details{
   details
 }
 \examples{
-1
-1
+floor.chron(chron(dates = dates(c("01/25/13", "02/03/13", "11/15/13")), times = times(c("06:30:15", "12:19:51", "17:11:13"))), units='hours')
+ceiling.chron(chron(dates = dates(c("01/25/13", "02/03/13", "11/15/13")), times = times(c("06:30:15", "12:19:51", "17:11:13"))), units='months')
 }
 

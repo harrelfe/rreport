@@ -1,24 +1,24 @@
 \name{startPlot}
+\alias{endPlot}
 \alias{startPlot}
-\title{Start Plot}
+\title{Plot Initialization}
 \usage{
   startPlot(file, ...)
+
+  endPlot()
 }
 \arguments{
-  \item{file}{NEEDDOC}
+  \item{file}{character.  Character string specifying file
+  prefix.}
 
-  \item{\dots}{NEEDDOC}
-}
-\value{
-  return something
+  \item{\dots}{Arguments to be passed to \code{setps} or
+  \code{setpdf}.}
 }
 \description{
-  summary
+  Toggle plotting.  Sets options by examining
+  \code{.Options$rreport.gtype}.
 }
-\details{
-  details
-}
-\examples{
-1
+\seealso{
+  \code{\link{ps.slide}}
 }
 

@@ -51,65 +51,49 @@
 
 #' Round Chronological Objects
 #'
-#' summary
+#' Given a vector of chron objects, return a vector with values rounded to the given unit.
+#' \code{floor.chron} will round down and \code{ceiling.chron) will round up.
 #'
 #' details
 #'
 #' @rdname round.chron
-#' @param x NEEDDOC
-#' @param units NEEDDOC
-#' @return return something
+#' @param x a chron vector.
+#' @param units character.  Round to nearest unit, defined as minutes, hours, days, months, or years.
 #' @export
 #' @examples
-#' 1
+#' floor.chron(chron(dates = dates(c("01/25/13", "02/03/13", "11/15/13")), times = times(c("06:30:15", "12:19:51", "17:11:13"))), units='hours')
+#' ceiling.chron(chron(dates = dates(c("01/25/13", "02/03/13", "11/15/13")), times = times(c("06:30:15", "12:19:51", "17:11:13"))), units='months')
 
 floor.chron <- function(x, units=c("minutes", "hours", "days", "months", "years")) {
   if(missing(units)) {
     return(floor(unclass(x)))
   }
+  if(length(x) > 1) {
+    return(chron(sapply(x, floor.chron, units)))
+  }
 
   units <- match.arg(units)
-
-  time.units <- c("minutes", "hours", "days")
-  date.units <- c("months", "years")
-
-  if(units %in% time.units && !inherits(x, what=c('dates', 'times'))) {
-    stop("when 'units' is 'minutes', or 'hours' 'x' must be of class 'times' or 'dates'")
+  dt.units <- c("minutes", "hours", "days", "months", "years")
+  dt.i <- match(units, dt.units)
+  if(!inherits(x, what=c('dates', 'times'))) {
+    x <- as.chron(x)
   }
-
-  if(units %in% date.units  && !inherits(x, what=c('dates'))) {
-    stop("when 'units' is 'days', 'months', or 'years' 'x' must be of class 'dates'")
-  }
-
   attribs <- attributes(x)
+  time <- c(seconds(x), minutes(x), hours(x), as.integer(days(x)), as.integer(months(x)), as.integer(as.character(years(x))))
+  start.time <- c(0,0,0,1,1)
+  time <- c(start.time[seq(dt.i)], time[seq(dt.i+1, 6)])
+  args <- list(format=c(dates='d:m:y', times='s:m:h'), out.format=attribs$format, origin=attribs$origin)
 
-  time <- c(seconds(x), minutes(x), hours(x), as.integer(days(x)),
-            as.integer(months(x)), as.integer(as.character(years(x))))
-
-  switch(units,
-         minutes = time[1] <- 0,
-         hours = time[1:2] <- 0,
-         days = time[1:3] <- 0,
-         months = time[1:4] <- 0,
-         years = time[1:5] <- 0)
-
-  time[c(4,5)] <- ifelse(time[c(4,5)] == 0, 1, time[c(4,5)])
-
-  args <- list(format=c(dates='d:m:y', times='s:m:h'),
-               out.format=attribs$format, origin=attribs$origin)
-
-  
   if(!inherits(x, what='dates')) {
     time[4:6] <- NA
   } else if(length(attribs$format) == 1) {
     time[1:3] <- NA
   }
 
-  if(! all(is.na(time[4:6]))) {
+  if(!all(is.na(time[4:6]))) {
     args$dates. <- paste(time[4:6], collapse=':')
   }
-
-  if(! all(is.na(time[1:3]))) {
+  if(!all(is.na(time[1:3]))) {
     args$times. <- paste(time[1:3], collapse=':')
   }
 
@@ -118,47 +102,27 @@ floor.chron <- function(x, units=c("minutes", "hours", "days", "months", "years"
 
 #' @rdname round.chron
 #' @export
-#' @examples
-#' 1
 
 ceiling.chron <- function(x, units=c("minutes", "hours", "days", "months", "years")) {
   if(missing(units)) {
     return(ceiling(unclass(x)))
   }
-  
+  if(length(x) > 1) {
+    return(chron(sapply(x, ceiling.chron, units)))
+  }
+
   units <- match.arg(units)
-
-  time.units <- c("minutes", "hours", "days")
-  date.units <- c("months", "years")
-  
-  if(units %in% time.units && !inherits(x, what=c('dates', 'times'))) {
-    stop("when 'units' is 'minutes', or 'hours' 'x' must be of class 'times' or 'dates'")
+  dt.units <- c("minutes", "hours", "days", "months", "years")
+  dt.i <- match(units, dt.units)
+  if(!inherits(x, what=c('dates', 'times'))) {
+    x <- as.chron(x)
   }
-  
-  if(units %in% date.units  && !inherits(x, what=c('dates'))) {
-    stop("when 'units' is 'days', 'months', or 'years' 'x' must be of class 'dates'")
-  }
-
   attribs <- attributes(x)
-  days <- days(x)
-  months <- months(x)
-  years <- as.integer(as.character(years(x)))
-  
-  time <- c(seconds(x), minutes(x), hours(x), as.integer(days),
-            as.integer(months), years)
-
-  switch(units,
-         minutes = time[1] <- NA,
-         hours = time[1:2] <- NA,
-         days = time[1:3] <- NA,
-         months = time[1:4] <- NA,
-         years = time[1:5] <- NA)
-
-  time[1:5] <- ifelse(is.na(time[1:5]), c(59,59,23,nlevels(days),nlevels(months)), time)
-
-  args <- list(format=c(dates='d:m:y', times='s:m:h'),
-               out.format=attribs$format, origin=attribs$origin)
-
+  nDays <- monthDays(x)
+  time <- c(seconds(x), minutes(x), hours(x), as.integer(days(x)), as.integer(months(x)), as.integer(as.character(years(x))))
+  end.time <- c(59,59,23,nDays,12)
+  time <- c(end.time[seq(dt.i)], time[seq(dt.i+1, 6)])
+  args <- list(format=c(dates='d:m:y', times='s:m:h'), out.format=attribs$format, origin=attribs$origin)
   
   if(!inherits(x, what='dates')) {
     time[4:6] <- NA
@@ -166,11 +130,11 @@ ceiling.chron <- function(x, units=c("minutes", "hours", "days", "months", "year
     time[1:3] <- NA
   }
 
-  if(! all(is.na(time[4:6]))) {
+  if(!all(is.na(time[4:6]))) {
     args$dates. <- paste(time[4:6], collapse=':')
   }
 
-  if(! all(is.na(time[1:3]))) {
+  if(!all(is.na(time[1:3]))) {
     args$times. <- paste(time[1:3], collapse=':')
   }
 

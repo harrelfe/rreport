@@ -3,29 +3,24 @@
 \title{Put Figure}
 \usage{
   putFig(panel, name, caption = NULL, longcaption = NULL,
-    append = TRUE)
+    append = TRUE, open.report = TRUE)
 }
 \arguments{
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Panel name.}
 
-  \item{name}{NEEDDOC}
+  \item{name}{character. Name for figure.}
 
-  \item{caption}{NEEDDOC}
+  \item{caption}{character. Short caption for figure.}
 
-  \item{longcaption}{NEEDDOC}
+  \item{longcaption}{character. Long caption for figure.}
 
-  \item{append}{NEEDDOC}
-}
-\value{
-  return something
+  \item{append}{logical. If \sQuote{TRUE} output will be
+  appended instead of overwritten.}
+
+  \item{open.report}{logical. Generate figure for open or
+  closed report.}
 }
 \description{
-  summary
-}
-\details{
-  details
-}
-\examples{
-1
+  Included a generated figure within LaTex document.
 }
 

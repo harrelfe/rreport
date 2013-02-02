@@ -1,35 +1,38 @@
 #' List Table
 #'
-#' summary
+#' Convert a data.frame object into a LaTeX table.
 #'
-#' details
-#'
-#' @param fileName NEEDDOC
-#' @param longtable NEEDDOC
-#' @param landscape NEEDDOC
-#' @param caption NEEDDOC
-#' @param fontSize NEEDDOC
-#' @param dataframe NEEDDOC
-#' @param zebraPattern NEEDDOC
-#' @param by NEEDDOC
-#' @param orderGroups NEEDDOC
-#' @param colNames NEEDDOC
-#' @param vars NEEDDOC
-#' @param fixedColVars NEEDDOC
-#' @param fixedColWdths NEEDDOC
-#' @param markVar NEEDDOC
-#' @param markVarVal NEEDDOC
-#' @param toLatexChar NEEDDOC
-#' @param appendix NEEDDOC
-#' @param subsection NEEDDOC
-#' @param marker NEEDDOC
-#' @param append NEEDDOC
-#' @return return something
+#' @param fileName character. A description of the file connection.
+#' @param longtable logical. Toggle \sQuote{longtable} or \sQuote{table} environment. Defaults to \sQuote{TRUE}.
+#' @param landscape logical. Use \sQuote{landscape} environment. Defaults to \sQuote{FALSE}.
+#' @param caption character. Main table caption.
+#' @param fontSize character. Define font size from one of the following: \sQuote{tiny},
+#' \sQuote{scriptsize}, \sQuote{footnotesize}, \sQuote{small}, \sQuote{normalsize}, 
+#' \sQuote{large}, \sQuote{Large}, \sQuote{LARGE}, \sQuote{huge}, \sQuote{Huge}.  Default is \sQuote{small}.
+#' @param dataframe data.frame. Provides content for list table.
+#' @param zebraPattern character. Defaults to \sQuote{none}, other options are \sQuote{plain}, \sQuote{group} and \sQuote{plaingroup.}
+#' \sQuote{plaingroup} is only recommended for large groups (more than four objects in a group).
+#' @param by character. Column used to generate zebra pattern, defaulting to the first column in \sQuote{dataframe}.
+#' @param orderGroups logical. If \sQuote{TRUE} order the data by \sQuote{by}.  This is recommened
+#' when \sQuote{zebraPattern} is set to \sQuote{group} or \sQuote{plaingroup}.
+#' @param colNames character vector. Define column name headers for \sQuote{dataframe}.
+#' @param vars character vector. Column names to select from \sQuote{dataframe}.
+#' @param fixedColVars character vector. Column variables.
+#' @param fixedColWdths character vector. Fixed width for each column.
+#' @param markVar character vector. Marker variable.
+#' @param markVarVal character vector. Value for each marker variable.
+#' @param toLatexChar logical. If \sQuote{TRUE} text will be checked and escaped should they contain special LaTeX characters.
+#' @param appendix logical. If \sQuote{TRUE} the function will require the \code{subsection} and \code{marker}
+#' arguments since it will have to reference the tables in the future.
+#' @param subsection character. Name of document subsection that refers to this table.
+#' @param marker character. Marker for document subsection that refers to this table.
+#' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
 #' @export
 #' @examples
-#' 1
+#' listTable(fileName='', caption="\\label{table:listtable}Table of groupings", zebraPattern='group', 
+#' dataframe=data.frame(code=c('(a)', '(b)', '(c)'), def=c("apple, orange", "dog, cat, horse", "windows, linux, mac")),
+#' appendix=FALSE) # print generated table to standard out
 
-## $Id$
 listTable <- function(fileName,
                        longtable=TRUE, landscape=FALSE,
                        caption = "", fontSize="small",
@@ -42,9 +45,8 @@ listTable <- function(fileName,
   ### appendix: if TRUE the function will require the subsection and marker arguments
   ### since it will have to reference the tables in the future.
   ### append: if TRUE all the out put will be appended to a file specified in fileName 
-                       
+
   #internal constants and functions definitions
-      
   fontSizes <- c("tiny","scriptsize","footnotesize","small",
                  "normalsize","large","Large","LARGE","huge","Huge")
   zebraPatterns <- c("none", "plain", "group", "plaingroup")
@@ -68,15 +70,8 @@ listTable <- function(fileName,
                   middlegray=c(.235,0.235,0.1125,0), red=c(0,0.9,0.3,0))
   pallet <- pallet1
 
-  charDates <- function(chronDates, outFormat= c(dates = "year month day", times = "h:m:s")) {
-    #Returns as.character(date) out of chron object
-    chdates <- as.character(dates(chronDates, out.format=outFormat))
-    as.character(chdates)
-  }
-  
-  latexTextMode <- function(str){
+  latexTextMode <- function(str) {
     #internal constants and functions definitions
-    
     latexTextModeSpec <- function(char){
       if (char == "\\"){
         retStr <- "$\\backslash$"
@@ -100,7 +95,7 @@ listTable <- function(fileName,
         latexCharText[char]
       }
     }
-    
+
     latexTextModeText <- function(char){
       if (char %in% latexSpecialChar){
         retStr <- latexTextModeSpec(char)
@@ -113,13 +108,13 @@ listTable <- function(fileName,
       }
       retStr
     }
-    
+
     latexSpecialChar <- c("#","$","%","^","_","{","}","~","&","\\")
     latexMathChar <- c("<", ">", "|")
     latexSpecAndMath <- c(latexSpecialChar,latexMathChar)
     latexCharText <- sapply(X = latexSpecAndMath, FUN=latexTextModeText)
-    
-  #beginning of the function latexTextMode
+
+    #beginning of the function latexTextMode
     spl <- unlist(strsplit(str,""))
     paste(sapply(X = spl, FUN=charToLatexTextChar),collapse="")    
   }
@@ -128,22 +123,20 @@ listTable <- function(fileName,
                                   caption = "", fontSize="small", colNames = c(),
                                   dataframe, zebraPattern,
                                   fixedColVars=c(), fixedColWdths=c(),
-                                  markVar="", markVarVal=""){
-    
+                                  markVar="", markVarVal="") {
     #internal constants and functions definitions
-        
     commandBegin <- function(command, outFile){
       if (command %in% fontSizes){
         cat("\n{\\",command,"\n",sep="", file=outFile)
       }else{
-      cat("\n\\begin{",command,"}",sep="", file=outFile)
+        cat("\n\\begin{",command,"}",sep="", file=outFile)
       }
     }
     commandEnd <- function(command, outFile){
       if (command %in% fontSizes){
         cat("}\n", file=outFile)
       }else{
-      cat("\\end{",command,"}\n",sep="", file=outFile)
+        cat("\\end{",command,"}\n",sep="", file=outFile)
       }
     }
     latexCaption <- function(captionFill, longtable, outFile){
@@ -199,46 +192,44 @@ listTable <- function(fileName,
         cat("\\endlastfoot\n", file=outFile)
       }
     }
+
     processRows <- function(data, zebraPattern, outFile, markVar, markVarVal){
       #internal constants and functions definitions
-
-if (FALSE){
-      processRow <- function(row, color, outFile, markVarIndex){
-        if (!is.na(color)){
-          cat("\\rowcolor{",color,"}\n",sep="", file=outFile)
-        }
-        cat(row[[1]], file=outFile)
-        for (i in c(2:length(row))){
-          if (i==markVarIndex){
-            cat(" &", "\\color{red}{\\bfseries\\em ", row[[i]],"}", file=outFile)
-          }else{
-            cat(" &", row[[i]], file=outFile)
+      if(FALSE) {
+        processRow <- function(row, color, outFile, markVarIndex){
+          if (!is.na(color)){
+            cat("\\rowcolor{",color,"}\n",sep="", file=outFile)
           }
-        }
-        cat("\\\\\n", file=outFile)
-      }
-}
-
-if (TRUE){
-      processRow <- function(row, color, outFile, markVarIndex){
-        rowStr <- ""
-        if (!is.na(color)){
-          rowStr <- paste(rowStr,"\\rowcolor{",color,"}\n",sep="")
-        }
-        rowStr <- paste(rowStr,row[[1]],sep="")
-        for (i in c(2:length(row))){
-          if (i==markVarIndex){
-            rowStr <- paste(rowStr," &", "\\color{red}{\\bfseries\\em ", row[[i]],"}",sep="")
-          }else{
-            rowStr <- paste(rowStr," &", row[[i]],sep="")
+          cat(row[[1]], file=outFile)
+          for (i in c(2:length(row))){
+            if (i==markVarIndex){
+              cat(" &", "\\color{red}{\\bfseries\\em ", row[[i]],"}", file=outFile)
+            }else{
+              cat(" &", row[[i]], file=outFile)
+            }
           }
+          cat("\\\\\n", file=outFile)
         }
-        rowStr <- paste(rowStr,"\\\\\n", sep="")
-        cat(rowStr, file=outFile)
       }
-}
-      
-    #beginning of the function processRows
+      if(TRUE) {
+        processRow <- function(row, color, outFile, markVarIndex){
+          rowStr <- ""
+          if (!is.na(color)){
+            rowStr <- paste(rowStr,"\\rowcolor{",color,"}\n",sep="")
+          }
+          rowStr <- paste(rowStr,row[[1]],sep="")
+          for (i in c(2:length(row))){
+            if (i==markVarIndex){
+              rowStr <- paste(rowStr," &", "\\color{red}{\\bfseries\\em ", row[[i]],"}",sep="")
+            }else{
+              rowStr <- paste(rowStr," &", row[[i]],sep="")
+            }
+          }
+          rowStr <- paste(rowStr,"\\\\\n", sep="")
+          cat(rowStr, file=outFile)
+        }
+      }
+      #beginning of the function processRows
       markVarIndex <- match(markVar, names(data))
       if (markVar!="" & is.na(markVarIndex)) stop("Error: Variable to mark is not in dataframe names\n")
       if (length(data[[1]]) != 0){
@@ -257,9 +248,8 @@ if (TRUE){
       hline(outFile)
     }
 
-        
-  #beginning of the function processBeginCommand
-    if (length(beginCom[!is.na(beginCom)])>0){
+    #beginning of the function processBeginCommand
+    if (length(beginCom[!is.na(beginCom)])>0) {
       commandBegin(beginCom[1],outFile)
       if (beginCom[1] == "table"){
         latexCaption(caption, beginCom[1] == "longtable",outFile)
@@ -288,7 +278,6 @@ if (TRUE){
 
   makePattern <- function(zebraPattern, by){
     #internal constants and functions definitions
-        
     plain <- function(col1, col2, len){
       pattern <- rep(c(col1,col2), len)
       pattern <- pattern[1:len]  
@@ -310,9 +299,9 @@ if (TRUE){
       }
       pattern
     }
-    
-  #beginning of the function makePattern
-    if (zebraPattern != "none"){
+
+    #beginning of the function makePattern
+    if (zebraPattern != "none") {
       if (!(zebraPattern %in% zebraPatterns)) stop("Error: Illigal Zebra Pattern\n")
       if (zebraPattern=="plain"){
         pattern <- plain("lightwhite","middlegray",length(by))
@@ -324,11 +313,11 @@ if (TRUE){
       if (zebraPattern=="plaingroup"){
         pattern <- group(by)
         light <- plain("darkwhite","lightwhite",length(by))
-        dark  <- plain("lightgray","darkgray",length(by))
+        dark <- plain("lightgray","darkgray",length(by))
         pattern <- ifelse(pattern>0,dark,light)
       }
       pattern
-    }else{
+    } else {
       rep(NA, length(by))
     }
   }
@@ -341,23 +330,27 @@ if (TRUE){
                                         pallet[[n]][4],"}\n",sep="",file=outFile)
     }
   }
-    
-#beginning of the function listTable
-  if (appendix & is.null(marker)) {
+
+  #beginning of the function listTable
+  if (appendix && is.null(marker)) {
     stop("Argument 'marker' has to be provided\n")
   }
-  
-  if (append){
+
+  if(append) {
     openMode <- "at"
-  }else{
+  } else {
     openMode <- "wt"
   }
-  
-  outFile <- file(fileName, open=openMode)
-  on.exit(close(outFile))
-  if (appendix){
+  # allow file to be standard out
+  if(fileName == "") {
+    outFile <- ""
+  } else {
+    outFile <- file(fileName, open=openMode)
+    on.exit(close(outFile))
+  }
+  if(appendix) {
     if (!is.null(subsection)){
-      cat( paste( "\\subsection{", subsection, "}\n", sep="") , file=outFile)
+      cat(paste("\\subsection{", subsection, "}\n", sep="") , file=outFile)
     }
     cat(paste("\\label{", marker, "}\n", sep=""), file=outFile)
   }
@@ -395,6 +388,4 @@ if (TRUE){
   if (appendix){
     cat("\\clearpage\n", file=outFile)
   }
-  #close(outFile)
-
-}#end of the function listTable
+}
