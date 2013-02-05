@@ -41,7 +41,7 @@
   values specifying a date range.}
 
   \item{dateformat}{character. Specify date format, see
-  \code{format} argument for \code{chron}.}
+  \code{format} argument for \code{\link[chron]{chron}}.}
 
   \item{targetN}{numeric. Target number of subjects to
   enroll.}
@@ -53,13 +53,10 @@
   to \sQuote{randomized}.}
 
   \item{hdotchart}{numeric. Height of plot, passed to
-  \code{startPlot}.}
+  \code{\link{startPlot}}.}
 
   \item{append}{logical. If \sQuote{TRUE} output will be
   appended instead of overwritten.}
-}
-\value{
-  return something
 }
 \description{
   Generate reports with patient accrual numbers.

@@ -1,6 +1,6 @@
 \name{aeReport}
 \alias{aeReport}
-\title{AE Report}
+\title{Adverse Events Report}
 \usage{
   aeReport(data = NULL, vars, treat, time,
     times = sort(unique(time)), id = NULL,
@@ -10,48 +10,60 @@
     digits = 3)
 }
 \arguments{
-  \item{data}{NEEDDOC}
+  \item{data}{data.frame. Data used for report.}
 
-  \item{vars}{NEEDDOC}
+  \item{vars}{character vector. Variables to include in
+  analysis.}
 
-  \item{treat}{NEEDDOC}
+  \item{treat}{factor vector. Vector of treatment group for
+  each record.}
 
-  \item{time}{NEEDDOC}
+  \item{time}{character. Name of time variable within
+  dataset.}
 
-  \item{times}{NEEDDOC}
+  \item{times}{numeric vector. Times used to subset data.}
 
-  \item{id}{NEEDDOC}
+  \item{id}{character. Name of id variable within dataset.}
 
-  \item{plotprop}{NEEDDOC}
+  \item{plotprop}{logical. If \sQuote{TRUE} plot
+  proportions of adverse events.}
 
-  \item{plotkm}{NEEDDOC}
+  \item{plotkm}{logical. If \sQuote{TRUE} plot Kaplan-Meier
+  estimates of cumulative probabilities of adverse events.}
 
-  \item{etimedata}{NEEDDOC}
+  \item{etimedata}{list. List of time data, containing
+  treatment, event time and event indicator for each
+  variable.}
 
-  \item{tables}{NEEDDOC}
+  \item{tables}{logical. If \sQuote{TRUE} generate summary
+  tables of adverse events by times found in
+  \code{times.tables}.}
 
-  \item{times.tables}{NEEDDOC}
+  \item{times.tables}{numeric vector. Times used to
+  generate summary tables.}
 
-  \item{forceBinary}{NEEDDOC}
+  \item{forceBinary}{logical. Set to \sQuote{TRUE} if
+  variables are binary.}
 
-  \item{ylim}{NEEDDOC}
+  \item{ylim}{numeric vector. Set y-axis limits.}
 
-  \item{h}{NEEDDOC}
+  \item{h}{numeric. Height of plot. Default is 5in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{w}{NEEDDOC}
+  \item{w}{numeric. Width of plot. Default is 5in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{digits}{NEEDDOC}
-}
-\value{
-  return something
+  \item{digits}{numeric. Number of significant digits to
+  print. Defaults to 3.}
 }
 \description{
-  summary
-}
-\details{
-  details
+  Generate reports to summarize adverse events.
 }
 \examples{
-1
+\dontrun{
+  load(url('http://biostat.mc.vanderbilt.edu/wiki/pub/Main/Rreport/ssafety.rda'))
+  ae <- c('headache', 'ab.pain', 'nausea', 'dyspepsia', 'diarrhea', 'upper.resp.infect', 'coad')
+  aeReport(ssafety, ae, 'trx', 'week', id='id', times.tables=c(4,12), forceBinary=TRUE, ylim=c(0,0.15))
+}
 }
 

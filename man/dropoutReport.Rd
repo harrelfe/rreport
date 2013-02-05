@@ -6,32 +6,38 @@
     ylim = c(0, 1), panel = "dropout", what = "study", ...)
 }
 \arguments{
-  \item{d.dropout}{NEEDDOC}
+  \item{d.dropout}{numeric vector. Dropout date.}
 
-  \item{dropout}{NEEDDOC}
+  \item{dropout}{numeric vector. Indicator variable for
+  dropout.}
 
-  \item{treat}{NEEDDOC}
+  \item{treat}{factor vector. Vector of treatment group for
+  each record.}
 
-  \item{time.inc}{NEEDDOC}
+  \item{time.inc}{numeric. See
+  \code{\link[rms]{survplot}}.}
 
-  \item{ylim}{NEEDDOC}
+  \item{ylim}{numeric vector. See
+  \code{\link[rms]{survplot}}.}
 
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Name for panel, defaults to
+  \sQuote{dropout}.}
 
-  \item{what}{NEEDDOC}
+  \item{what}{character. Name of study, defaults to
+  \sQuote{study}.}
 
-  \item{\dots}{NEEDDOC}
-}
-\value{
-  return something
+  \item{\dots}{additional arguments, passed to
+  \code{\link[rms]{survplot}}.}
 }
 \description{
-  summary
-}
-\details{
-  details
+  Generate a survival plot for subjects remaining in the
+  study.
 }
 \examples{
-1
+\dontrun{
+  d.d <- sample(1:10, 200, replace=TRUE, prob=c(rep(0.03,9), 0.73))
+  dropout <- as.numeric(d.d < 10)
+  dropoutReport(d.d, dropout, as.factor(sample(c('A','B'), 200, replace=TRUE)), time.inc=2)
+}
 }
 

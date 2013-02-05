@@ -1,54 +1,64 @@
 #' Mixed Variable Report
 #'
-#' summary
+#' Generate several reports.
 #'
-#' details
+#' \itemize{
+#' \item Generate a summary table of treatment against all variables.
+#' \item Plot categorical data if \code{categDataPlot} is \sQuote{TRUE}.
+#' \item Plot continuous data if \code{contDataPlot} is \sQuote{TRUE}.
+#' \item Include a prototype box-percentile plot if \code{contDataPlotType}.
+#' is \sQuote{bp} and \code{bpPrototype} is \sQuote{TRUE}.
+#' \item Plot the cumulative distribution function.
+#' \item Plot a histogram for categorical variables if \code{Ohist} is \sQuote{TRUE}.
+#' \item Print a box-percentile plot for each variable stratified by \code{Major}.
+#' }
 #'
-#' @param data NEEDDOC
-#' @param vars NEEDDOC
-#' @param panel NEEDDOC
-#' @param treat NEEDDOC
-#' @param longPanel NEEDDOC
-#' @param ncaption NEEDDOC
-#' @param tableref NEEDDOC
-#' @param test NEEDDOC
-#' @param exclude1 NEEDDOC
-#' @param long NEEDDOC
-#' @param npct NEEDDOC
-#' @param prmsd NEEDDOC
-#' @param contDataPlotType NEEDDOC
-#' @param nmin NEEDDOC
-#' @param categDataPlot NEEDDOC
-#' @param cdfPlot NEEDDOC
-#' @param contDataPlot NEEDDOC
-#' @param Ohist NEEDDOC
-#' @param Odotchart NEEDDOC
-#' @param bpPrototype NEEDDOC
-#' @param digits NEEDDOC
-#' @param append NEEDDOC
-#' @param Major NEEDDOC
-#' @param MajorLabel NEEDDOC
-#' @param Majorvars NEEDDOC
-#' @param cexMajor NEEDDOC
-#' @param continuous NEEDDOC
-#' @param nx NEEDDOC
-#' @param keyloc NEEDDOC
-#' @param landscape NEEDDOC
-#' @param size NEEDDOC
-#' @param longtable NEEDDOC
-#' @param h NEEDDOC
-#' @param w NEEDDOC
-#' @param lines.page NEEDDOC
-#' @param clearPlots NEEDDOC
-#' @param auxCol NEEDDOC
-#' @param prn NEEDDOC
-#' @param \dots NEEDDOC
-#' @return return something
+#' @param data data.frame. Data used for report.
+#' @param vars character vector. Variables to include in analysis.
+#' @param panel character. Name for panel.
+#' @param treat character. Name of treatment variable within dataset.
+#' @param longPanel character. Long name for panel.
+#' @param ncaption character. Caption text.
+#' @param tableref character. Passed to the function \code{\link[Hmisc]{latex}}.
+#' @param test logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param exclude1 logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param long logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param npct character. See \code{\link[Hmisc]{summary.formula}}.
+#' @param prmsd logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param contDataPlotType character. Continuous data plot type should be one of the following:
+#' \sQuote{bp}, \sQuote{dot}, or \sQuote{raw}.
+#' @param nmin numeric. See \code{\link[Hmisc]{summary.formula}}.
+#' @param categDataPlot logical. Set to \sQuote{TRUE} to output a categorical
+#' data plot in the latex table being generated.
+#' @param cdfPlot logical. Set to \sQuote{TRUE} to output a CDF plot
+#' in the latex table being generated; only available to closed report.
+#' @param contDataPlot logical. Set to \sQuote{TRUE} to output a continous 
+#' data plot in the latex table being generated; only available to closed report.
+#' @param Ohist logical. Set to \sQuote{TRUE} to output a histogram of the continuous variables.
+#' @param Odotchart logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param bpPrototype logical. If \sQuote{TRUE} and \code{contDataPlotType} is \sQuote{bp},
+#' output a prototype box-percentile plot.
+#' @param digits numeric. Significant digits, passed to the function \code{\link[Hmisc]{latex}}.
+#' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
+#' @param Major character vector. Major categorical variables for site.
+#' @param MajorLabel character. Label for major stratification variable(s).
+#' @param Majorvars character vector. Major categorical variables for site. (NEED TO DISTINGUISH)
+#' @param cexMajor numeric. Plotting text size magnification, used for boxplots.
+#' @param continuous numeric. See \code{\link[Hmisc]{summary.formula}}.
+#' @param nx numeric. THIS PARAMETER IS NOT USED.
+#' @param keyloc numeric vector. Key placement on the categorical data plot, see \code{\link[Hmisc]{summary.formula}}.
+#' @param landscape logical See \code{\link[Hmisc]{latex}}.
+#' @param size character. See \code{\link[Hmisc]{latex}}.
+#' @param longtable logical. See \code{\link[Hmisc]{latex}}.
+#' @param h numeric. Height of plot, only used for categorical data plot. Default is 5in. See \code{\link[Hmisc]{setps}}.
+#' @param w numeric. Width of plot, only used for categorical data plot. Default is 6in. See \code{\link[Hmisc]{setps}}.
+#' @param lines.page numeric. See \code{\link[Hmisc]{latex}}.
+#' @param clearPlots logical. Set to \sQuote{TRUE} to clear the page after each plot.
+#' @param auxCol list. See \code{\link[Hmisc]{summary.formula}}.
+#' @param prn logical. See \code{\link[Hmisc]{summary.formula}}.
+#' @param \dots Additional arguments, passed to \code{\link[graphics]{plot}}. Only used for categorical data plot.
 #' @export
-#' @examples
-#' 1
 
-## $Id$
 mixedvarReport <-
   function(data,
            vars,
@@ -122,8 +132,9 @@ mixedvarReport <-
 
   ## create a table
 
+  closed.file <- file.path(TexDirName(FALSE), sprintf("%s.tex", panel))
   latex(d, prtest='P', digits=digits,
-        file=paste('gentex/', panel, '.tex', sep=''),
+        file=closed.file,
         append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
         npct=npct, prmsd=prmsd, caption=lp, caption.lot = lp.lot,
         label = tableref,
@@ -244,7 +255,8 @@ mixedvarReport <-
   form <- as.formula(paste('~', paste(vars, collapse='+')))
   d <- summary(form, data=data, method='reverse',
                continuous=continuous, nmin=nmin)
-  latex(d, digits=digits, file=paste('gentex/', panel, '.tex', sep=''),
+  open.file <- file.path(TexDirName(), sprintf("%s.tex", panel))
+  latex(d, digits=digits, file=open.file,
         append=append, middle.bold=TRUE, exclude1=exclude1,
         long=long, npct=npct, prmsd=prmsd,
         caption=lp, caption.lot = lp.lot, label = tableref,
@@ -318,7 +330,7 @@ mixedvarReport <-
 
   nv <- length(Majorvars)
   nm <- length(unique(Major))
-  
+
   if(nv)
     {
       pn <- paste(panel, 'bw-major', sep='-')

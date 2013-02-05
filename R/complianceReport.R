@@ -1,19 +1,20 @@
 #' Compliance Report
 #'
-#' summary
+#' Generate compliance report by time across treatment groups.
 #'
 #' details
 #'
-#' @param comply NEEDDOC
-#' @param treat NEEDDOC
-#' @param time NEEDDOC
-#' @param times NEEDDOC
-#' @return return something
+#' @param comply numeric or character vector. Indicator variable for compliance.
+#' Should be 1/0 or yes/no.
+#' @param treat factor vector. Treatment group for each record.
+#' @param time numeric vector. Time for each record.
+#' @param times numeric vector. Subset of times to use.
 #' @export
 #' @examples
-#' 1
+#' \dontrun{
+#'   complianceReport(rbinom(200, 1, 0.8), as.factor(sample(c('A','B'), 200, replace=TRUE)), sample(10, 200, replace=TRUE))
+#' }
 
-## $Id$
 complianceReport <- function(comply, treat, time, times=NULL) {
   if(!is.numeric(comply))
     comply <-  1*(comply %in% c('Y','Yes','yes','YES'))
@@ -25,8 +26,8 @@ complianceReport <- function(comply, treat, time, times=NULL) {
   }
   Compliance <- comply
   latex(summary(Compliance ~ time+stratify(treat)), 
-        file='gentex/compliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
+        file=file.path(TexDirName(), 'compliance.tex'), where='hbp!', ncaption=FALSE, ctable=TRUE)
   latex(summary(Compliance ~ time),
-        file='gentex/Ocompliance.tex', where='hbp!', ncaption=FALSE, ctable=TRUE)
+        file=file.path(TexDirName(), '0compliance.tex'), where='hbp!', ncaption=FALSE, ctable=TRUE)
   invisible()
 }

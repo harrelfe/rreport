@@ -162,9 +162,9 @@ putFig <- function(panel, name, caption=NULL, longcaption=NULL, append=TRUE, ope
 #' Toggle plotting.  Sets options by examining \code{.Options$rreport.gtype}.
 #'
 #' @param file character.  Character string specifying file prefix.
-#' @param \dots Arguments to be passed to \code{setps} or \code{setpdf}.
+#' @param \dots Arguments to be passed to \code{\link[Hmisc]{setps}} or \code{\link[Hmisc]{setpdf}}.
 #' @export
-#' @seealso \code{\link{ps.slide}}
+#' @seealso \code{\link[Hmisc]{ps.slide}}
 
 startPlot <- function(file, ...) {
   gtype <- getOption('rreport.gtype')
@@ -197,7 +197,7 @@ endPlot <- function() {
 #' Factor names will be pasted together to make new names.  A code and definition will be generated
 #' if the new name should exceed \code{maxChar}.
 #'
-#' @param x numeric. Contingency table or matrix of names and counts, see \code{table}.
+#' @param x numeric. Contingency table or matrix of names and counts, see \code{\link[base]{table}}.
 #' @param maxChar numeric. Maximum length of character string.  Names exceeding this will be replaced with a letter-code.
 #' @return a list with three elements
 #' \item{x}{Named vector of code frequencies.  The name corresponds to the code.}

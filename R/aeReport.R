@@ -1,31 +1,34 @@
-#' AE Report
+#' Adverse Events Report
 #'
-#' summary
+#' Generate reports to summarize adverse events.
 #'
-#' details
-#'
-#' @param data NEEDDOC
-#' @param vars NEEDDOC
-#' @param treat NEEDDOC
-#' @param time NEEDDOC
-#' @param times NEEDDOC
-#' @param id NEEDDOC
-#' @param plotprop NEEDDOC
-#' @param plotkm NEEDDOC
-#' @param etimedata NEEDDOC
-#' @param tables NEEDDOC
-#' @param times.tables NEEDDOC
-#' @param forceBinary NEEDDOC
-#' @param ylim NEEDDOC
-#' @param h NEEDDOC
-#' @param w NEEDDOC
-#' @param digits NEEDDOC
-#' @return return something
+#' @param data data.frame. Data used for report.
+#' @param vars character vector. Variables to include in analysis.
+#' @param treat factor vector. Vector of treatment group for each record.
+#' @param time character. Name of time variable within dataset.
+#' @param times numeric vector. Times used to subset data.
+#' @param id character. Name of id variable within dataset.
+#' @param plotprop logical. If \sQuote{TRUE} plot proportions of adverse events.
+#' @param plotkm logical. If \sQuote{TRUE} plot Kaplan-Meier estimates of
+#' cumulative probabilities of adverse events.
+#' @param etimedata list. List of time data, containing treatment, event time
+#' and event indicator for each variable.
+#' @param tables logical. If \sQuote{TRUE} generate summary tables of adverse
+#' events by times found in \code{times.tables}.
+#' @param times.tables numeric vector. Times used to generate summary tables.
+#' @param forceBinary logical. Set to \sQuote{TRUE} if variables are binary.
+#' @param ylim numeric vector. Set y-axis limits.
+#' @param h numeric. Height of plot. Default is 5in. See \code{\link[Hmisc]{setps}}.
+#' @param w numeric. Width of plot. Default is 5in. See \code{\link[Hmisc]{setps}}.
+#' @param digits numeric. Number of significant digits to print. Defaults to 3.
 #' @export
 #' @examples
-#' 1
+#' \dontrun{
+#'   load(url('http://biostat.mc.vanderbilt.edu/wiki/pub/Main/Rreport/ssafety.rda'))
+#'   ae <- c('headache', 'ab.pain', 'nausea', 'dyspepsia', 'diarrhea', 'upper.resp.infect', 'coad')
+#'   aeReport(ssafety, ae, 'trx', 'week', id='id', times.tables=c(4,12), forceBinary=TRUE, ylim=c(0,0.15))
+#' }
 
-## $Id$
 aeReport <- function(data=NULL, vars, treat, time,
                      times=sort(unique(time)),
                      id=NULL, plotprop=FALSE, plotkm=TRUE, etimedata=NULL,
@@ -33,227 +36,207 @@ aeReport <- function(data=NULL, vars, treat, time,
                      forceBinary=FALSE,
                      ylim=c(0,1), h=5, w=5, digits=3)
 {
-
   vars  <- unlist(vars)
   data  <- data[data[[time]] %in% times, c(vars,treat,time,id)]
   Treat <- data[[treat]]
   Time  <- data[[time]]
   nt <- length(levels(Treat))
-  
+
   ## Useful if variables represent counts and we want present/absent
-  if(forceBinary)
-    for(i in 1:length(vars))
-      {
-        x <- data[[i]]
-        if(is.numeric(x))
-          {
-            lab <- label(x)
-            x <- 1*(x > 0)
-            label(x) <- lab
-            data[[i]] <- x
-          }
+  if(forceBinary) {
+    for(i in 1:length(vars)) {
+      x <- data[[i]]
+      if(is.numeric(x)) {
+        lab <- label(x)
+        x <- 1*(x > 0)
+        label(x) <- lab
+        data[[i]] <- x
       }
+    }
+  }
 
-  g1 <- function(y)
-    {
-      y <- y[!is.na(y)]
-      c(Mean=mean(y), var=var(y), n=length(y))
+  g1 <- function(y) {
+    y <- y[!is.na(y)]
+    c(Mean=mean(y), var=var(y), n=length(y))
+  }
+
+  if(plotprop) {
+    startPlot('ae%d', h=h, w=w)
+    oldmf <- mfrowSet(length(vars))
+    mf <- par('mfrow')
+    allbin <- TRUE
+    for(y in data[vars]) {
+      if(!is.numeric(y)) y <- 1*(y %in% c('Y','Yes','yes','YES'))
+
+      allbin <- allbin & length(unique(y[!is.na(y)])) < 3
+      s <- summarize(y, llist(Treat,Time), g1)
+
+      curves <- vector('list',nt)
+      names(curves) <- levels(Treat)
+      for(w in names(curves))
+        curves[[w]] <- list(x=s$Time[s$Treat==w], y=s$y[s$Treat==w])
+
+      yl <- c(ylim[1], max(ylim[2], s$y))
+      labcurve(curves, lwd=c(1,2), lty=c(1,1), col.=gray(c(0,.7)),
+                xlab=label(Time), ylab=label(y),
+                ylim=yl, type='b', method='none', pl=TRUE)
+
+      ## Find out a typical sample size and the pooled variance
+      ## to get a typical confidence interval for the
+      ## difference in two proportions or two means
+
+      n <- tapply(s$n, s$Treat, median)
+      pv <- sum((s$n - 1) * s$var)/sum(s$n - 1)
+      clhalfwidth <- 1.96*sqrt(pv*(1/n[1] + 1/n[2]))
+      u <- par('usr'); par(xpd=NA)
+      lines(rep(u[2]+.03*(u[2]-u[1]),2), c(u[3], u[3]+clhalfwidth),
+            col=gray(0.7), lwd=0.5)
     }
 
-  if(plotprop)
-    {
-      startPlot('ae%d', h=h, w=w)
-      oldmf <- mfrowSet(length(vars))
-      mf <- par('mfrow')
-      allbin <- TRUE
-      for(y in data[vars])
-        {
-          if(!is.numeric(y)) y <- 1*(y %in% c('Y','Yes','yes','YES'))
+    endPlot()
+    for(i in 1:ceiling(length(vars) / prod(mf))) {
+      cap <- paste('Proportions of adverse events by treatment over time',
+                    if(i > 1) ' (continued)'
+                    else '', sep='')
+      st <- if(allbin) 'proportions'else 'means'
 
-          allbin <- allbin & length(unique(y[!is.na(y)])) < 3
-          s <- summarize(y, llist(Treat,Time), g1)
-
-          curves <- vector('list',nt)
-          names(curves) <- levels(Treat)
-          for(w in names(curves))
-            curves[[w]] <- list(x=s$Time[s$Treat==w], y=s$y[s$Treat==w])
-
-          yl <- c(ylim[1], max(ylim[2], s$y))
-          labcurve(curves, lwd=c(1,2), lty=c(1,1), col.=gray(c(0,.7)),
-                   xlab=label(Time), ylab=label(y),
-                   ylim=yl, type='b', method='none', pl=TRUE)
-        
-          ## Find out a typical sample size and the pooled variance
-          ## to get a typical confidence interval for the
-          ## difference in two proportions or two means
-        
-          n <- tapply(s$n, s$Treat, median)
-          pv <- sum((s$n - 1) * s$var)/sum(s$n - 1)
-          clhalfwidth <- 1.96*sqrt(pv*(1/n[1] + 1/n[2]))
-          u <- par('usr'); par(xpd=NA)
-          lines(rep(u[2]+.03*(u[2]-u[1]),2), c(u[3], u[3]+clhalfwidth),
-                col=gray(0.7), lwd=0.5)
-        }
-
-      endPlot()
-      for(i in 1:ceiling(length(vars) / prod(mf)))
-        {
-          cap <- paste('Proportions of adverse events by treatment over time',
-                       if(i > 1) ' (continued)'
-                       else '', sep='')
-          st <- if(allbin) 'proportions'else 'means'
-
-
-          putFig('ae', paste('ae',i,sep=''), cap,
-                 if(i == 1) paste(cap,
-                      '. Vertical bars to the right of each plot indicate',
-                      ' half-widths of typical approximate 0.95 confidence',
-                      ' bars for a difference in ',paste(st,'.',sep=''),
-                      ' When the distance between two ',st,
-                      ' exceeds the length of this bar, differences are',
-                      ' significant at approximately the 0.05 level.',
-                      ' These confidence bars were computed at the median',
-                      ' per-treatment sample size over time',
-                      ' and used the pooled variance over treatments and time.',
-                      ' \\protect\\treatkey',
-                      sep=''),
-                 append=i > 1)
-        }
+      putFig('ae', paste('ae',i,sep=''), cap,
+              if(i == 1) paste(cap,
+                  '. Vertical bars to the right of each plot indicate',
+                  ' half-widths of typical approximate 0.95 confidence',
+                  ' bars for a difference in ',paste(st,'.',sep=''),
+                  ' When the distance between two ',st,
+                  ' exceeds the length of this bar, differences are',
+                  ' significant at approximately the 0.05 level.',
+                  ' These confidence bars were computed at the median',
+                  ' per-treatment sample size over time',
+                  ' and used the pooled variance over treatments and time.',
+                  ' \\protect\\treatkey',
+                  sep=''),
+              append=i > 1)
     }
+  }
 
-  if(plotkm)
-    {
-      Id <- data[[id]]
-      startPlot('ae-km%d', h=h, w=w)
-      oldmf <- mfrowSet(min(4, length(vars)))
-      mf <- par('mfrow')
-      xpd <- par(xpd=NA)
-      on.exit(par(xpd=xpd, mfrow=oldmf))
-    
-      for(v in vars)
-        {
-          if(length(etimedata))
-            {
-              tr <- etimedata[[1]]
-              etime <- etimedata[[2]][[v]]
-              event <- etimedata[[3]][[v]]
-              ylab <- v
-            }
-          else
-            {
-              y <- data[[v]]
-              ylab <- label(y, plot=TRUE)
-              if(!is.numeric(y)) {
-                y <- 1*(y %in% c('Y','Yes','yes','YES'))
-              }
+  if(plotkm) {
+    Id <- data[[id]]
+    startPlot('ae-km%d', h=h, w=w)
+    oldmf <- mfrowSet(min(4, length(vars)))
+    mf <- par('mfrow')
+    xpd <- par(xpd=NA)
+    on.exit(par(xpd=xpd, mfrow=oldmf))
+  
+    for(v in vars) {
+      if(length(etimedata)) {
+        tr <- etimedata[[1]]
+        etime <- etimedata[[2]][[v]]
+        event <- etimedata[[3]][[v]]
+        ylab <- v
+      } else {
+        y <- data[[v]]
+        ylab <- label(y, plot=TRUE)
+        if(!is.numeric(y)) {
+          y <- 1*(y %in% c('Y','Yes','yes','YES'))
+        }
 
-              ## For one subject, compute time to first AE of current type,
-              ## time at which AE last assessed, and event indicator
-              ## Note: using matrices is MUCH faster than using data frames
-              ## with by()
-        g2 <- function(z)
-          {
-            y <- z[,1]
-            time <- z[,2]
-            s <- is.na(y)
+        ## For one subject, compute time to first AE of current type,
+        ## time at which AE last assessed, and event indicator
+        ## Note: using matrices is MUCH faster than using data frames
+        ## with by()
+        g2 <- function(z) {
+          y <- z[,1]
+          time <- z[,2]
+          s <- is.na(y)
 
           if(s[1]) return(c(treat=z[1,3], etime=NA, event=NA))
 
           ## If any NA in y, restrict attention to y's before first NA
-          if(any(s))
-            {
-              k <- min(which(s)) - 1
-              y <- y[1:k]
-              time <- time[1:k]
-            }
-            
-            etime <- if(any(y>0)) min(time[y>0]) else NA
-            
-            ctime <- max(time)
-            event <- !is.na(etime)
-            if(!event) etime <- ctime
-
-            c(treat=z[1,3], etime=etime, event=event)
+          if(any(s)) {
+            k <- min(which(s)) - 1
+            y <- y[1:k]
+            time <- time[1:k]
           }
-
-              z <- cbind(y, Time, Treat)
-              ## Execute g2 separately for all subjects
-              r <- mApply(z, Id, g2)
-              tr <- factor(r[,1], 1:length(levels(Treat)), levels(Treat))
-              etime <- r[,2]
-              event <- r[,3]
-            }
-          km <- survfit.formula(Surv(etime, event) ~ tr)
-          omar <- par('mar')
-          mar <- omar
-          mar[1] <- mar[1]+3
-          par(mar=mar)
-
-          lows <- min(km$surv, na.rm=TRUE)
-          survplot.survfit(km,
-                   fun = function(y) 1 - y,
-                   xlab = label(Time),
-                   ylab = ylab,
-                   conf = 'none', label.curves = FALSE,
-                   ylim = c(0, 1 - lows),
-                   time.inc = floor(max(times) / 5),
-                   n.risk = TRUE, y.n.risk = -(1 - lows) * 0.475,
-                   sep.n.risk = 0.045,
-                   lwd = c(1, 2), lty = c(1, 1), col = gray(c(0, 0.7)))
-      
-          plotKmHalfCL(km, weeks, function(y) 1 - y, offset = max(times) / 50)
-          par(mar = omar)
+          etime <- if(any(y>0)) min(time[y>0]) else NA
+          ctime <- max(time)
+          event <- !is.na(etime)
+          if(!event) etime <- ctime
+          c(treat=z[1,3], etime=etime, event=event)
         }
 
-      endPlot()
+        z <- cbind(y, Time, Treat)
+        ## Execute g2 separately for all subjects
+        r <- mApply(z, Id, g2)
+        tr <- factor(r[,1], 1:length(levels(Treat)), levels(Treat))
+        etime <- r[,2]
+        event <- r[,3]
+      }
+      km <- survfit.formula(Surv(etime, event) ~ tr)
+      omar <- par('mar')
+      mar <- omar
+      mar[1] <- mar[1]+3
+      par(mar=mar)
 
-      for(i in 1:ceiling(length(vars) / prod(mf)))
-        {
-          cap <- paste('Kaplan-Meier estimates of cumulative probabilities',
-                       ' of adverse events by treatment over time',
-                       if(i > 1) ' (continued)'
-                       else '',
-                       sep='')
-      
-          putFig('ae', paste('ae-km', i, sep = ''),
-                 cap,
-                 if(i == 1) paste(cap,
-                      '. Dotted vertical bars indicate half-widths of',
-                      ' approximate 0.95 confidence intervals for',
-                      ' differences in probabilities.',
-                      ' When the distance between two proportions',
-                      ' exceeds the length of the bar, differences are',
-                      ' significant at approximately the 0.05 level.',
-                      ' \\protect\\treatkey',
-                      sep = '') else
-                 cap,
-                 append = i > 1)
-        }
+      lows <- min(km$surv, na.rm=TRUE)
+      survplot.survfit(km,
+                fun = function(y) 1 - y,
+                xlab = label(Time),
+                ylab = ylab,
+                conf = 'none', label.curves = FALSE,
+                ylim = c(0, 1 - lows),
+                time.inc = floor(max(times) / 5),
+                n.risk = TRUE, y.n.risk = -(1 - lows) * 0.475,
+                sep.n.risk = 0.045,
+                lwd = c(1, 2), lty = c(1, 1), col = gray(c(0, 0.7)))
+  
+      plotKmHalfCL(km, weeks, function(y) 1 - y, offset = max(times) / 50)
+      par(mar = omar)
     }
+    endPlot()
+
+    for(i in 1:ceiling(length(vars) / prod(mf))) {
+      cap <- paste('Kaplan-Meier estimates of cumulative probabilities',
+                    ' of adverse events by treatment over time',
+                    if(i > 1) ' (continued)'
+                    else '',
+                    sep='')
+  
+      putFig('ae', paste('ae-km', i, sep = ''),
+              cap,
+              if(i == 1) paste(cap,
+                  '. Dotted vertical bars indicate half-widths of',
+                  ' approximate 0.95 confidence intervals for',
+                  ' differences in probabilities.',
+                  ' When the distance between two proportions',
+                  ' exceeds the length of the bar, differences are',
+                  ' significant at approximately the 0.05 level.',
+                  ' \\protect\\treatkey',
+                  sep = '') else
+              cap,
+              append = i > 1)
+    }
+  }
 
   if(!tables) return()
 
   if(!all(times.tables %in% times))
     stop('times.tables must be a subset of times')
 
+  aefile <- file.path(TexDirName(), 'ae.tex')
   cat('In the following tables $N$ is the number of subjects and',
       'numbers after percents are frequencies.',
       '$P$-values are from Pearson $\\chi^2$ tests.\n',
-      file = 'gentex/ae.tex', append = TRUE)
-  
-  form <- as.formula(paste(treat, paste(vars, collapse = '+'),
-                           sep = '~'))
+      file = aefile, append = TRUE)
 
-  for(x in times.tables)
-    {
-      s <- summary(form, data = data[Time == x,], method = 'reverse',
-                   test = TRUE)
-      w <- latex(s, file = 'gentex/ae.tex', append = TRUE,
-                 middle.bold = TRUE, title = '',
-                 caption = paste('Adverse Events at', label(Time), x),
-                 prtest = 'P', digits = digits, where = 'hbp!',
-                 insert.bottom = FALSE, ctable = TRUE)
-    }
+  form <- as.formula(paste(treat, paste(vars, collapse = '+'), sep = '~'))
+
+  for(x in times.tables) {
+    s <- summary(form, data = data[Time == x,], method = 'reverse',
+                  test = TRUE)
+    w <- latex(s, file = aefile, append = TRUE,
+                middle.bold = TRUE, title = '',
+                caption = paste('Adverse Events at', label(Time), x),
+                prtest = 'P', digits = digits, where = 'hbp!',
+                insert.bottom = FALSE, ctable = TRUE)
+  }
 
   ## Make a new data frame unioning AEs over all times
   d <- data[c(vars, treat)]
@@ -270,7 +253,7 @@ aeReport <- function(data=NULL, vars, treat, time,
   dimnames(m) <- dm
   v <- matrix2dataFrame(m)
   s <- summary(form, data = v, method = 'reverse', test = TRUE)
-  w <- latex(s, file = 'gentex/ae.tex', append = TRUE,
+  w <- latex(s, file = aefile, append = TRUE,
              middle.bold = TRUE, title = '',
              caption='Adverse Events at Any Time',
              prtest = 'P', digits = digits, where = 'hbp!',
@@ -332,8 +315,9 @@ freqReport <- function(type,
 
   tab <- as.matrix(tab)
   pan <- paste('O', panel, sep = '')
-  
-  w <- latex(tab, file=paste('gentex/', pan, '.tex', sep=''),
+
+  freqfile <- file.path(TexDirName(), sprintf("%s.tex", pan))
+  w <- latex(tab, file = freqfile,
              title = pan, append = append, rowlabel = typeLabel,
              caption = paste('Frequencies of', longPanel),
              ctable = ! longtable, size = size,
@@ -344,7 +328,8 @@ freqReport <- function(type,
   if(omitZeros) tab <- tab[tab[, 'Total'] > 0,]
 
   pan <- panel
-  w   <- latex(tab, file = paste('gentex/', pan, '.tex', sep=''),
+  freqfile <- file.path(TexDirName(FALSE), sprintf("%s.tex", pan))
+  w   <- latex(tab, file = freqfile,
                title = pan, append = append, rowlabel = typeLabel,
                caption = paste('Frequencies of', longPanel, 'and Treatment'),
                extracolheads = if(length(Ntreat)) {
@@ -352,7 +337,7 @@ freqReport <- function(type,
                },
                ctable = ! longtable, size = size,
                longtable = longtable, lines.page = lines.page)
-  
+
   if(plotprop) {
     startPlot(pan, h = h, w = w)
     ## add plotting code here!
@@ -444,14 +429,15 @@ freqReport <- function(type,
 #' @seealso \code{\link{aeReport}}
 #' @export
 #' @examples
-#' #major <- c('A', 'A', 'A', 'B', 'B', 'C')
-#' #minor <- c('a1','a1','a2','b1','b2','c1')
-#' #id <- c(1, 1, 1, 1, 2, 3)
-#' #treat <- c('drug','placebo','drug','placebo','drug','placebo')
-#' #aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10))
-#' #aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10),
-#' #          sortby='% difference')
-#' 1
+#' \dontrun{
+#' major <- c('A', 'A', 'A', 'B', 'B', 'C')
+#' minor <- c('a1','a1','a2','b1','b2','c1')
+#' id <- c(1, 1, 1, 1, 2, 3)
+#' treat <- c('drug','placebo','drug','placebo','drug','placebo')
+#' aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10))
+#' aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10),
+#'           sortby='% difference')
+#' }
 
 aeReport2 <- function(major,
                       minor = rep('', length(major)),

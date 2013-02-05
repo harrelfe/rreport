@@ -1,7 +1,10 @@
-\name{mixedvarReport}
+\name{baselineReport}
+\alias{baselineReport}
 \alias{mixedvarReport}
 \title{Mixed Variable Report}
 \usage{
+  baselineReport(...)
+
   mixedvarReport(data, vars, panel, treat,
     longPanel = panel, ncaption = "", tableref = panel,
     test = TRUE, exclude1 = TRUE, long = TRUE,
@@ -20,94 +23,139 @@
     auxCol = NULL, prn = TRUE, ...)
 }
 \arguments{
-  \item{data}{NEEDDOC}
+  \item{data}{data.frame. Data used for report.}
 
-  \item{vars}{NEEDDOC}
+  \item{vars}{character vector. Variables to include in
+  analysis.}
 
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Name for panel.}
 
-  \item{treat}{NEEDDOC}
+  \item{treat}{character. Name of treatment variable within
+  dataset.}
 
-  \item{longPanel}{NEEDDOC}
+  \item{longPanel}{character. Long name for panel.}
 
-  \item{ncaption}{NEEDDOC}
+  \item{ncaption}{character. Caption text.}
 
-  \item{tableref}{NEEDDOC}
+  \item{tableref}{character. Passed to the function
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{test}{NEEDDOC}
+  \item{test}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{exclude1}{NEEDDOC}
+  \item{exclude1}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{long}{NEEDDOC}
+  \item{long}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{npct}{NEEDDOC}
+  \item{npct}{character. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{prmsd}{NEEDDOC}
+  \item{prmsd}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{contDataPlotType}{NEEDDOC}
+  \item{contDataPlotType}{character. Continuous data plot
+  type should be one of the following: \sQuote{bp},
+  \sQuote{dot}, or \sQuote{raw}.}
 
-  \item{nmin}{NEEDDOC}
+  \item{nmin}{numeric. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{categDataPlot}{NEEDDOC}
+  \item{categDataPlot}{logical. Set to \sQuote{TRUE} to
+  output a categorical data plot in the latex table being
+  generated.}
 
-  \item{cdfPlot}{NEEDDOC}
+  \item{cdfPlot}{logical. Set to \sQuote{TRUE} to output a
+  CDF plot in the latex table being generated; only
+  available to closed report.}
 
-  \item{contDataPlot}{NEEDDOC}
+  \item{contDataPlot}{logical. Set to \sQuote{TRUE} to
+  output a continous data plot in the latex table being
+  generated; only available to closed report.}
 
-  \item{Ohist}{NEEDDOC}
+  \item{Ohist}{logical. Set to \sQuote{TRUE} to output a
+  histogram of the continuous variables.}
 
-  \item{Odotchart}{NEEDDOC}
+  \item{Odotchart}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{bpPrototype}{NEEDDOC}
+  \item{bpPrototype}{logical. If \sQuote{TRUE} and
+  \code{contDataPlotType} is \sQuote{bp}, output a
+  prototype box-percentile plot.}
 
-  \item{digits}{NEEDDOC}
+  \item{digits}{numeric. Significant digits, passed to the
+  function \code{\link[Hmisc]{latex}}.}
 
-  \item{append}{NEEDDOC}
+  \item{append}{logical. If \sQuote{TRUE} output will be
+  appended instead of overwritten.}
 
-  \item{Major}{NEEDDOC}
+  \item{Major}{character vector. Major categorical
+  variables for site.}
 
-  \item{MajorLabel}{NEEDDOC}
+  \item{MajorLabel}{character. Label for major
+  stratification variable(s).}
 
-  \item{Majorvars}{NEEDDOC}
+  \item{Majorvars}{character vector. Major categorical
+  variables for site. (NEED TO DISTINGUISH)}
 
-  \item{cexMajor}{NEEDDOC}
+  \item{cexMajor}{numeric. Plotting text size
+  magnification, used for boxplots.}
 
-  \item{continuous}{NEEDDOC}
+  \item{continuous}{numeric. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{nx}{NEEDDOC}
+  \item{nx}{numeric. THIS PARAMETER IS NOT USED.}
 
-  \item{keyloc}{NEEDDOC}
+  \item{keyloc}{numeric vector. Key placement on the
+  categorical data plot, see
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{landscape}{NEEDDOC}
+  \item{landscape}{logical See \code{\link[Hmisc]{latex}}.}
 
-  \item{size}{NEEDDOC}
+  \item{size}{character. See \code{\link[Hmisc]{latex}}.}
 
-  \item{longtable}{NEEDDOC}
+  \item{longtable}{logical. See
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{h}{NEEDDOC}
+  \item{h}{numeric. Height of plot, only used for
+  categorical data plot. Default is 5in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{w}{NEEDDOC}
+  \item{w}{numeric. Width of plot, only used for
+  categorical data plot. Default is 6in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{lines.page}{NEEDDOC}
+  \item{lines.page}{numeric. See
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{clearPlots}{NEEDDOC}
+  \item{clearPlots}{logical. Set to \sQuote{TRUE} to clear
+  the page after each plot.}
 
-  \item{auxCol}{NEEDDOC}
+  \item{auxCol}{list. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{prn}{NEEDDOC}
+  \item{prn}{logical. See
+  \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{\dots}{NEEDDOC}
-}
-\value{
-  return something
+  \item{\dots}{Additional arguments, passed to
+  \code{\link[graphics]{plot}}. Only used for categorical
+  data plot.}
 }
 \description{
-  summary
+  Generate several reports.
 }
 \details{
-  details
-}
-\examples{
-1
+  \itemize{ \item Generate a summary table of treatment
+  against all variables. \item Plot categorical data if
+  \code{categDataPlot} is \sQuote{TRUE}. \item Plot
+  continuous data if \code{contDataPlot} is \sQuote{TRUE}.
+  \item Include a prototype box-percentile plot if
+  \code{contDataPlotType}. is \sQuote{bp} and
+  \code{bpPrototype} is \sQuote{TRUE}. \item Plot the
+  cumulative distribution function. \item Plot a histogram
+  for categorical variables if \code{Ohist} is
+  \sQuote{TRUE}. \item Print a box-percentile plot for each
+  variable stratified by \code{Major}. }
 }
 

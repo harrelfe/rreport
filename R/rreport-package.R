@@ -32,7 +32,7 @@ NULL
 #'  \item{\code{rreport.open.filename.mask}:}{mask for open report filenames}
 #' }
 #' @name pkgOptions
-#' @seealso \code{\link{options}}
+#' @seealso \code{\link[base]{options}}
 NULL
 
 .defaultRreportOptions <- function() {

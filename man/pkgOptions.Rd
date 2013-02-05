@@ -24,6 +24,6 @@
   report filenames} }
 }
 \seealso{
-  \code{\link{options}}
+  \code{\link[base]{options}}
 }
 

@@ -1,23 +1,23 @@
 #' Dropout Report
 #'
-#' summary
+#' Generate a survival plot for subjects remaining in the study.
 #'
-#' details
-#'
-#' @param d.dropout NEEDDOC
-#' @param dropout NEEDDOC
-#' @param treat NEEDDOC
-#' @param time.inc NEEDDOC
-#' @param ylim NEEDDOC
-#' @param panel NEEDDOC
-#' @param what NEEDDOC
-#' @param \dots NEEDDOC
-#' @return return something
+#' @param d.dropout numeric vector. Dropout date.
+#' @param dropout numeric vector. Indicator variable for dropout.
+#' @param treat factor vector. Vector of treatment group for each record.
+#' @param time.inc numeric. See \code{\link[rms]{survplot}}.
+#' @param ylim numeric vector. See \code{\link[rms]{survplot}}.
+#' @param panel character. Name for panel, defaults to \sQuote{dropout}.
+#' @param what character. Name of study, defaults to \sQuote{study}.
+#' @param \dots additional arguments, passed to \code{\link[rms]{survplot}}.
 #' @export
 #' @examples
-#' 1
+#' \dontrun{
+#'   d.d <- sample(1:10, 200, replace=TRUE, prob=c(rep(0.03,9), 0.73))
+#'   dropout <- as.numeric(d.d < 10)
+#'   dropoutReport(d.d, dropout, as.factor(sample(c('A','B'), 200, replace=TRUE)), time.inc=2)
+#' }
 
-## $Id$
 dropoutReport <- function(d.dropout, dropout, treat,
                           time.inc=NULL, ylim=c(0,1), panel="dropout", what="study", ...) {
   ### function for capitalizing the first letter of each word

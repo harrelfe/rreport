@@ -133,14 +133,15 @@
   directory, where \code{x} is the value of \code{panel}.
 }
 \examples{
-#major <- c('A', 'A', 'A', 'B', 'B', 'C')
-#minor <- c('a1','a1','a2','b1','b2','c1')
-#id <- c(1, 1, 1, 1, 2, 3)
-#treat <- c('drug','placebo','drug','placebo','drug','placebo')
-#aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10))
-#aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10),
-#          sortby='\% difference')
-1
+\dontrun{
+major <- c('A', 'A', 'A', 'B', 'B', 'C')
+minor <- c('a1','a1','a2','b1','b2','c1')
+id <- c(1, 1, 1, 1, 2, 3)
+treat <- c('drug','placebo','drug','placebo','drug','placebo')
+aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10))
+aeReport2(major, minor, treat, id, denom=c(placebo=10,drug=10),
+          sortby='\% difference')
+}
 }
 \seealso{
   \code{\link{aeReport}}

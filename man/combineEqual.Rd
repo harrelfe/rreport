@@ -6,7 +6,7 @@
 }
 \arguments{
   \item{x}{numeric. Contingency table or matrix of names
-  and counts, see \code{table}.}
+  and counts, see \code{\link[base]{table}}.}
 
   \item{maxChar}{numeric. Maximum length of character
   string.  Names exceeding this will be replaced with a

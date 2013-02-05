@@ -1,15 +1,5 @@
-#' Baseline Report
-#'
-#' summary
-#'
-#' details
-#'
-#' @param \dots NEEDDOC
-#' @return return something
+#' @rdname mixedvarReport
 #' @export
-#' @examples
-#' 1
 
-## $Id$
 baselineReport <- function(...)
   mixedvarReport(..., panel='baseline', bpPrototype=TRUE)

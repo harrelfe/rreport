@@ -17,13 +17,12 @@
 #' @param EntryDate1cap character. Caption for first entry date.
 #' @param EntryDate2cap character. Caption for second entry date.
 #' @param dateRange a vector of dates. Should contain two values specifying a date range.
-#' @param dateformat character. Specify date format, see \code{format} argument for \code{chron}.
+#' @param dateformat character. Specify date format, see \code{format} argument for \code{\link[chron]{chron}}.
 #' @param targetN numeric. Target number of subjects to enroll.
 #' @param targetDate character. Target date to end enrollment period.
 #' @param panel character. Name for subjects panel, defaults to \sQuote{randomized}.
-#' @param hdotchart numeric. Height of plot, passed to \code{startPlot}.
+#' @param hdotchart numeric. Height of plot, passed to \code{\link{startPlot}}.
 #' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
-#' @return return something
 #' @export
 #' @examples
 #' \dontrun{

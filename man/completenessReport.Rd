@@ -8,33 +8,38 @@
     fullCaption = FALSE, append = TRUE)
 }
 \arguments{
-  \item{data}{NEEDDOC}
+  \item{data}{data.frame. Data to report.}
 
-  \item{vars}{NEEDDOC}
+  \item{vars}{character vector. Column names to use.}
 
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Name of panel.}
 
-  \item{Time}{NEEDDOC}
+  \item{Time}{numeric vector. Times for each record.}
 
-  \item{times}{NEEDDOC}
+  \item{times}{numeric vector. Subset of times to use.}
 
-  \item{longPanel}{NEEDDOC}
+  \item{longPanel}{character. Long name of panel.}
 
-  \item{frac}{NEEDDOC}
+  \item{frac}{numeric. Ratio used to determine if a dotplot
+  for completeness should be generated for each variable.
+  Defaults to 0.95, that is, if the variable with the most
+  missing data has 5% more missing than the variable with
+  the least missing data, generate the dotplot.}
 
-  \item{h}{NEEDDOC}
+  \item{h}{numeric. Height of plot, passed to
+  \code{\link{startPlot}}.}
 
-  \item{cex}{NEEDDOC}
+  \item{cex}{numeric. Text size within plot, passed to
+  \code{\link[Hmisc]{Dotplot}}.}
 
-  \item{fullCaption}{NEEDDOC}
+  \item{fullCaption}{logical. THIS PARAMETER IS NOT USED.}
 
-  \item{append}{NEEDDOC}
-}
-\value{
-  return something
+  \item{append}{logical. If \sQuote{TRUE} output will be
+  appended instead of overwritten.}
 }
 \description{
-  summary
+  Generate report with information about the completeness
+  of the data.
 }
 \details{
   details
