@@ -5,7 +5,7 @@
 #' By default the function plots CDFs if the number of treatment
 #' groups is less or equal than two. 
 #' If the number of treatment groups is three or more
-#' boxplots are plotted.
+#' boxplots are created.
 #'
 #' @param data data.frame. Data used for report.
 #' @param vars character vector. Variables to include in analysis.

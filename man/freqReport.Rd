@@ -9,48 +9,56 @@
     lines.page = 40, append = FALSE)
 }
 \arguments{
-  \item{type}{NEEDDOC}
+  \item{type}{character vector. Type for each record.}
 
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Name for panel.}
 
-  \item{treat}{NEEDDOC}
+  \item{treat}{factor vector. Treatment group for each
+  record.}
 
-  \item{longPanel}{NEEDDOC}
+  \item{longPanel}{character. Long name for panel.}
 
-  \item{typeLabel}{NEEDDOC}
+  \item{typeLabel}{character. Label for type variable.}
 
-  \item{plotprop}{NEEDDOC}
+  \item{plotprop}{logical. Set to \sQuote{TRUE} to output a
+  plot of proportions.}
 
-  \item{Ntreat}{NEEDDOC}
+  \item{Ntreat}{numeric vector. Add a column header with
+  \sQuote{N} counts.}
 
-  \item{omitZeros}{NEEDDOC}
+  \item{omitZeros}{logical. If \sQuote{TRUE} remove all
+  zero counts from the frequency table.}
 
-  \item{ylim}{NEEDDOC}
+  \item{ylim}{numeric vector. Set y-axis limits. THIS
+  PARAMETER IS NOT USED.}
 
-  \item{h}{NEEDDOC}
+  \item{h}{numeric. Height of plot. Default is 5in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{w}{NEEDDOC}
+  \item{w}{numeric. Width of plot. Default is 3in. See
+  \code{\link[Hmisc]{setps}}.}
 
-  \item{digits}{NEEDDOC}
+  \item{digits}{numeric. Number of significant digits to
+  print. Defaults to 3.}
 
-  \item{size}{NEEDDOC}
+  \item{size}{character. Set LaTeX table font size, see
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{longtable}{NEEDDOC}
+  \item{longtable}{logical. Use LaTeX \sQuote{longtable}
+  style. See \code{\link[Hmisc]{latex}}.}
 
-  \item{lines.page}{NEEDDOC}
+  \item{lines.page}{numeric. Maximum number of lines in the
+  body of a table to be placed on a single page. See
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{append}{NEEDDOC}
-}
-\value{
-  return something
+  \item{append}{logical. If \sQuote{TRUE} output will be
+  appended instead of overwritten.}
 }
 \description{
-  summary
+  Generate tables with the frequencies found for
+  \code{type}.
 }
 \details{
-  details
-}
-\examples{
-1
+  THIS FUNCTION IS INCOMPLETE
 }
 

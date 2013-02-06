@@ -2,8 +2,6 @@
 #'
 #' Generate compliance report by time across treatment groups.
 #'
-#' details
-#'
 #' @param comply numeric or character vector. Indicator variable for compliance.
 #' Should be 1/0 or yes/no.
 #' @param treat factor vector. Treatment group for each record.

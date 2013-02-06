@@ -19,9 +19,6 @@
   Generate compliance report by time across treatment
   groups.
 }
-\details{
-  details
-}
 \examples{
 \dontrun{
   complianceReport(rbinom(200, 1, 0.8), as.factor(sample(c('A','B'), 200, replace=TRUE)), sample(10, 200, replace=TRUE))

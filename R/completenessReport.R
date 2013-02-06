@@ -19,8 +19,6 @@
 #' @param fullCaption logical. THIS PARAMETER IS NOT USED.
 #' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
 #' @export
-#' @examples
-#' 1
 
 completenessReport <- function(data, vars, 
                                panel, Time, times,

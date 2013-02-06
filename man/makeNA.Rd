@@ -5,22 +5,30 @@
   makeNA(data, mins, maxs)
 }
 \arguments{
-  \item{data}{NEEDDOC}
+  \item{data}{data.frame. Dataset with numerical values to
+  range check.}
 
-  \item{mins}{NEEDDOC}
+  \item{mins}{named numeric vector. Minimum value for each
+  named column.}
 
-  \item{maxs}{NEEDDOC}
+  \item{maxs}{named numeric vector. Maximum value for each
+  named column.}
 }
 \value{
-  return something
+  Returns modified data.frame invisibly.
 }
 \description{
-  summary
+  Examine a dataset for numeric values outside of a desired
+  range. Bad values will be replaced with NAs.
 }
 \details{
-  details
+  \code{mins} and \code{maxs} should be named vectors,
+  where the names are columns found in \code{data}. They
+  should contain the same names and have the same length.
 }
 \examples{
-1
+set.seed(100)
+df <- data.frame(x=rnorm(100), y=rnorm(100, sd=0.5))
+na.df <- makeNA(df, c(x=-2,y=-1), c(x=2,y=1))
 }
 

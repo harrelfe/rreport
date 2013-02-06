@@ -1,16 +1,21 @@
 #' Make NA
 #'
-#' summary
+#' Examine a dataset for numeric values outside of a desired range.
+#' Bad values will be replaced with NAs.
 #'
-#' details
+#' \code{mins} and \code{maxs} should be named vectors, where the names
+#' are columns found in \code{data}. They should contain the same names
+#' and have the same length.
 #'
-#' @param data NEEDDOC
-#' @param mins NEEDDOC
-#' @param maxs NEEDDOC
-#' @return return something
+#' @param data data.frame. Dataset with numerical values to range check.
+#' @param mins named numeric vector. Minimum value for each named column.
+#' @param maxs named numeric vector. Maximum value for each named column.
+#' @return Returns modified data.frame invisibly.
 #' @export
 #' @examples
-#' 1
+#' set.seed(100)
+#' df <- data.frame(x=rnorm(100), y=rnorm(100, sd=0.5))
+#' na.df <- makeNA(df, c(x=-2,y=-1), c(x=2,y=1))
 
 makeNA <- function(data, mins, maxs) {
 

@@ -44,7 +44,4 @@
 \details{
   details
 }
-\examples{
-1
-}
 

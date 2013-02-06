@@ -262,30 +262,31 @@ aeReport <- function(data=NULL, vars, treat, time,
 
 #' Frequency Report
 #'
-#' summary
+#' Generate tables with the frequencies found for \code{type}.
 #'
-#' details
+#' THIS FUNCTION IS INCOMPLETE
 #'
-#' @param type NEEDDOC
-#' @param panel NEEDDOC
-#' @param treat NEEDDOC
-#' @param longPanel NEEDDOC
-#' @param typeLabel NEEDDOC
-#' @param plotprop NEEDDOC
-#' @param Ntreat NEEDDOC
-#' @param omitZeros NEEDDOC
-#' @param ylim NEEDDOC
-#' @param h NEEDDOC
-#' @param w NEEDDOC
-#' @param digits NEEDDOC
-#' @param size NEEDDOC
-#' @param longtable NEEDDOC
-#' @param lines.page NEEDDOC
-#' @param append NEEDDOC
-#' @return return something
+#' @param type character vector. Type for each record.
+#' @param panel character. Name for panel.
+#' @param treat factor vector. Treatment group for each record.
+#' @param longPanel character. Long name for panel.
+#' @param typeLabel character. Label for type variable.
+#' @param plotprop logical. Set to \sQuote{TRUE} to output
+#' a plot of proportions.
+#' @param Ntreat numeric vector. Add a column header with \sQuote{N} counts.
+#' @param omitZeros logical. If \sQuote{TRUE} remove all zero counts
+#' from the frequency table.
+#' @param ylim numeric vector. Set y-axis limits. THIS PARAMETER IS NOT USED.
+#' @param h numeric. Height of plot. Default is 5in. See \code{\link[Hmisc]{setps}}.
+#' @param w numeric. Width of plot. Default is 3in. See \code{\link[Hmisc]{setps}}.
+#' @param digits numeric. Number of significant digits to print. Defaults to 3.
+#' @param size character. Set LaTeX table font size, see \code{\link[Hmisc]{latex}}.
+#' @param longtable logical. Use LaTeX \sQuote{longtable} style.
+#' See \code{\link[Hmisc]{latex}}.
+#' @param lines.page numeric. Maximum number of lines in the body of a table to be
+#' placed on a single page. See \code{\link[Hmisc]{latex}}.
+#' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
 #' @export
-#' @examples
-#' 1
 
 freqReport <- function(type,
                        panel,
@@ -343,6 +344,8 @@ freqReport <- function(type,
     ## add plotting code here!
     endPlot()
     cap <- paste('Frequencies and proportions of', longPanel)
+    ## NEED TO DEFINE name
+    name <- 'unknown figure'
     putFig(pan, name, cap,
            paste(cap,
                  '. Denominators of proportions are assumed to be constants.',
