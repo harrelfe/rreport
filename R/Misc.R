@@ -132,17 +132,16 @@ mfrowSet <- function(n, trellis=FALSE, small=FALSE) {
 #' @param caption character. Short caption for figure.
 #' @param longcaption character. Long caption for figure.
 #' @param append logical. If \sQuote{TRUE} output will be appended instead of overwritten.
-#' @param open.report logical. Generate figure for open or closed report.
 #' @export
 
-putFig <- function(panel, name, caption=NULL, longcaption=NULL, append=TRUE, open.report=TRUE) {
+putFig <- function(panel, name, caption=NULL, longcaption=NULL, append=TRUE) {
   gtype <- getOption('rreport.gtype')
   if(gtype=='interactive') {
     return(invisible())
   }
   panel <- paste(translate(panel, '.', '-'), '.tex', sep='')
   name <- translate(name, '.', '-')
-  file <- file.path(TexDirName(open.report), panel)
+  file <- file.path(TexDirName(), panel)
   suffix <- paste('.', gtype, sep='')
 
   ## if(length(caption)) caption <- latexTranslate(caption)

@@ -26,6 +26,6 @@ complianceReport <- function(comply, treat, time, times=NULL) {
   latex(summary(Compliance ~ time+stratify(treat)), 
         file=file.path(TexDirName(), 'compliance.tex'), where='hbp!', ncaption=FALSE, ctable=TRUE)
   latex(summary(Compliance ~ time),
-        file=file.path(TexDirName(), '0compliance.tex'), where='hbp!', ncaption=FALSE, ctable=TRUE)
+        file=file.path(TexDirName(), 'Ocompliance.tex'), where='hbp!', ncaption=FALSE, ctable=TRUE)
   invisible()
 }

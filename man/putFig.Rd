@@ -3,7 +3,7 @@
 \title{Put Figure}
 \usage{
   putFig(panel, name, caption = NULL, longcaption = NULL,
-    append = TRUE, open.report = TRUE)
+    append = TRUE)
 }
 \arguments{
   \item{panel}{character. Panel name.}
@@ -16,9 +16,6 @@
 
   \item{append}{logical. If \sQuote{TRUE} output will be
   appended instead of overwritten.}
-
-  \item{open.report}{logical. Generate figure for open or
-  closed report.}
 }
 \description{
   Included a generated figure within LaTex document.

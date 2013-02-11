@@ -220,7 +220,7 @@ labReport <- function(data, vars, panel, treat, id, time, times,
 
     form <- as.formula(paste(if(length(trlev)==1)'' else treat,
                               paste(vars,collapse='+'),sep='~'))
-    labfile <- file.path(TexDirName(open), sprintf("%s.tex", panel))
+    labfile <- file.path(TexDirName(), sprintf("%s.tex", panel))
     if(clearPlots)
       cat('\\clearpage\n', file=labfile, append=TRUE)
     for(x in times) {

@@ -329,7 +329,7 @@ freqReport <- function(type,
   if(omitZeros) tab <- tab[tab[, 'Total'] > 0,]
 
   pan <- panel
-  freqfile <- file.path(TexDirName(FALSE), sprintf("%s.tex", pan))
+  freqfile <- file.path(TexDirName(), sprintf("%s.tex", pan))
   w   <- latex(tab, file = freqfile,
                title = pan, append = append, rowlabel = typeLabel,
                caption = paste('Frequencies of', longPanel, 'and Treatment'),
@@ -699,7 +699,7 @@ aeReport2 <- function(major,
       }
       
       
-      latex(x, file = file.path(TexDirName(open.report), FilenameMask(file, open.report)),
+      latex(x, file = file.path(TexDirName(), FilenameMask(file, open.report)),
             append = append, rowlabel = 'Event',
             cgroup = cgroup,
             n.cgroup = if(nt > 1){

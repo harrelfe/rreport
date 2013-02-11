@@ -24,10 +24,8 @@ NULL
 #' \describe{
 #'  \item{\code{rreport.gtype}:}{graphing device (ps, pdf, interactive)}
 #'  \item{\code{rreport.appendix.file.name}:}{filename for appendix}
-#'  \item{\code{rreport.closed.generated.tex.dir}:}{directory name for closed report tex files}
-#'  \item{\code{rreport.open.generated.tex.dir}:}{directory name for open report tex files}
-#'  \item{\code{rreport.closed.graphics.dir}:}{directory name for closed report graphic files}
-#'  \item{\code{rreport.open.graphics.dir}:}{directory name for open report graphic files}
+#'  \item{\code{rreport.generated.tex.dir}:}{directory name for report tex files}
+#'  \item{\code{rreport.graphics.dir}:}{directory name for report graphic files}
 #'  \item{\code{rreport.closed.filename.mask}:}{mask for closed report filenames}
 #'  \item{\code{rreport.open.filename.mask}:}{mask for open report filenames}
 #' }
@@ -39,10 +37,8 @@ NULL
   list(
     rreport.gtype = 'pdf',
     rreport.appendix.file.name = 'app.tex',
-    rreport.closed.generated.tex.dir = 'gentex',
-    rreport.open.generated.tex.dir = 'gentex',
-    rreport.closed.graphics.dir = 'pdf',
-    rreport.open.graphics.dir = 'pdf',
+    rreport.generated.tex.dir = 'gentex',
+    rreport.graphics.dir = 'pdf',
     rreport.closed.filename.mask = NULL,
     rreport.open.filename.mask = 'O%s'
   )

@@ -114,7 +114,7 @@ mixedvarReport <-
   cp <- if(clearPlots)
     function()
       cat('\\clearpage\n',
-          file=paste('gentex/',panel,'.tex',sep=''),
+          file=file.path(TexDirName(), sprintf("%s.tex", panel)),
           append=TRUE)
   else function() NULL
 
@@ -132,7 +132,7 @@ mixedvarReport <-
 
   ## create a table
 
-  closed.file <- file.path(TexDirName(FALSE), sprintf("%s.tex", panel))
+  closed.file <- file.path(TexDirName(), sprintf("%s.tex", panel))
   latex(d, prtest='P', digits=digits,
         file=closed.file,
         append=append, middle.bold=TRUE, exclude1=exclude1, long=long,
