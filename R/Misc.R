@@ -1,25 +1,29 @@
-#' Plot K-M Half-Width Confidence Levels
+#' Kaplan-Meier Estimates
 #'
-#' summary
+#' For two strata, estimates the standard error of the difference in two
+#' Kaplan-Meier estimates at each value of times, and plots half-width
+#' of confidence level for the difference, centered at the midpoint
+#' of the survival estimates.
 #'
 #' details
 #'
-#' @param fit NEEDDOC
-#' @param times NEEDDOC
-#' @param fun NEEDDOC
-#' @param offset NEEDDOC
-#' @param lwd NEEDDOC
-#' @param lty NEEDDOC
-#' @return return something
+#' @param fit survfit object. See \code{\link[rms]{survfit.formula}}.
+#' @param times numeric vector. Time value for each record.
+#' @param fun function. Function to plot estimates.
+#' @param offset numeric. Offset value to apply to \sQuote{x} coordinate points.
+#' @param lwd numeric. The line width, passed to \code{lines}.
+#' @param lty numeric. The line type, passed to \code{lines}.
 #' @export
 #' @examples
-#' 1
+#' set.seed(20)
+#' time <- rep(365, 50)
+#' event <- rbinom(50, 1, 1/3)
+#' time[event == 1] <- sample(365, sum(event == 1), replace=TRUE)
+#' trt <- sample(1:2, 50, replace=TRUE)
+#' fit <- survfit.formula(Surv(time, event) ~ trt)
+#' survplot.survfit(fit)
+#' plotKmHalfCL(fit, time)
 
-## $Id$
-## For 2 strata estimates the std. error. of the difference in two K-M
-## estimates at each value of times, and plots half-width of CL for
-## difference, centered at midpoint of survival estimates
-## fit is a survfit object
 plotKmHalfCL <- function(fit, times, fun=function(x) x,
                          offset=0, lwd=0.5, lty=1) {
   s <- summary(fit, times=times)
@@ -46,23 +50,24 @@ plotKmHalfCL <- function(fit, times, fun=function(x) x,
 
 #' Set mfrow Parameter
 #'
-#' summary
+#' Compute and set a good \code{par(\sQuote{mfrow})} given the
+#' number of figures to plot.
 #'
-#' details
+#' \code{trellis} and \code{small} may not both be specified as \sQuote{TRUE}.
 #'
-#' @param n NEEDDOC
-#' @param trellis NEEDDOC
-#' @param small NEEDDOC
-#' @return return something
+#' @param n numeric. Totoal number of figures to place in layout.
+#' @param trellis logical. Set to \sQuote{TRUE} when a \sQuote{trellis} plot
+#' is requested.
+#' @param small logical. Set to \sQuote{TRUE} if the plot area should be
+#' smaller to accomodate many plots.
+#' @return return numeric vector.
+#' If \code{trellis = TRUE} the suggested \sQuote(mfrow) is returned.
+#' Otherwise the original \sQuote{mfrow} is returned invisibly.
 #' @export
 #' @examples
-#' 1
+#' oldmfrow <- mfrowSet(8)
 
 mfrowSet <- function(n, trellis=FALSE, small=FALSE) {
-  ## Usage: oldmfrow <- mfrowSet(total number of plots)
-  ## Tries to compute and set a good par('mfrow')
-  ## Original mfrow returned
-
   if(small && trellis) stop('may not specify small=T when trellis=T')
   
   omf <- mf <- if(trellis)NULL else par('mfrow')
@@ -313,28 +318,25 @@ putparams <- function(..., paramFile) {
 #'
 #' Used if want to create PS files and later convert all to PDF
 #'
-#' details
+#' Utilize the \sQuote{epstopdf} command for conversion.
 #'
-#' @return return something
 #' @export
-#' @examples
-#' 1
 
 dirps2pdf <- function() {
-  files <- dir('ps/', pattern='\\.ps')
-  bases <- sub('\\.ps','',files)
+  files <- dir('ps/', pattern='\\.ps$')
+  nfiles <- sub('ps$', 'pdf', files)
   i <- 0
   for(file in files) {
     i <- i + 1
-    base <- bases[i]
-    input.date <- file.info(paste('ps',file,sep='/'))$mtime
-    output.date <- file.info(paste('pdf/',base,'.pdf',sep=''))$mtime
+    psname <- file.path('ps', file)
+    pdfname <- file.path('pdf', nfiles[i])
+    input.date <- file.info(psname)$mtime
+    output.date <- file.info(pdfname)$mtime
 
     if(is.na(output.date) || output.date < input.date) {
       cat('Converting file:',file,'\n')
-      system(paste('epstopdf ps/', shQuote(file),' -o ',
-                   shQuote(paste('pdf/', bases[i],'.pdf',sep='')),
-                   sep=''))
+      cmd <- sprintf("epstopdf %s -o %s", shQuote(psname), shQuote(pdfname))
+      system(cmd)
     }
   }
   invisible()

@@ -186,7 +186,7 @@ aeReport <- function(data=NULL, vars, treat, time,
                 n.risk = TRUE, y.n.risk = -(1 - lows) * 0.475,
                 sep.n.risk = 0.045,
                 lwd = c(1, 2), lty = c(1, 1), col = gray(c(0, 0.7)))
-  
+
       plotKmHalfCL(km, weeks, function(y) 1 - y, offset = max(times) / 50)
       par(mar = omar)
     }
@@ -198,7 +198,7 @@ aeReport <- function(data=NULL, vars, treat, time,
                     if(i > 1) ' (continued)'
                     else '',
                     sep='')
-  
+
       putFig('ae', paste('ae-km', i, sep = ''),
               cap,
               if(i == 1) paste(cap,
