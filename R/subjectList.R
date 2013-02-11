@@ -41,8 +41,8 @@ subjectList <- function(data, panel, caption=NULL,
       data[[i]] <- x
     }
   }
-    
-  w <- latex(data, file=paste('gentex/',panel,'.tex',sep=''),
+
+  w <- latex(data, file=file.path(TexDirName(), sprintf("%s.tex", panel)),
              title=panel, colheads=lab,
              longtable=longtable, size=size, caption=caption,
              landscape=landscape, rowname=NULL)
