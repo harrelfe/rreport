@@ -5,7 +5,7 @@
   mfrowSet(n, trellis = FALSE, small = FALSE)
 }
 \arguments{
-  \item{n}{numeric. Totoal number of figures to place in
+  \item{n}{numeric. Total number of figures to place in
   layout.}
 
   \item{trellis}{logical. Set to \sQuote{TRUE} when a
@@ -16,7 +16,7 @@
 }
 \value{
   return numeric vector. If \code{trellis = TRUE} the
-  suggested \sQuote(mfrow) is returned. Otherwise the
+  suggested \sQuote{mfrow} is returned. Otherwise the
   original \sQuote{mfrow} is returned invisibly.
 }
 \description{

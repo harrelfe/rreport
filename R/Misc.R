@@ -20,6 +20,7 @@
 #' event <- rbinom(50, 1, 1/3)
 #' time[event == 1] <- sample(365, sum(event == 1), replace=TRUE)
 #' trt <- sample(1:2, 50, replace=TRUE)
+#' require('rms')
 #' fit <- survfit.formula(Surv(time, event) ~ trt)
 #' survplot.survfit(fit)
 #' plotKmHalfCL(fit, time)
@@ -55,13 +56,13 @@ plotKmHalfCL <- function(fit, times, fun=function(x) x,
 #'
 #' \code{trellis} and \code{small} may not both be specified as \sQuote{TRUE}.
 #'
-#' @param n numeric. Totoal number of figures to place in layout.
+#' @param n numeric. Total number of figures to place in layout.
 #' @param trellis logical. Set to \sQuote{TRUE} when a \sQuote{trellis} plot
 #' is requested.
 #' @param small logical. Set to \sQuote{TRUE} if the plot area should be
 #' smaller to accomodate many plots.
 #' @return return numeric vector.
-#' If \code{trellis = TRUE} the suggested \sQuote(mfrow) is returned.
+#' If \code{trellis = TRUE} the suggested \sQuote{mfrow} is returned.
 #' Otherwise the original \sQuote{mfrow} is returned invisibly.
 #' @export
 #' @examples
