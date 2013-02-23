@@ -20,8 +20,8 @@
   original \sQuote{mfrow} is returned invisibly.
 }
 \description{
-  Compute and set a good \code{par(\sQuote{mfrow})} given
-  the number of figures to plot.
+  Compute and set a good \code{par("mfrow")} given the
+  number of figures to plot.
 }
 \details{
   \code{trellis} and \code{small} may not both be specified

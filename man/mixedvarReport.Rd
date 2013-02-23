@@ -111,7 +111,8 @@
   categorical data plot, see
   \code{\link[Hmisc]{summary.formula}}.}
 
-  \item{landscape}{logical See \code{\link[Hmisc]{latex}}.}
+  \item{landscape}{logical. See
+  \code{\link[Hmisc]{latex}}.}
 
   \item{size}{character. See \code{\link[Hmisc]{latex}}.}
 

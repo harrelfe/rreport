@@ -1,23 +1,23 @@
 #' Subject List
 #'
-#' summary
+#' Generate a LaTeX table from a dataset.
 #'
-#' details
-#'
-#' @param data NEEDDOC
-#' @param panel NEEDDOC
-#' @param caption NEEDDOC
-#' @param vname NEEDDOC
-#' @param colheads NEEDDOC
-#' @param size NEEDDOC
-#' @param longtable NEEDDOC
-#' @param landscape NEEDDOC
-#' @return return something
+#' @param data data.frame. Data used for report.
+#' @param panel character. Name of panel.
+#' @param caption character. See \code{\link[Hmisc]{latex}}.
+#' @param vname character. Specifies how to generate column headings,
+#' either through variable \sQuote{labels} or \sQuote{names}.
+#' @param colheads character vector. Column headings for each variable.
+#' @param size character. Set LaTeX table font size, see \code{\link[Hmisc]{latex}}.
+#' @param longtable logical. See \code{\link[Hmisc]{latex}}.
+#' @param landscape logical. See \code{\link[Hmisc]{latex}}.
 #' @export
 #' @examples
-#' 1
+#' \dontrun{
+#'   load(url('http://biostat.mc.vanderbilt.edu/wiki/pub/Main/Rreport/ssafety.rda'))
+#'   subjectList(ssafety[1:10,1:10], "datalist", vname='names')
+#' }
 
-## $Id$
 subjectList <- function(data, panel, caption=NULL,
                         vname=c('labels','names'),
                         colheads=NULL,

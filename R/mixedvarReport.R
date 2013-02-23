@@ -47,7 +47,7 @@
 #' @param continuous numeric. See \code{\link[Hmisc]{summary.formula}}.
 #' @param nx numeric. THIS PARAMETER IS NOT USED.
 #' @param keyloc numeric vector. Key placement on the categorical data plot, see \code{\link[Hmisc]{summary.formula}}.
-#' @param landscape logical See \code{\link[Hmisc]{latex}}.
+#' @param landscape logical. See \code{\link[Hmisc]{latex}}.
 #' @param size character. See \code{\link[Hmisc]{latex}}.
 #' @param longtable logical. See \code{\link[Hmisc]{latex}}.
 #' @param h numeric. Height of plot, only used for categorical data plot. Default is 5in. See \code{\link[Hmisc]{setps}}.

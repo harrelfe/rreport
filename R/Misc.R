@@ -51,7 +51,7 @@ plotKmHalfCL <- function(fit, times, fun=function(x) x,
 
 #' Set mfrow Parameter
 #'
-#' Compute and set a good \code{par(\sQuote{mfrow})} given the
+#' Compute and set a good \code{par("mfrow")} given the
 #' number of figures to plot.
 #'
 #' \code{trellis} and \code{small} may not both be specified as \sQuote{TRUE}.

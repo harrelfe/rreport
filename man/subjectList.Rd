@@ -7,32 +7,36 @@
     size = "smaller", longtable = TRUE, landscape = TRUE)
 }
 \arguments{
-  \item{data}{NEEDDOC}
+  \item{data}{data.frame. Data used for report.}
 
-  \item{panel}{NEEDDOC}
+  \item{panel}{character. Name of panel.}
 
-  \item{caption}{NEEDDOC}
+  \item{caption}{character. See
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{vname}{NEEDDOC}
+  \item{vname}{character. Specifies how to generate column
+  headings, either through variable \sQuote{labels} or
+  \sQuote{names}.}
 
-  \item{colheads}{NEEDDOC}
+  \item{colheads}{character vector. Column headings for
+  each variable.}
 
-  \item{size}{NEEDDOC}
+  \item{size}{character. Set LaTeX table font size, see
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{longtable}{NEEDDOC}
+  \item{longtable}{logical. See
+  \code{\link[Hmisc]{latex}}.}
 
-  \item{landscape}{NEEDDOC}
-}
-\value{
-  return something
+  \item{landscape}{logical. See
+  \code{\link[Hmisc]{latex}}.}
 }
 \description{
-  summary
-}
-\details{
-  details
+  Generate a LaTeX table from a dataset.
 }
 \examples{
-1
+\dontrun{
+  load(url('http://biostat.mc.vanderbilt.edu/wiki/pub/Main/Rreport/ssafety.rda'))
+  subjectList(ssafety[1:10,1:10], "datalist", vname='names')
+}
 }
 

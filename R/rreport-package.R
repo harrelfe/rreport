@@ -84,3 +84,8 @@ NULL
 # * checking Rd contents ... WARNING
 # Argument items with no description in Rd object 'getReferenceObject':
 #   ‘refD’ ‘newMarker’ ‘keyword’ ‘label’
+#
+# regarding survReport
+#' This report assumes units are in days.
+#' I can use this, but the output looks dumb.
+#' valueUnit(mydata$time) <- "Month"
