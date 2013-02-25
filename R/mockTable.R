@@ -1,25 +1,28 @@
 #' Mock Table
 #'
-#' summary
+#' Generates a LaTeX report from the \code{control}.
 #'
-#' details
-#'
-#' @param control NEEDDOC
-#' @param append NEEDDOC
-#' @return return something
+#' @param control list. Components used to generate report.
+#' \sQuote{datafile} is the input file.
+#' \sQuote{keyfile} is the key output file.
+#' \sQuote{treatments} is the treatment value for each record.
+#' \sQuote{byVar} is the byVar.
+#' \sQuote{file} is the output file.
+#' \sQuote{defaultOrientation} specifies page orientation.
+#' \sQuote{pos} specifies caption location.
+#' \sQuote{CLs} contains lower and upper confidence levels.
+#' \sQuote{Pvalues} contains P-values.
+#' @param append logical. If \sQuote{TRUE} output will be appended instead of
+#' overwritten.
 #' @export
-#' @examples
-#' 1
 
-## $Id$
 mockTable <- function(control, append=TRUE) {
-  
   w <- scan(control$datafile, what=list(''), sep='\n')[[1]]
   type <- substring(w,1,1)
   noncom <- type != '%'
   w      <- w[noncom]   # ignore comments
   type   <- type[noncom]
-  
+
   if(type[1] != '*') stop('first record must start with *')
 
   cat('In the tables that follow,',
@@ -32,7 +35,7 @@ mockTable <- function(control, append=TRUE) {
       'and {\\smaller[2] a}~\\textbf{b}{\\smaller[2]~c}~$\\bar{x}\\pm s$',
       'refers to three quartiles plus the mean $\\pm$ the standard deviation.',
       file=control$keyfile)
-  
+
   dotab <- function(type, w, caption, specials) {
     trt   <- control$treatments
     byvar <- control$byVar
@@ -173,19 +176,18 @@ mockTable <- function(control, append=TRUE) {
 
 #' Mock Listing
 #'
-#' summary
+#' Generate a LaTeX table from the \code{control}.
 #'
-#' details
-#'
-#' @param control NEEDDOC
-#' @param caption NEEDDOC
+#' @param control list. Components used to generate report.
+#' \sQuote{file} is the output file.
+#' \sQuote{baseListVar}
+#' \sQuote{defaultOrientation}
+#' \sQuote{pos}
+#' @param caption character. Table caption.
 #' @param fields NEEDDOC
-#' @param orientation NEEDDOC
+#' @param orientation character. Specify page orientation.
 #' @param size NEEDDOC
-#' @return return something
 #' @export
-#' @examples
-#' 1
 
 mockListing <- function(control, caption, fields,
                         orientation='', size='') {

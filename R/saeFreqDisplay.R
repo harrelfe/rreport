@@ -5,16 +5,7 @@
 #' details
 #'
 #' @return return something
-#' @export
-#' @examples
-#' 1
 
-## $Id: saeFreqDisplay.s 5 2007-07-26 15:44:24Z edensk $
-
-###----Compact display of AE frequencies: function displayFreq()
-###-----------------------------------------------
-
-###----Example for using displayFreq()
 dummySAEFreqExample <- function(){
   pts = c("Myocardial infarction", "Coronary artery disease", "Arrhythmia", "Cardiac arrest", "Myocardial ischaemia", "Cardio-respiratory arrest", "Cardiogenic shock", "Hypertrophic cardiomyopathy", "Pericarditis", "Sinus bradycardia", "Tachycardia", "Pneumonia", "Sepsis", "Abscess", "Cellulitis", "Post procedural sepsis", "Sinusitis", "Dyspnoea", "Pulmonary hypertension", "Respiratory distress", "Sleep apnoea syndrome", "Pleural effusion", "Joint dislocation", "Post procedural complication", "Road traffic accident", "Tibia fracture", "Gastritis", "Abdominal pain","Inguinal hernia", "Haemorrhoids","Ileus","Pancreatitis","Rectal polyp")
   socs = c(rep("Cardiac disorders", 11), rep("Infections and infestations", 6), rep("Respiratory, thoracic and mediastinal disorders", 5), rep("Injury, poisoning and procedural complications", 4), rep("Gastrointestinal disorders", 7))
@@ -55,41 +46,56 @@ dummySAEFreqExample <- function(){
   endPlot()
 }
 
-#' Display AE Frequencies
+#' Display Adverse Event Frequencies
 #'
 #' summary
 #'
-#' details
-#'
-#' @param dataframe NEEDDOC
-#' @param subjectVar NEEDDOC
-#' @param minorVar NEEDDOC
-#' @param majorVar NEEDDOC
-#' @param occurrenceVar NEEDDOC
-#' @param stratVar NEEDDOC
-#' @param denomSub NEEDDOC
-#' @param fileName NEEDDOC
-#' @param labelLen NEEDDOC
-#' @param pvalue NEEDDOC
-#' @param keepPvalue NEEDDOC
-#' @param minDisplayNum NEEDDOC
-#' @param majorGrid NEEDDOC
-#' @param minorGrid NEEDDOC
-#' @param plotGrid NEEDDOC
-#' @param gridDig NEEDDOC
-#' @param titleOffsetKoef NEEDDOC
-#' @param titleOffsetX NEEDDOC
-#' @param minorToMajorKoef NEEDDOC
-#' @param sparseKoef NEEDDOC
-#' @param graphWidth NEEDDOC
-#' @param graphHeight NEEDDOC
-#' @param gridCex NEEDDOC
-#' @param labelCex NEEDDOC
-#' @param titles NEEDDOC
-#' @return return something
+#' @param dataframe data.frame. Data with adverse events.
+#' @param subjectVar character. Variable classified to major and minor
+#' category (subject ID).
+#' @param minorVar character. Name of minor category variable within dataset.
+#' (i.e. specific adverse event)
+#' @param majorVar character. Name of major category variable within dataset.
+#' (i.e. body system adverse event belongs to)
+#' @param occurrenceVar character. Name of occurrence variable within dataset.
+#' It indicates the different occurrences of a minor category for a given
+#' \code{subjectVar} (date or order in which event happened). This variable
+#' is assumed to be unique for given subject and given \code{minorVar}.
+#' @param stratVar character. Name of stratification variable within dataset.
+#' (i.e. treatment)
+#' @param denomSub numeric vector. Contains the number of unique subjects in
+#' each \code{stratVar} level. It should have the same names and length as
+#' \code{levels(stratVar)}. Defaults to \sQuote{NULL}, where values will be
+#' calculated accordingly from the dataset.
+#' @param fileName character. Name of output file, defaults to \sQuote{NULL}.
+#' @param labelLen numeric. Maximum length of grid labels.
+#' @param pvalue numeric. If for a given major and minor category, the
+#' proportion test gives a p-value less than \code{pvalue}, then this category
+#' will be highlighted. Defaults to \sQuote{0.5}.
+#' @param keepPvalue numeric. Only categories with a p-value (according to the
+#' proportion test) less than \code{keepPvalue} will be displayed.
+#' @param minDisplayNum numeric. Only categories with a total frequency more
+#' than \code{minDisplayNum} will be displayed. Defaults to \sQuote{2}.
+#' @param majorGrid numeric vector. Grid of major category.
+#' @param minorGrid numeric vector. Grid of minor category.
+#' @param plotGrid logical. Set to \sQuote{TRUE} to plot grid lines.
+#' @param gridDig numeric. Set the number of digits used to round the grid
+#' digits.
+#' @param titleOffsetKoef numeric. The vertical distance the title should stay
+#' from the graph.
+#' @param titleOffsetX numeric. The horizontal distance the title should stay
+#' from the graph.
+#' @param minorToMajorKoef numeric. The distance the bars for the minor
+#' category should be longer than the bars for the major category.
+#' @param sparseKoef numeric. How farther away the graphs for different
+#' \code{stratVar} values should be located on the diagram.
+#' @param graphWidth numeric. Width of plot, the default is \sQuote{8}.
+#' @param graphHeight numeric. Height of plot, the default is \sQuote{11}.
+#' @param gridCex numeric. Relative size of the grid digits.
+#' @param labelCex numeric. Relative size of the labels.
+#' @param titles named character vector. Titles for each frequency display.
+#' It's names should be levels of treatment.
 #' @export
-#' @examples
-#' 1
 
 displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar, stratVar,
                        denomSub=NULL,
@@ -97,35 +103,6 @@ displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar,
                        minDisplayNum=2, majorGrid=NULL, minorGrid=NULL, plotGrid=TRUE, gridDig = 0,
                        titleOffsetKoef=10, titleOffsetX=0, minorToMajorKoef=5, sparseKoef=1.5,
                        graphWidth=8, graphHeight=11, gridCex=0.5, labelCex=0.5, titles=NULL){
-### dataframe: data in the dataframe format (adverse events)
-### subjectVar: variable classified to major and minor category (subject id)
-### minorVar: minor category variable (specific adverse event)
-### majorVar: major category variable (body system adverse event belongs to)
-### occurrenceVar: variable indicating the different occurrences of
-###                a minor category for a given subjectVar (date or order in which event happened).
-###                This variable is assumed to be unique for given subject and given minorVar.
-### stratVar: stratification variable (treatment for example)
-### denomSub: a vector the same length as levels(stratVar) and has the same names.
-###           it contains the number of unique subjects in each stratVar level.
-###           if not defined, calculated according from the "dataframe"
-### pvalue: if for a given major and minor category the proportion test gives p-value less
-###         than pvalue then this category will be highlighted 
-### keepPvalue: only categories with p-value (according to the proportion test) less than keepPvalue
-###             will be displayed
-### minDisplayNum: only categories with total frequency more than minDisplayNum will be displayed
-### plotGrid: plot grid or not
-### majorGrid: grid of major category. if not supplied and plotGrid=TRUE plots a default one
-### minorGrid: grid of minor category. if not supplied and plotGrid=TRUE plots a default one
-### gridDig: by how many digits to round the grid digits
-### titleOffsetKoef: how far (vertically) the title should stay from the graph
-### titleOffsetX: how far (horizontally) the title should stay from the graph
-### minorToMajorKoef: how much longer the bars for minor category than for major category
-### sparseKoef: how farther away the graphs for different stratVar values are located on the diagram
-### gridCex: relative size of the grid digits
-### labelCex: relative size of the labels
-### title: character vector of titles for each frequency display. It has to have names which are levels of treatment
-
-
   ###----------------------make sure that levels(stratVar) are different from names(dataframe)
   if (any(levels(dataframe[[stratVar]]) %in% names(dataframe))){
     stop("Make sure that levels(stratVar) are different from names(dataframe)")
@@ -228,38 +205,36 @@ displayFreq = function(dataframe, subjectVar, minorVar, majorVar, occurrenceVar,
   if (is.null(minorGrid)){minorGrid=seq(min(minorSub[stratNames]),max(minorSub[stratNames]),
                                         (max(minorSub[stratNames])-min(minorSub[stratNames]))/gridDens)[2:(gridDens+1)]}
   #major = majorSub; minor = minorSub;stratLevels=levels(dataframe[[stratVar]]); width=0.5; breakWidth=0.5; sparseKoef=1.5; majorGrid=NULL; minorGrid=NULL; title=""
-  plotEvents(majorSub, minorSub, levels(dataframe[[stratVar]]), width=0.5, breakWidth=0.5, sparseKoef=sparseKoef, minorToMajorKoef=minorToMajorKoef, majorGrid=round(majorGrid,gridDig), minorGrid=round(minorGrid,gridDig), title=titles, fileName=fileName, titleOffsetKoef=titleOffsetKoef, titleOffsetX=titleOffsetX, graphWidth=graphWidth, graphHeight=graphHeight, gridCex=gridCex, labelCex=labelCex, labelLen=labelLen)
+  plotEvents(majorSub, minorSub, levels(dataframe[[stratVar]]), width=0.5, breakWidth=0.5, sparseKoef=sparseKoef, minorToMajorKoef=minorToMajorKoef, plotGrid=plotGrid, majorGrid=round(majorGrid,gridDig), minorGrid=round(minorGrid,gridDig), title=titles, fileName=fileName, titleOffsetKoef=titleOffsetKoef, titleOffsetX=titleOffsetX, graphWidth=graphWidth, graphHeight=graphHeight, gridCex=gridCex, labelCex=labelCex, labelLen=labelLen)
 }
 
 #' Plot Events
 #'
 #' summary
 #'
-#' details
-#'
-#' @param major NEEDDOC
-#' @param minor NEEDDOC
-#' @param stratLevels NEEDDOC
-#' @param width NEEDDOC
-#' @param breakWidth NEEDDOC
-#' @param sparseKoef NEEDDOC
-#' @param minorToMajorKoef NEEDDOC
-#' @param plotGrid NEEDDOC
-#' @param majorGrid NEEDDOC
-#' @param minorGrid NEEDDOC
-#' @param title NEEDDOC
-#' @param fileName NEEDDOC
-#' @param titleOffsetKoef NEEDDOC
-#' @param titleOffsetX NEEDDOC
-#' @param graphWidth NEEDDOC
-#' @param graphHeight NEEDDOC
-#' @param gridCex NEEDDOC
-#' @param labelCex NEEDDOC
-#' @param labelLen NEEDDOC
-#' @return return something
-#' @export
-#' @examples
-#' 1
+#' @param major data.frame. Subset of data by major variable.
+#' @param minor data.frame. Subset of data by minor variable.
+#' @param stratLevels character vector. Vector of stratification levels.
+#' @param width numeric.
+#' @param breakWidth numeric.
+#' @param sparseKoef numeric. How farther away the graphs for different
+#' \code{stratLevels} values should be located on the diagram.
+#' @param minorToMajorKoef numeric. The distance the bars for the minor
+#' category should be longer than the bars for the major category.
+#' @param plotGrid logical. Set to \sQuote{TRUE} to plot grid lines.
+#' @param majorGrid numeric vector. Grid of major category.
+#' @param minorGrid numeric vector. Grid of minor category.
+#' @param title named character vector. Titles for each frequency display.
+#' @param fileName character. Name of output file, defaults to \sQuote{NULL}.
+#' @param titleOffsetKoef numeric. The vertical distance the title should stay
+#' from the graph.
+#' @param titleOffsetX numeric. The horizontal distance the title should stay
+#' from the graph.
+#' @param graphWidth numeric. Width of plot, the default is \sQuote{8}.
+#' @param graphHeight numeric. Height of plot, the default is \sQuote{11}.
+#' @param gridCex numeric. Relative size of the grid digits.
+#' @param labelCex numeric. Relative size of the labels.
+#' @param labelLen numeric. Maximum length of grid labels.
 
 plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, sparseKoef=1.5, minorToMajorKoef=5, plotGrid=TRUE, majorGrid=NULL, minorGrid=NULL, title="", fileName=NULL, titleOffsetKoef=3, titleOffsetX=0, graphWidth=8, graphHeight=11, gridCex=0.5, labelCex=0.5, labelLen=10){
   labelMaker = function(str1, str2, cut1=15, cut2=15){
@@ -362,24 +337,19 @@ plotEvents = function(major, minor, stratLevels, width=0.5, breakWidth=0.5, spar
 
 #' Plot Rectangle
 #'
-#' summary
+#' Plots a rectangle.
 #'
-#' details
+#' Call \code{plot.new} prior to usage.
 #'
-#' @param startXY NEEDDOC
-#' @param xLen NEEDDOC
-#' @param yLen NEEDDOC
-#' @param corner NEEDDOC
-#' @param \dots NEEDDOC
-#' @return return something
-#' @export
-#' @examples
-#' 1
+#' @param startXY numeric vector. X- and Y-coordinates to start plot.
+#' @param xLen numeric. Horizontal length of rectangle.
+#' @param yLen numeric. Vertical length of rectangle.
+#' @param corner logical. When \sQuote{TRUE}, \code{startXY} refers to the top
+#' left corner of the plot, otherwise the center.
+#' @param \dots additional arguments, passed to \code{lines} and
+#' \code{polygon}.
 
 easyRect = function(startXY, xLen, yLen, corner=TRUE, ...){
-### plots rectangle with geven coordinates startXY=c(. , .)
-### where startXY is its left upper corner if corner==TRUE
-### or center otherwize
   if (corner){
     if(xLen==0){lines(x = startXY[1] + c(0, 0),
                       y = startXY[2] + c(0, -1)*yLen, ...)
@@ -407,38 +377,38 @@ easyRect = function(startXY, xLen, yLen, corner=TRUE, ...){
   }
 }
 
-#' Plot Vector
+#' Vector Plot
 #'
-#' summary
+#' This function plots a (positive) vector with non-zero elements displayed
+#' as rectangles aligned to either left or right. The length of a rectangle
+#' is proportional to the value of the vector.
 #'
-#' details
-#'
-#' @param vect NEEDDOC
-#' @param xlim NEEDDOC
-#' @param ylim NEEDDOC
-#' @param newGraph NEEDDOC
-#' @param plotGrid NEEDDOC
-#' @param gridVal NEEDDOC
-#' @param gridCex NEEDDOC
-#' @param startXYCoor NEEDDOC
-#' @param vertical NEEDDOC
-#' @param alignment NEEDDOC
-#' @param maxLen NEEDDOC
-#' @param minLen NEEDDOC
-#' @param width NEEDDOC
-#' @param breakLen NEEDDOC
-#' @param labels NEEDDOC
-#' @param labelMaxLen NEEDDOC
-#' @param labelCex NEEDDOC
-#' @param col NEEDDOC
-#' @param lwd NEEDDOC
-#' @param title NEEDDOC
-#' @param titleCex NEEDDOC
-#' @param titleXY NEEDDOC
-#' @return return something
-#' @export
-#' @examples
-#' 1
+#' @param vect numeric vector. Data points to plot.
+#' @param xlim numeric vector. x-axis limits.
+#' @param ylim numeric vector. y-axis limits.
+#' @param newGraph logical. Defaults to \sQuote{TRUE}, which creates a new
+#' graph.
+#' @param plotGrid logical. Set to \sQuote{TRUE} to plot grid lines.
+#' @param gridVal numeric vector. Location of grid lines.
+#' @param gridCex numeric. Grid label text magnification.
+#' @param startXYCoor numeric vector. Starting points for X- and Y-coordinates.
+#' Defaults to \code{c(0,0)}.
+#' @param vertical logical. Defaults to \sQuote{TRUE}, grid lines are vertical.
+#' @param alignment numeric vector. Set alignment.  If \code{vertical} is
+#' \sQuote{TRUE}, \sQuote{1} = \sQuote{left} and \sQuote{2} = \sQuote{right}.
+#' Otherwise \sQuote{1} = \sQuote{upper} and \sQuote{2} = \sQuote{lower}.
+#' @param maxLen numeric. Defaults to \sQuote{1}.
+#' @param minLen numeric. Defaults to \sQuote{0.1}.
+#' @param width numeric. Set rectangle width, defaults to \sQuote{0.1}.
+#' @param breakLen numeric. Defaults to \sQuote{0.5}.
+#' @param labels character vector. Labels for each data point.
+#' @param labelMaxLen numeric. Maximum character length for labels.
+#' @param labelCex numeric. Label text magnification.
+#' @param col character vector. Specify colors for rectangles.
+#' @param lwd numeric. Specify line width.
+#' @param title character. Title for plot.
+#' @param titleCex numeric. Title text magnification.
+#' @param titleXY numeric vector. Set X- and Y-coordinates for the title.
 
 plotVect <- function(vect,
                      xlim=NULL,
@@ -574,18 +544,13 @@ plotVect <- function(vect,
   }
 }
 
-#' Propensity Test Vector
+#' Propensity Test
 #'
-#' summary
+#' Perform a propensity test for each row of data.
 #'
-#' details
-#'
-#' @param vMatr NEEDDOC
-#' @param vNMatr NEEDDOC
-#' @return return something
-#' @export
-#' @examples
-#' 1
+#' @param vMatr matrix.
+#' @param vNMatr matrix.
+#' @return Returns a vector of p-values.
 
 propTestVect1 <- function(vMatr, vNMatr){
   if (any(dim(vMatr)!=dim(vNMatr))) stop("vMatr, vNMatr should have the same dimentions.")
