@@ -1,6 +1,6 @@
 \name{plotVect}
 \alias{plotVect}
-\title{Plot Vector}
+\title{Vector Plot}
 \usage{
   plotVect(vect, xlim = NULL, ylim = NULL, newGraph = TRUE,
     plotGrid = TRUE, gridVal = NULL, gridCex = 0.5,
@@ -12,60 +12,67 @@
     title = "", titleCex = 1, titleXY = startXYCoor)
 }
 \arguments{
-  \item{vect}{NEEDDOC}
+  \item{vect}{numeric vector. Data points to plot.}
 
-  \item{xlim}{NEEDDOC}
+  \item{xlim}{numeric vector. x-axis limits.}
 
-  \item{ylim}{NEEDDOC}
+  \item{ylim}{numeric vector. y-axis limits.}
 
-  \item{newGraph}{NEEDDOC}
+  \item{newGraph}{logical. Defaults to \sQuote{TRUE}, which
+  creates a new graph.}
 
-  \item{plotGrid}{NEEDDOC}
+  \item{plotGrid}{logical. Set to \sQuote{TRUE} to plot
+  grid lines.}
 
-  \item{gridVal}{NEEDDOC}
+  \item{gridVal}{numeric vector. Location of grid lines.}
 
-  \item{gridCex}{NEEDDOC}
+  \item{gridCex}{numeric. Grid label text magnification.}
 
-  \item{startXYCoor}{NEEDDOC}
+  \item{startXYCoor}{numeric vector. Starting points for X-
+  and Y-coordinates. Defaults to \code{c(0,0)}.}
 
-  \item{vertical}{NEEDDOC}
+  \item{vertical}{logical. Defaults to \sQuote{TRUE}, grid
+  lines are vertical.}
 
-  \item{alignment}{NEEDDOC}
+  \item{alignment}{numeric vector. Set alignment.  If
+  \code{vertical} is \sQuote{TRUE}, \sQuote{1} =
+  \sQuote{left} and \sQuote{2} = \sQuote{right}. Otherwise
+  \sQuote{1} = \sQuote{upper} and \sQuote{2} =
+  \sQuote{lower}.}
 
-  \item{maxLen}{NEEDDOC}
+  \item{maxLen}{numeric. Defaults to \sQuote{1}.}
 
-  \item{minLen}{NEEDDOC}
+  \item{minLen}{numeric. Defaults to \sQuote{0.1}.}
 
-  \item{width}{NEEDDOC}
+  \item{width}{numeric. Set rectangle width, defaults to
+  \sQuote{0.1}.}
 
-  \item{breakLen}{NEEDDOC}
+  \item{breakLen}{numeric. Defaults to \sQuote{0.5}.}
 
-  \item{labels}{NEEDDOC}
+  \item{labels}{character vector. Labels for each data
+  point.}
 
-  \item{labelMaxLen}{NEEDDOC}
+  \item{labelMaxLen}{numeric. Maximum character length for
+  labels.}
 
-  \item{labelCex}{NEEDDOC}
+  \item{labelCex}{numeric. Label text magnification.}
 
-  \item{col}{NEEDDOC}
+  \item{col}{character vector. Specify colors for
+  rectangles.}
 
-  \item{lwd}{NEEDDOC}
+  \item{lwd}{numeric. Specify line width.}
 
-  \item{title}{NEEDDOC}
+  \item{title}{character. Title for plot.}
 
-  \item{titleCex}{NEEDDOC}
+  \item{titleCex}{numeric. Title text magnification.}
 
-  \item{titleXY}{NEEDDOC}
-}
-\value{
-  return something
+  \item{titleXY}{numeric vector. Set X- and Y-coordinates
+  for the title.}
 }
 \description{
-  summary
-}
-\details{
-  details
-}
-\examples{
-1
+  This function plots a (positive) vector with non-zero
+  elements displayed as rectangles aligned to either left
+  or right. The length of a rectangle is proportional to
+  the value of the vector.
 }
 

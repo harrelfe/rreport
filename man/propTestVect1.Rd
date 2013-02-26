@@ -1,24 +1,18 @@
 \name{propTestVect1}
 \alias{propTestVect1}
-\title{Propensity Test Vector}
+\title{Propensity Test}
 \usage{
   propTestVect1(vMatr, vNMatr)
 }
 \arguments{
-  \item{vMatr}{NEEDDOC}
+  \item{vMatr}{matrix.}
 
-  \item{vNMatr}{NEEDDOC}
+  \item{vNMatr}{matrix.}
 }
 \value{
-  return something
+  Returns a vector of p-values.
 }
 \description{
-  summary
-}
-\details{
-  details
-}
-\examples{
-1
+  Perform a propensity test for each row of data.
 }
 

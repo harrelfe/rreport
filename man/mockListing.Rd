@@ -6,26 +6,19 @@
     size = "")
 }
 \arguments{
-  \item{control}{NEEDDOC}
+  \item{control}{list. Components used to generate report.
+  \sQuote{file} is the output file. \sQuote{baseListVar}
+  \sQuote{defaultOrientation} \sQuote{pos}}
 
-  \item{caption}{NEEDDOC}
+  \item{caption}{character. Table caption.}
 
   \item{fields}{NEEDDOC}
 
-  \item{orientation}{NEEDDOC}
+  \item{orientation}{character. Specify page orientation.}
 
   \item{size}{NEEDDOC}
 }
-\value{
-  return something
-}
 \description{
-  summary
-}
-\details{
-  details
-}
-\examples{
-1
+  Generate a LaTeX table from the \code{control}.
 }
 

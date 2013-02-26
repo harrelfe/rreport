@@ -11,54 +11,60 @@
     labelCex = 0.5, labelLen = 10)
 }
 \arguments{
-  \item{major}{NEEDDOC}
+  \item{major}{data.frame. Subset of data by major
+  variable.}
 
-  \item{minor}{NEEDDOC}
+  \item{minor}{data.frame. Subset of data by minor
+  variable.}
 
-  \item{stratLevels}{NEEDDOC}
+  \item{stratLevels}{character vector. Vector of
+  stratification levels.}
 
-  \item{width}{NEEDDOC}
+  \item{width}{numeric.}
 
-  \item{breakWidth}{NEEDDOC}
+  \item{breakWidth}{numeric.}
 
-  \item{sparseKoef}{NEEDDOC}
+  \item{sparseKoef}{numeric. How farther away the graphs
+  for different \code{stratLevels} values should be located
+  on the diagram.}
 
-  \item{minorToMajorKoef}{NEEDDOC}
+  \item{minorToMajorKoef}{numeric. The distance the bars
+  for the minor category should be longer than the bars for
+  the major category.}
 
-  \item{plotGrid}{NEEDDOC}
+  \item{plotGrid}{logical. Set to \sQuote{TRUE} to plot
+  grid lines.}
 
-  \item{majorGrid}{NEEDDOC}
+  \item{majorGrid}{numeric vector. Grid of major category.}
 
-  \item{minorGrid}{NEEDDOC}
+  \item{minorGrid}{numeric vector. Grid of minor category.}
 
-  \item{title}{NEEDDOC}
+  \item{title}{named character vector. Titles for each
+  frequency display.}
 
-  \item{fileName}{NEEDDOC}
+  \item{fileName}{character. Name of output file, defaults
+  to \sQuote{NULL}.}
 
-  \item{titleOffsetKoef}{NEEDDOC}
+  \item{titleOffsetKoef}{numeric. The vertical distance the
+  title should stay from the graph.}
 
-  \item{titleOffsetX}{NEEDDOC}
+  \item{titleOffsetX}{numeric. The horizontal distance the
+  title should stay from the graph.}
 
-  \item{graphWidth}{NEEDDOC}
+  \item{graphWidth}{numeric. Width of plot, the default is
+  \sQuote{8}.}
 
-  \item{graphHeight}{NEEDDOC}
+  \item{graphHeight}{numeric. Height of plot, the default
+  is \sQuote{11}.}
 
-  \item{gridCex}{NEEDDOC}
+  \item{gridCex}{numeric. Relative size of the grid
+  digits.}
 
-  \item{labelCex}{NEEDDOC}
+  \item{labelCex}{numeric. Relative size of the labels.}
 
-  \item{labelLen}{NEEDDOC}
-}
-\value{
-  return something
+  \item{labelLen}{numeric. Maximum length of grid labels.}
 }
 \description{
   summary
-}
-\details{
-  details
-}
-\examples{
-1
 }
 
