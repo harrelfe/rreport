@@ -32,9 +32,13 @@
 #'     targetN=300, targetDate='2008-12-31')
 #' }
 
-accrualReport <- function(Minor, Major = character(length(Minor)), MajorLabel='', MinorLabel = '',
-           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '', EntryDate1cap, EntryDate2cap,
-           dateRange, dateformat = 'y-m-d', targetN, targetDate=NULL, panel = 'randomized', hdotchart=6, append = TRUE) {
+accrualReport <-
+  function(Minor, Major = character(length(Minor)),
+           MajorLabel='', MinorLabel = '',
+           EntryDate1 = NULL, EntryDate2 = NULL, EntryDateLabel = '',
+           EntryDate1cap, EntryDate2cap,
+           dateRange, dateformat = 'y-m-d', targetN, targetDate=NULL,
+           panel = 'randomized', hdotchart=6, append = TRUE) {
   ## Plot: Subjects 'panel' (e.g., randomized) over time
   lcap <- cap2 <- ""
   if(length(EntryDate1) && !missing(dateRange)) {

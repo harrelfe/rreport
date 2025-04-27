@@ -1,0 +1,97 @@
+% To compile: knitr Oreport; pdflatex Oreport; produces Oreport.pdf
+\documentclass{article}
+\usepackage{graphics}
+\usepackage{ctable}
+\usepackage{relsize}    % for \smaller etc.
+\usepackage{moreverb}   % for \verbatimtabinput
+\usepackage{fancyhdr}   % for fancy headers
+\usepackage{lscape}     % for landscape tables (not used here)
+\usepackage{color,epic,calc}   % for micro dotcharts from summary.formula
+\usepackage{relsize,needspace}
+
+\newcommand{\titl}{Example Data Monitoring Committee Open Meeting Report}
+\usepackage[pdftex,bookmarks,pagebackref,pdfpagemode=UseOutlines,
+    colorlinks,linkcolor=blue,
+    pdfauthor={Frank E Harrell Jr},
+    pdftitle={\titl}]{hyperref}
+% Remove colorlinks and linkcolor options to hyperref to box the
+% hyperlinked items (for screen only)
+
+\graphicspath{{pdf/}}
+
+\author{Frank Harrell}
+\title{\titl}
+\date{\today}
+\pagestyle{fancy}              % used for running headers, footers (rhead)
+\renewcommand{\subsectionmark}[1]{} % suppress subsection titles in headers
+
+\input{gentex/params.tex}             % created by sample.s
+
+\def\inclcode{0}               % 0=exclude code from report
+
+\begin{document}
+\maketitle
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\rhead{\scriptsize The {\em EXAMPLE} Study \\
+    Protocol xyz--001 \\
+    \today}
+
+<<echo=FALSE>>=
+knitrSet()
+require(rreport)
+mtime <- function(f) format(file.info(f)$mtime)
+@
+
+\section{Introduction}
+This is a sample of the part of an open meeting Data Monitoring
+Committee report that contains software generated results.  Study
+design and interpretation components are not included.  This report
+used a random sample of data from a randomized clinical trial.  The
+date and time that the analysis file used here was last updated was
+\Sexpr{mtime('ssafety.rda')}.
+??\datadate. 
+\ifnum\inclcode=1{
+ The software used to produce this report other than what
+is in Section~\ref{userlatex} is shown in the closed-meeting report
+example document.
+\LaTeX's \texttt{hyperref} style was used to
+produce a \texttt{pdf} file with hyperlinks for easy navigation to
+sections, tables, and graphs using Adobe Acrobat Reader.
+}\fi
+
+\section{Subject Accrual}
+\input{gentex/accrual}
+\clearpage
+
+\section{Data Availability and Completeness}
+\input{gentex/completeness}
+\input{gentex/completeness-key}
+%\input{gentex/complete-ekg}
+%\input{gentex/complete-chem}
+\clearpage
+
+\section{Baseline Variables}
+\input{gentex/Obaseline}
+\clearpage
+
+\section{Interrelationships Among Variables}
+\input{gentex/Ovarclus}
+\clearpage
+
+\section{Compliance to Assigned Treatments}
+\input{gentex/Ocompliance}
+\clearpage
+
+\section{Dropouts}
+\input{gentex/Odropout}
+\clearpage
+
+\ifnum\inclcode=1{
+\section{User \LaTeX\ Code for This Document}\label{userlatex}
+{\small\verbatimtabinput{Oreport.tex}}
+}\fi
+
+\end{document}

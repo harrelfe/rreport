@@ -1,0 +1,197 @@
+% To compile: pdflatex --shell-escape report (=pdflatexs report)
+% Produces: report.pdf
+\documentclass{article}
+\usepackage{graphics}
+\usepackage{relsize}    % for \smaller etc.
+\usepackage{ctable}
+\usepackage{moreverb}   % for \verbatimtabinput
+\usepackage{sinput}     % local package for pretty printing of S code
+\usepackage{fancyhdr}   % for fancy headers
+\usepackage{lscape}     % for landscape tables (not used here)
+\usepackage{color}      % for makeTreatKey function (draws grayscale
+                        % line in LaTeX)
+\usepackage{epic,calc}  % for micro dotcharts from summary.formula
+
+\def\linkcol{blue}      % usually blue; can use black for hard copy
+\newcommand{\titl}{Example Closed Meeting Data Monitoring Committee Report}
+\usepackage[pdftex,bookmarks,pagebackref,pdfpagemode=UseOutlines,
+    colorlinks,linkcolor=\linkcol,
+    pdfauthor={Frank E Harrell Jr},
+    pdftitle={\titl}]{hyperref}
+% Remove colorlinks and linkcolor options to hyperref to box the
+% hyperlinked items (for screen only)
+
+\graphicspath{{pdf/}}
+
+\newcommand{\scom}[1]{{\rm\scriptsize \# #1}}  % used by sinput
+\newcommand{\code}[1]{\texttt{\smaller #1}}  % format software names
+% smaller implemented by relsize: use 1 size smaller than current font
+
+\author{Frank Harrell}
+\title{\titl}
+\date{\today}
+\pagestyle{fancy}              % used for running headers, footers (rhead)
+\renewcommand{\subsectionmark}[1]{} % suppress subsection titles in headers
+
+\input{gentex/params.tex}             % created by sample.s; defines constants
+                               % and LaTeX \treatkey macro for captions
+\def\inclcode{1}               % 0=exclude code from report
+\begin{document}
+\maketitle
+\tableofcontents
+\listoffigures
+\listoftables
+\clearpage
+\rhead{\scriptsize The {\em EXAMPLE} Study \\
+    Protocol xyz--001 \\
+    \today}
+
+\section{Introduction}
+This is a sample of the part of a closed meeting Data Monitoring
+Committee report that contains software generated results.  Components
+related to efficacy, study design, data monitoring
+plan\footnote{Lan-DeMets monitoring bounds can be plotted using the
+  open source S
+  \href{http://biostat.mc.vanderbilt.edu/s/Hmisc/html/ldBands.html}
+{\code{ldBands} function} in the Hmisc library for Linux and Unix systems.},
+summary of previous closed report, interpretation, protocol changes,
+screening, eligibility, and waiting time until treatment commencement
+are not included in this example\footnote{See Ellenberg, Fleming, and
+  DeMets, \emph{Data Monitoring Committees in Clinical Trials} (Wiley,
+  2002), pp.\ 73-74 for recommended components in open and closed data
+  monitoring committee reports.}.  This report used a random sample of
+safety data from a randomized clinical trial.  Randomization date,
+dropouts, and compliance variables were simulated, the latter two not
+being made consistent with the presence or absence of actual data in
+the random sample.  The date and time that the analysis file used here
+was last updated was \datadate.  Source analysis files were last
+updated on \primarydatadate.  
+\ifnum\inclcode=1{
+ See Section~\ref{program} for information about software used.
+
+\LaTeX's \code{hyperref} style was used to produce a \code{pdf}
+file with hyperlinks for easy navigation to sections, tables, and
+graphs using Adobe Acrobat Reader.  Internal hyperlinks are shown in
+\linkcol, and external links to web sites are shown in red.
+}\fi
+
+See the example open meeting report for subject accrual, data
+availability and completeness, and analyses not stratified by
+treatment.
+
+\section{Baseline Variables}
+\input{gentex/baseline}
+\clearpage
+
+\section{Interrelationships Among Variables}
+\input{gentex/varclus}
+\clearpage
+
+\section{Compliance to Assigned Treatments}
+\input{gentex/compliance}
+\clearpage
+
+\section{Dropouts}
+\input{gentex/dropout}
+\clearpage
+
+\section{Adverse Events}
+\input{gentex/ae}
+\clearpage
+
+\section{EKG Data}
+\input{gentex/ekg}
+\clearpage
+
+\section{Clinical Chemistry Data}
+\input{gentex/chem}
+\clearpage
+
+\ifnum\inclcode=1{
+\section{Programming}\label{program}
+\subsection{Methods}
+This report was produced using high-quality open source, freely
+available R and \LaTeX\ packages.  R uses virtually the same S
+language used by \textsc{S-Plus} but with some
+enhancements\footnote{The primary enhancements used here are
+  mathematical, greek, and varying sized symbols in plots, and finer
+  control over the names used for automatically-generated multi-page
+  plots.}.  High-level S graphics and \LaTeX\ table making functions
+in FE Harrell's Hmisc library were used.  New S language functions
+\code{completeness\-Report}, \code{accrual\-Report},
+\code{baseline\-Report}, \code{rep\-Varclus},
+\code{compliance\-Report}, \code{dropout\-Report}, \code{ae\-Report},
+and \code{lab\-Report} were written to package these functions, using
+the philosophy of program-controlled generation of \LaTeX\ text,
+figures, and tables.  When figures were plotted in R, \LaTeX\ figure
+legends and graphics insertion macro calls were automatically
+generated.  Some of the functions produce both open (with pooling of
+treatment groups) and closed (stratifying on treatment) meeting
+reports.  Automatically created graphics and \code{.tex} files for
+the open report have names beginning with \code{O}.
+
+The \code{.pdf} file containing the report was generated using
+\code{pdflatex} so as to automatically generate hyperlinks (shown in
+blue) to all the figures and tables for easy navigation when viewing
+on the screen.
+
+Tables were created using the
+\href{http://biostat.mc.vanderbilt.edu/s/Hmisc}
+{Hmisc library}'s 
+\href{http://biostat.mc.vanderbilt.edu/twiki/pub/Main/StatReport/summary.pdf}
+{\code{summary.formula}} function which also performs statistical
+tests across columns of tables using S functions.
+
+Output for open meeting components is shown in a separate report.
+
+\subsection{Data Preparation}
+Variable labels are used in much of the graphical and tabular output,
+so it is advisable to attach \code{label} attributes to almost all
+variables.  Variable names are used when \code{label}s are not
+defined.  Units of measurement also appear in the output, so most
+continuous variables should have a \code{units} attribute.  The
+\code{units} may contain mathematical expressions such as
+\verb|cm^2| which will be properly typeset in tables and plots, using
+superscripts, subscripts, etc.  Variables that are not binary (0/1,
+\code{Y/N}, etc.) but are categorical should have \code{levels}
+(value labels) defined (e.g., using the \code{factor} function) that
+will be attractive in the report.  The Hmisc library \code{upData}
+function is useful for annotating variables with labels, units of
+measurement, and value labels.  See
+\href{http://biostat.mc.vanderbilt.edu/twiki/pub/Main/RS/sintro.pdf}
+{Alzola and Harrell, 2006} and
+\href{http://biostat.mc.vanderbilt.edu/twiki/pub/Main/StatCompCourse/sCompGraph.pdf}
+{FE Harrell's lecture notes} for details about setting up analysis
+files.
+
+S code that created the analysis file for this report is shown
+below.  For this particular application, \code{units} and some of
+the \code{labels} were actually obtained from separate data tables
+as shown in the code.
+{\small\sinput{../createTest.s}}
+
+\subsection{User \LaTeX\ Code for This Document}
+{\small\verbatimtabinput{report.tex}}
+
+\subsection{User S Code}
+In the S code below, the \code{vars} object (a list) defines all the
+vectors of variable names to analyze separately.  The \code{setdiff}
+function is useful here, to define a set of variables except for a
+specified vector of names (the second argument to \code{setdiff}).
+In the future, some of the components of this list may be lists
+themselves, for the adverse event data.  This will be used to organize
+the variables by body system.
+{\small\sinput{sample.s}}
+
+\subsection{New Generic S Functions}
+See the
+\href{http://biostat.mc.vanderbilt.edu/Rreport}{\code{subversion} repository}.
+
+}\fi
+
+\end{document}
+
+
+
+
+
